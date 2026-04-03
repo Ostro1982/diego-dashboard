@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diego Ostro | Project Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#080b14;
+  --bg-card:#0d1220;
+  --bg-card-hover:#111829;
+  --bg-surface:#151d30;
+  --border:#1a2540;
+  --border-hover:#253560;
+  --text-primary:#e8ecf4;
+  --text-secondary:#7b8bb2;
+  --text-muted:#4a5a80;
+  --cyan:#00d4ff;
+  --cyan-dim:#00d4ff30;
+  --green:#00e676;
+  --green-dim:#00e67630;
+  --amber:#ffab00;
+  --amber-dim:#ffab0030;
+  --red:#ff3d5a;
+  --red-dim:#ff3d5a30;
+  --purple:#b388ff;
+  --purple-dim:#b388ff30;
+  --pink:#ff4081;
+  --font-display:'Chakra Petch',sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-mono);
+  background:var(--bg-primary);
+  color:var(--text-primary);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;top:0;left:0;right:0;bottom:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 0%, #00d4ff08 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, #b388ff06 0%, transparent 60%);
+  pointer-events:none;z-index:0;
+}
+
+/* HEADER */
+.header{
+  position:relative;z-index:1;
+  padding:2rem 2rem 0;
+  max-width:1400px;margin:0 auto;
+}
+.header-top{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:1rem;
+  margin-bottom:2rem;
+}
+.brand{display:flex;align-items:center;gap:1rem}
+.brand-icon{
+  width:48px;height:48px;
+  background:linear-gradient(135deg,var(--cyan),#0066ff);
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:700;font-size:1.4rem;color:#fff;
+  box-shadow:0 0 30px #00d4ff20;
+}
+.brand h1{
+  font-family:var(--font-display);font-weight:700;font-size:1.5rem;
+  letter-spacing:0.05em;
+}
+.brand h1 span{color:var(--cyan)}
+.header-meta{
+  font-size:0.75rem;color:var(--text-muted);
+  display:flex;gap:1.5rem;align-items:center;
+}
+.header-meta .pulse{
+  display:inline-block;width:8px;height:8px;
+  background:var(--green);border-radius:50%;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 #00e67660}50%{opacity:.7;box-shadow:0 0 0 6px #00e67600}}
+
+/* STATS BAR */
+.stats-bar{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:1rem;margin-bottom:2rem;
+  position:relative;z-index:1;
+}
+.stat-card{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:1rem 1.2rem;
+  transition:all .2s;
+}
+.stat-card:hover{border-color:var(--border-hover);transform:translateY(-2px)}
+.stat-label{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:0.3rem}
+.stat-value{font-family:var(--font-display);font-size:1.8rem;font-weight:700;line-height:1}
+.stat-value.cyan{color:var(--cyan)}
+.stat-value.green{color:var(--green)}
+.stat-value.amber{color:var(--amber)}
+.stat-value.purple{color:var(--purple)}
+.stat-sub{font-size:0.7rem;color:var(--text-secondary);margin-top:0.25rem}
+
+/* TABS */
+.tabs-container{
+  position:relative;z-index:1;
+  max-width:1400px;margin:0 auto;
+  padding:0 2rem;
+}
+.tabs{
+  display:flex;gap:0;
+  border-bottom:1px solid var(--border);
+  margin-bottom:1.5rem;
+}
+.tab{
+  font-family:var(--font-display);font-weight:600;font-size:0.85rem;
+  letter-spacing:0.05em;text-transform:uppercase;
+  padding:0.8rem 1.5rem;
+  background:none;border:none;color:var(--text-muted);
+  cursor:pointer;position:relative;
+  transition:color .2s;
+}
+.tab:hover{color:var(--text-secondary)}
+.tab.active{color:var(--cyan)}
+.tab.active::after{
+  content:'';position:absolute;bottom:-1px;left:0;right:0;
+  height:2px;background:var(--cyan);
+  box-shadow:0 0 10px var(--cyan);
+}
+.tab .count{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:20px;height:20px;border-radius:10px;
+  background:var(--bg-surface);
+  font-size:0.65rem;padding:0 6px;margin-left:6px;
+  font-family:var(--font-mono);
+}
+.tab.active .count{background:var(--cyan-dim);color:var(--cyan)}
+
+/* FILTERS */
+.filters{
+  display:flex;gap:0.75rem;flex-wrap:wrap;
+  margin-bottom:1.5rem;align-items:center;
+}
+.search-box{
+  flex:1;min-width:200px;max-width:350px;
+  position:relative;
+}
+.search-box input{
+  width:100%;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:0.6rem 1rem 0.6rem 2.2rem;
+  color:var(--text-primary);
+  font-family:var(--font-mono);font-size:0.8rem;
+  outline:none;transition:border-color .2s;
+}
+.search-box input:focus{border-color:var(--cyan)}
+.search-box input::placeholder{color:var(--text-muted)}
+.search-box::before{
+  content:'\2315';position:absolute;left:0.8rem;top:50%;transform:translateY(-50%);
+  color:var(--text-muted);font-size:1rem;
+}
+.filter-btn{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:8px;padding:0.5rem 1rem;
+  color:var(--text-secondary);font-family:var(--font-mono);font-size:0.72rem;
+  cursor:pointer;transition:all .2s;white-space:nowrap;
+}
+.filter-btn:hover{border-color:var(--border-hover);color:var(--text-primary)}
+.filter-btn.active{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-dim)}
+
+/* GRID */
+.projects-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(380px,1fr));
+  gap:1rem;
+  padding-bottom:3rem;
+}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* PROJECT CARD */
+.project-card{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:1.4rem;
+  transition:all .3s;
+  cursor:default;
+  position:relative;
+  overflow:hidden;
+}
+.project-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  opacity:0;transition:opacity .3s;
+}
+.project-card:hover{
+  border-color:var(--border-hover);
+  transform:translateY(-3px);
+  box-shadow:0 10px 40px #00000040;
+}
+.project-card:hover::before{opacity:1}
+.project-card[data-accent="cyan"]::before{background:linear-gradient(90deg,var(--cyan),transparent)}
+.project-card[data-accent="green"]::before{background:linear-gradient(90deg,var(--green),transparent)}
+.project-card[data-accent="amber"]::before{background:linear-gradient(90deg,var(--amber),transparent)}
+.project-card[data-accent="purple"]::before{background:linear-gradient(90deg,var(--purple),transparent)}
+.project-card[data-accent="red"]::before{background:linear-gradient(90deg,var(--red),transparent)}
+.project-card[data-accent="pink"]::before{background:linear-gradient(90deg,var(--pink),transparent)}
+
+.card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:0.75rem;margin-bottom:0.8rem}
+.card-title{font-family:var(--font-display);font-weight:700;font-size:1.1rem;line-height:1.2}
+.card-type{
+  font-size:0.6rem;text-transform:uppercase;letter-spacing:0.08em;
+  padding:3px 8px;border-radius:4px;white-space:nowrap;
+  font-weight:600;flex-shrink:0;
+}
+.type-app{background:var(--cyan-dim);color:var(--cyan)}
+.type-bot{background:var(--green-dim);color:var(--green)}
+.type-tool{background:var(--amber-dim);color:var(--amber)}
+.type-service{background:var(--purple-dim);color:var(--purple)}
+.type-idea{background:var(--red-dim);color:var(--red)}
+.type-content{background:var(--pink);color:#fff;background:var(--pink);opacity:.85}
+
+.card-desc{font-size:0.75rem;color:var(--text-secondary);line-height:1.5;margin-bottom:1rem}
+
+.card-metrics{
+  display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;
+  margin-bottom:1rem;
+}
+.metric{
+  background:var(--bg-surface);
+  border-radius:8px;
+  padding:0.5rem 0.7rem;
+}
+.metric-label{font-size:0.6rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em}
+.metric-value{font-family:var(--font-display);font-size:0.95rem;font-weight:600;margin-top:0.15rem}
+.metric-value.positive{color:var(--green)}
+.metric-value.warning{color:var(--amber)}
+.metric-value.info{color:var(--cyan)}
+
+.card-stack{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:0.8rem}
+.stack-tag{
+  font-size:0.6rem;padding:2px 7px;border-radius:4px;
+  background:var(--bg-surface);color:var(--text-secondary);
+  border:1px solid var(--border);
+}
+
+.card-status{
+  display:flex;align-items:center;gap:0.5rem;
+  padding-top:0.8rem;border-top:1px solid var(--border);
+}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.status-dot.live{background:var(--green);box-shadow:0 0 8px var(--green-dim)}
+.status-dot.dev{background:var(--cyan);box-shadow:0 0 8px var(--cyan-dim)}
+.status-dot.paper{background:var(--amber);box-shadow:0 0 8px var(--amber-dim)}
+.status-dot.paused{background:var(--text-muted)}
+.status-dot.idea{background:var(--purple);box-shadow:0 0 8px var(--purple-dim)}
+.status-text{font-size:0.7rem;color:var(--text-secondary)}
+.status-text strong{color:var(--text-primary);font-weight:500}
+
+.card-links{
+  display:flex;gap:0.5rem;margin-top:0.8rem;flex-wrap:wrap;
+}
+.card-link{
+  font-size:0.65rem;padding:3px 10px;border-radius:6px;
+  background:var(--bg-surface);color:var(--cyan);
+  text-decoration:none;border:1px solid var(--border);
+  transition:all .2s;
+}
+.card-link:hover{border-color:var(--cyan);background:var(--cyan-dim)}
+
+/* IDEA CARDS (simpler) */
+.idea-card{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:1.2rem 1.4rem;
+  transition:all .3s;
+}
+.idea-card:hover{border-color:var(--border-hover);transform:translateY(-2px)}
+.idea-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem}
+.idea-fire{font-size:1rem;flex-shrink:0}
+.idea-title{font-family:var(--font-display);font-weight:600;font-size:0.95rem}
+.idea-desc{font-size:0.73rem;color:var(--text-secondary);line-height:1.5;margin-bottom:0.7rem}
+.idea-tags{display:flex;gap:4px;flex-wrap:wrap}
+.idea-tag{
+  font-size:0.6rem;padding:2px 8px;border-radius:4px;
+  border:1px solid var(--border);color:var(--text-muted);
+}
+.idea-tag.hot{border-color:var(--amber);color:var(--amber);background:var(--amber-dim)}
+.idea-tag.blocked{border-color:var(--red);color:var(--red);background:var(--red-dim)}
+.idea-tag.ready{border-color:var(--green);color:var(--green);background:var(--green-dim)}
+
+/* REVENUE BADGE */
+.revenue-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:0.62rem;font-weight:600;
+  padding:2px 8px;border-radius:4px;margin-top:0.5rem;
+}
+.revenue-badge.high{background:var(--green-dim);color:var(--green)}
+.revenue-badge.medium{background:var(--amber-dim);color:var(--amber)}
+.revenue-badge.low{background:var(--bg-surface);color:var(--text-muted)}
+.revenue-badge.personal{background:var(--purple-dim);color:var(--purple)}
+
+/* FOOTER */
+.footer{
+  position:relative;z-index:1;
+  text-align:center;padding:2rem;
+  font-size:0.65rem;color:var(--text-muted);
+  border-top:1px solid var(--border);
+  max-width:1400px;margin:2rem auto 0;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .header{padding:1rem}
+  .tabs-container{padding:0 1rem}
+  .projects-grid{grid-template-columns:1fr}
+  .stats-bar{grid-template-columns:repeat(2,1fr)}
+  .brand h1{font-size:1.1rem}
+  .card-metrics{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .stats-bar{grid-template-columns:1fr}
+  .filters{flex-direction:column}
+  .search-box{max-width:100%}
+}
+
+/* MODAL */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:#000c;backdrop-filter:blur(8px);
+  z-index:100;justify-content:center;align-items:center;
+  padding:1rem;
+}
+.modal-overlay.active{display:flex}
+.modal{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:16px;max-width:600px;width:100%;
+  max-height:85vh;overflow-y:auto;padding:2rem;
+  position:relative;
+}
+.modal-close{
+  position:absolute;top:1rem;right:1rem;
+  background:none;border:none;color:var(--text-muted);
+  cursor:pointer;font-size:1.2rem;padding:0.3rem;
+  transition:color .2s;
+}
+.modal-close:hover{color:var(--text-primary)}
+.modal h2{font-family:var(--font-display);font-size:1.3rem;margin-bottom:0.3rem}
+.modal-section{margin-top:1.2rem}
+.modal-section h3{
+  font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;
+  color:var(--text-muted);margin-bottom:0.5rem;
+}
+.modal-section p,.modal-section li{font-size:0.8rem;color:var(--text-secondary);line-height:1.6}
+.modal-section ul{list-style:none;padding:0}
+.modal-section li::before{content:'>';color:var(--cyan);margin-right:0.5rem;font-weight:700}
+
+/* ANIMATIONS */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.project-card,.idea-card{animation:fadeInUp .4s ease both}
+.projects-grid .project-card:nth-child(1),.projects-grid .idea-card:nth-child(1){animation-delay:.05s}
+.projects-grid .project-card:nth-child(2),.projects-grid .idea-card:nth-child(2){animation-delay:.1s}
+.projects-grid .project-card:nth-child(3),.projects-grid .idea-card:nth-child(3){animation-delay:.15s}
+.projects-grid .project-card:nth-child(4),.projects-grid .idea-card:nth-child(4){animation-delay:.2s}
+.projects-grid .project-card:nth-child(5),.projects-grid .idea-card:nth-child(5){animation-delay:.25s}
+.projects-grid .project-card:nth-child(6),.projects-grid .idea-card:nth-child(6){animation-delay:.3s}
+.projects-grid .project-card:nth-child(7),.projects-grid .idea-card:nth-child(7){animation-delay:.35s}
+.projects-grid .project-card:nth-child(8),.projects-grid .idea-card:nth-child(8){animation-delay:.4s}
+.projects-grid .project-card:nth-child(9),.projects-grid .idea-card:nth-child(9){animation-delay:.45s}
+.projects-grid .project-card:nth-child(10),.projects-grid .idea-card:nth-child(10){animation-delay:.5s}
+.projects-grid .project-card:nth-child(11),.projects-grid .idea-card:nth-child(11){animation-delay:.55s}
+.projects-grid .project-card:nth-child(12),.projects-grid .idea-card:nth-child(12){animation-delay:.6s}
+
+/* scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg-primary)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text-muted)}
+
+/* NEXT STEP highlight */
+.next-step{
+  font-size:0.72rem;color:var(--text-secondary);
+  background:var(--bg-surface);border-radius:8px;
+  padding:0.5rem 0.7rem;margin-top:0.6rem;
+  border-left:2px solid var(--cyan);
+  line-height:1.4;
+}
+.next-step strong{color:var(--cyan);font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="brand">
+      <div class="brand-icon">DO</div>
+      <h1>PROJECT <span>COMMAND CENTER</span></h1>
+    </div>
+    <div class="header-meta">
+      <span><span class="pulse"></span> Live Dashboard</span>
+      <span id="last-update"></span>
+    </div>
+  </div>
+  <div class="stats-bar" id="stats-bar"></div>
+</div>
+
+<div class="tabs-container">
+  <div class="tabs">
+    <button class="tab active" data-tab="developed" onclick="switchTab('developed')">
+      En Desarrollo <span class="count" id="count-developed">0</span>
+    </button>
+    <button class="tab" data-tab="ideas" onclick="switchTab('ideas')">
+      Ideas / Fase Inicial <span class="count" id="count-ideas">0</span>
+    </button>
+  </div>
+
+  <div class="filters">
+    <div class="search-box">
+      <input type="text" id="search" placeholder="Buscar proyecto..." oninput="filterProjects()">
+    </div>
+    <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">Todos</button>
+    <button class="filter-btn" data-filter="app" onclick="setFilter('app')">Apps</button>
+    <button class="filter-btn" data-filter="bot" onclick="setFilter('bot')">Bots</button>
+    <button class="filter-btn" data-filter="tool" onclick="setFilter('tool')">Tools</button>
+    <button class="filter-btn" data-filter="service" onclick="setFilter('service')">Servicios</button>
+    <button class="filter-btn" data-filter="content" onclick="setFilter('content')">Contenido</button>
+  </div>
+
+  <div class="tab-content active" id="tab-developed">
+    <div class="projects-grid" id="grid-developed"></div>
+  </div>
+  <div class="tab-content" id="tab-ideas">
+    <div class="projects-grid" id="grid-ideas"></div>
+  </div>
+</div>
+
+<div class="footer">
+  Built with Claude &mdash; Objetivo: $3,000 USD/mes &mdash; Runway: ~4 meses desde abril 2026
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+// =====================================================
+// PROJECT DATA - Edit this section to update dashboard
+// =====================================================
+const PROJECTS = [
+  {
+    id: "crianza",
+    name: "Crianza",
+    type: "app",
+    accent: "cyan",
+    desc: "App Android de crianza compartida. Registro de tiempo, gastos, calendario, lista de compras, mensajes, recuerdos. Integra Telegram, WhatsApp y Email.",
+    stack: ["Kotlin", "Compose", "Room", "Firebase", "Telegram Bot"],
+    status: "dev",
+    statusText: "v3 publicada, desarrollo activo",
+    metrics: [
+      { label: "Version", value: "v3", class: "info" },
+      { label: "Features", value: "10+", class: "" },
+      { label: "DB Version", value: "14", class: "" },
+      { label: "Integraciones", value: "3", class: "info" }
+    ],
+    revenue: "personal",
+    revenueText: "Uso personal",
+    next: "Migración Room segura + Play Store blockers",
+    links: [
+      { label: "GitHub Release", url: "https://github.com/Ostro1982/crianza-app/releases/latest" }
+    ],
+    details: {
+      features: [
+        "Registro tiempo con padres/hijos",
+        "Calendario con eventos coloreados",
+        "Gastos y compensaciones auto-eliminables",
+        "Lista compras compartida + privada",
+        "Documentos encriptados",
+        "Mensajes internos",
+        "Recuerdos/anécdotas con fotos",
+        "Bot Telegram (/gasto /tiempo /evento /recuerdo /compra)",
+        "WhatsApp via NotificationListener",
+        "Email IMAP auto-detección",
+        "Widget custodia rápida 1-tap",
+        "Notificaciones push (eventos, pendientes, compras)"
+      ],
+      blockers: ["Migration Room (fallbackToDestructive)", "Package name Play Store", "Privacy policy", "Google Sign-In completo"]
+    }
+  },
+  {
+    id: "tenis-ev",
+    name: "Tenis EV",
+    type: "bot",
+    accent: "green",
+    desc: "Sistema de alertas EV+ en tenis. Modelo Elo + H2H + momentum + fatiga. Backtest 2018-2024 con +19.1% ROI. Paper trading activo.",
+    stack: ["Python", "Flask", "SQLite", "Betfair"],
+    status: "paper",
+    statusText: "Paper trading \u2014 8 apuestas resueltas",
+    metrics: [
+      { label: "ROI Backtest", value: "+19.1%", class: "positive" },
+      { label: "Jugadores DB", value: "1,057", class: "" },
+      { label: "Paper Bets", value: "8", class: "warning" },
+      { label: "Target", value: "300", class: "info" }
+    ],
+    revenue: "medium",
+    revenueText: "Potencial real si valida edge",
+    next: "Acumular 300 apuestas paper (~2-3 meses). Luego evaluar Betfair.",
+    links: [],
+    details: {
+      features: [
+        "Modelo prob: Elo 70% + hold/break 30% + fatiga + momentum + H2H decay",
+        "Scraper: 512 ATP + 545 WTA desde Tennis Abstract",
+        "Betexplorer: scores, fatiga en minutos, lesiones",
+        "Paper trading Kelly + Flat con CLV y Brier score",
+        "Backtest hist\u00f3rico 2018-2024 sin look-ahead bias",
+        "Loop 30min resoluci\u00f3n + 8h auto-betting",
+        "Configuraci\u00f3n: cuota max 3.5, EV min 5%, Kelly 25%",
+        "Consistente todos los a\u00f1os (peor: 2023 +16.8%)"
+      ],
+      blockers: ["Acumular 300 apuestas paper", "Betfair acceso desde AR (DNS 8.8.8.8)"]
+    }
+  },
+  {
+    id: "ald-ia",
+    name: "Ald IA Newsletter",
+    type: "content",
+    accent: "pink",
+    desc: "Newsletter diario de noticias IA en espa\u00f1ol + video Reels/TikTok de 48s. Pipeline GitHub Actions autom\u00e1tico. Paleta turquesa.",
+    stack: ["Python", "GitHub Actions", "Groq", "Brevo", "Supabase"],
+    status: "dev",
+    statusText: "Pipeline funcionando, 0 suscriptores",
+    metrics: [
+      { label: "Tests", value: "22/22", class: "positive" },
+      { label: "Feeds RSS", value: "8", class: "" },
+      { label: "Suscriptores", value: "0", class: "warning" },
+      { label: "Ingresos", value: "$0", class: "" }
+    ],
+    revenue: "medium",
+    revenueText: "Afiliados IA + sponsors (500+ subs)",
+    next: "Deploy landing page en Render + primera subida manual de video a redes.",
+    links: [],
+    details: {
+      features: [
+        "Pipeline diario 7:45am AR via GitHub Actions",
+        "8 feeds RSS (xataka, genbeta, hipertextual, elpais...)",
+        "Analyzer: Groq llama-3.3-70b",
+        "Email turquesa con subject din\u00e1mico",
+        "Video 48s con barra progreso, fuente, CTA",
+        "M\u00fasica lo-fi generada sin royalties"
+      ],
+      blockers: ["Deploy landing page", "Distribuci\u00f3n en redes", "Registro afiliados herramientas IA"]
+    }
+  },
+  {
+    id: "el-once",
+    name: "El Once",
+    type: "service",
+    accent: "purple",
+    desc: "Directorio de locales mayoristas del Once, Buenos Aires. 544 locales con p\u00e1ginas individuales. Monetizaci\u00f3n cuestionable.",
+    stack: ["HTML/JS", "Cloudflare Pages", "Supabase", "Brevo"],
+    status: "live",
+    statusText: "Live en elonce.pages.dev",
+    metrics: [
+      { label: "Locales", value: "544", class: "info" },
+      { label: "Con Tel\u00e9fono", value: "307", class: "" },
+      { label: "EV Mensual", value: "$100-500", class: "warning" },
+      { label: "Conversi\u00f3n Est.", value: "2-5%", class: "" }
+    ],
+    revenue: "low",
+    revenueText: "EV baja ($100-500/mes realista)",
+    next: "DECISI\u00d3N PENDIENTE: testear 20 locales manual o pivotar.",
+    links: [
+      { label: "Live Site", url: "https://elonce.pages.dev" }
+    ],
+    details: {
+      features: [
+        "544 locales con p\u00e1ginas individuales",
+        "SEO: sitemap + robots.txt deployados",
+        "WhatsApp masivo listo (50/d\u00eda, delays)",
+        "307 locales con tel\u00e9fono, 237 sin"
+      ],
+      blockers: ["Math dif\u00edcil: necesita 150-300 pagando", "Compite con Google Maps", "WhatsApp masivo: riesgo legal + ban Meta", "Sin consentimiento expl\u00edcito de locales"]
+    }
+  },
+  {
+    id: "mt4-bot",
+    name: "MT4 EMA Ribbon",
+    type: "bot",
+    accent: "green",
+    desc: "EA de scalping MT4 con estrategia EMA Ribbon Pullback. 7 instancias en IC Markets demo. Capital demo \u20ac1,000.",
+    stack: ["MQL4", "Python", "IC Markets"],
+    status: "paper",
+    statusText: "Demo trading \u2014 7 instancias activas",
+    metrics: [
+      { label: "Instancias", value: "7", class: "info" },
+      { label: "Mejor PF", value: "1.36", class: "positive" },
+      { label: "Capital Demo", value: "\u20ac1,000", class: "" },
+      { label: "Pares", value: "5", class: "" }
+    ],
+    revenue: "medium",
+    revenueText: "Potencial si PF live = backtest",
+    next: "Esperar trades cerrados \u2192 comparar PF live vs backtest benchmark.",
+    links: [],
+    details: {
+      features: [
+        "7 instancias: XAUUSD M30/H1/H4, GBPUSD H1, EURUSD H1, USDJPY H4, EURJPY H4",
+        "ATR SL/TP 1:2, BE + partial close en +1R",
+        "Risk: 1% M30/H1, 0.25% H4",
+        "Sesi\u00f3n: 08:00-17:00 GMT, force close 16:45",
+        "MaxPortfolioRisk: 5%",
+        "Spread max: 5 pips forex, 30 pips gold"
+      ],
+      blockers: ["Acumular trades cerrados", "VPS antes de capital real", "Recompilar resetea Expert Properties (hay que re-setear manual)"]
+    }
+  },
+  {
+    id: "mtg-arb",
+    name: "MTG Arbitrage",
+    type: "tool",
+    accent: "amber",
+    desc: "Herramienta de arbitraje para cartas Magic Reserved List. Compra en CardMarket EU, reventa en USA v\u00eda eBay/CK. 309 cartas tracked.",
+    stack: ["Python", "Flask", "SQLite", "Scryfall API", "TCGPlayer"],
+    status: "dev",
+    statusText: "Funcionando local, deploy pendiente",
+    metrics: [
+      { label: "Cartas RL", value: "309", class: "info" },
+      { label: "Margen Alert", value: ">30%", class: "positive" },
+      { label: "Max Compra", value: "$600", class: "" },
+      { label: "Deploy", value: "Pendiente", class: "warning" }
+    ],
+    revenue: "high",
+    revenueText: "Capital $5k, hermano USA opera",
+    next: "Deploy en PythonAnywhere (gratis) + primer ciclo de compra (LED o Grim Monolith).",
+    links: [],
+    details: {
+      features: [
+        "309 cartas Reserved List con precios live",
+        "Dashboard dark mode con filtros",
+        "Stat boxes clickeables: oportunidades, alertas >30%",
+        "Links CardMarket con filtro ingl\u00e9s",
+        "Detalle por carta: eBay + CK buylist",
+        "Columna demanda: ventas/mes + ratio rotaci\u00f3n",
+        "Consolidadores EU\u2192USA: Forward2me, MailboxDE",
+        "Modelo: EU EX (73% NM) \u2192 USA LP (90% NM) = +17% gap"
+      ],
+      blockers: ["Deploy online", "Primer ciclo de compra no ejecutado", "Precios cambian r\u00e1pido"]
+    }
+  },
+  {
+    id: "paciencia",
+    name: "PaCiencia",
+    type: "app",
+    accent: "cyan",
+    desc: "App educativa para hijo (10 a\u00f1os). 13 materias, 20 niveles, modo Aprender guiado. TTS hebreo/ingl\u00e9s. Dark mode. Fondos seleccionables.",
+    stack: ["Flutter", "Firebase", "Firestore", "TTS"],
+    status: "dev",
+    statusText: "Compilada en Android f\u00edsico",
+    metrics: [
+      { label: "Materias", value: "13", class: "info" },
+      { label: "Niveles", value: "20", class: "" },
+      { label: "Fondos", value: "10", class: "" },
+      { label: "Guiado Completo", value: "3", class: "warning" }
+    ],
+    revenue: "personal",
+    revenueText: "Uso personal (hijo)",
+    next: "Expandir guiado a 20 niveles en las 10 materias nuevas.",
+    links: [],
+    details: {
+      features: [
+        "13 materias: Ajedrez, Hebreo, Programaci\u00f3n, Matem\u00e1ticas, Ciencias, Espacio, M\u00fasica, L\u00f3gica, Geograf\u00eda, Historia, Ingl\u00e9s, Arte, Filosof\u00eda",
+        "Modo Aprender (guiado paso a paso)",
+        "TTS: hebreo he-IL, ingl\u00e9s en-US",
+        "10 fondos animados seleccionables",
+        "Google Sign-In + Firestore sync",
+        "Light/dark mode"
+      ],
+      blockers: ["Solo 3 materias tienen guiado completo (20 niveles)"]
+    }
+  },
+  {
+    id: "decision-sniper",
+    name: "Decision Sniper",
+    type: "app",
+    accent: "cyan",
+    desc: "App de calibraci\u00f3n de decisiones con tracker, 7 m\u00f3dulos de entrenamiento, y sparring de negociaci\u00f3n. Pivoteando a mercado USA.",
+    stack: ["Flutter", "SQLite", "SharedPrefs"],
+    status: "dev",
+    statusText: "15,190 LOC \u2014 pivoteando a USA",
+    metrics: [
+      { label: "LOC", value: "15,190", class: "" },
+      { label: "Pantallas", value: "18", class: "info" },
+      { label: "M\u00f3dulos", value: "7", class: "" },
+      { label: "Precio Plan", value: "$4.99/mes", class: "positive" }
+    ],
+    revenue: "high",
+    revenueText: "Freemium $4.99/mes \u2014 nicho sin competencia",
+    next: "Internacionalizaci\u00f3n: rebranding + i18n + contenido USA + paywall.",
+    links: [],
+    details: {
+      features: [
+        "Decision tracker con confianza, pre-mortem, outside view",
+        "Cuestionario asistido probabilidad (3 tiers)",
+        "Calibraci\u00f3n por rango, drift mensual, arquetipos",
+        "Sesgo retrospectivo trap",
+        "7 m\u00f3dulos: Estimaci\u00f3n, Sesgos, EV, Calibraci\u00f3n, Contexto, Negocios, Sparring",
+        "Export/backup JSON",
+        "Target: traders, founders, forecasters, poker players"
+      ],
+      blockers: ["Rebranding pendiente", "i18n (ingl\u00e9s default)", "Contenido USA nuevo", "Paywall freemium", "Play Store (hermano EEUU)"]
+    }
+  },
+  {
+    id: "servicio-pymes",
+    name: "Servicio PyMES",
+    type: "service",
+    accent: "purple",
+    desc: "Servicio B2B: web + automatizaci\u00f3n WhatsApp + redes para pymes. 3 demos live. Materiales de venta listos.",
+    stack: ["HTML/JS", "Cloudflare", "n8n", "WhatsApp API"],
+    status: "live",
+    statusText: "3 demos live, buscando clientes",
+    metrics: [
+      { label: "Demos Live", value: "3", class: "positive" },
+      { label: "Precio Piso", value: "$25/mes", class: "" },
+      { label: "Precio Techo", value: "$40/mes", class: "" },
+      { label: "Clientes", value: "0", class: "warning" }
+    ],
+    revenue: "medium",
+    revenueText: "Ingreso B2B recurrente directo",
+    next: "VPS con n8n + WhatsApp Cloud API + contactar Casa Pibot + salir a caminar zona comercial.",
+    links: [
+      { label: "Demo Pibot", url: "https://demo-casapibot.pages.dev" },
+      { label: "Demo Gorras", url: "https://demo-gorras.pages.dev" },
+      { label: "Demo Milhouse", url: "https://demo-milhouse.pages.dev" }
+    ],
+    details: {
+      features: [
+        "Template reutilizable para nuevos clientes",
+        "Script new-client.sh para clonar r\u00e1pido",
+        "Flujos n8n: bot WhatsApp FAQ + reposteo Instagram",
+        "Gu\u00eda paso a paso setup completo",
+        "Materiales: pitch, precios, tracker HTML"
+      ],
+      blockers: ["0 clientes pagando", "VPS n8n no configurado", "WhatsApp Cloud API no probado"]
+    }
+  },
+  {
+    id: "manifold-bot",
+    name: "Manifold Bot",
+    type: "bot",
+    accent: "green",
+    desc: "Bot aut\u00f3nomo de predicciones en Manifold Markets. Valida calibraci\u00f3n con mana ficticio antes de Polymarket con dinero real.",
+    stack: ["Python", "Groq", "GitHub Actions", "Telegram", "SQLite"],
+    status: "live",
+    statusText: "Desplegado \u2014 20 apuestas colocadas",
+    metrics: [
+      { label: "Apuestas", value: "20", class: "info" },
+      { label: "Target", value: "200", class: "" },
+      { label: "Tests", value: "30/30", class: "positive" },
+      { label: "Brier Target", value: "<0.20", class: "" }
+    ],
+    revenue: "medium",
+    revenueText: "Gateway a Polymarket ($500 capital)",
+    next: "Monitorear \u2192 200+ apuestas resueltas \u2192 evaluar Brier Score + ROI.",
+    links: [],
+    details: {
+      features: [
+        "Scans: general 3x/d\u00eda + sports cada 2h",
+        "Groq llama-3.3-70b (gratis, 1000 req/d\u00eda)",
+        "Telegram: notificaciones autom\u00e1ticas",
+        "GitHub Actions: corre solo 24/7"
+      ],
+      blockers: ["Solo 20 apuestas (necesita 200)", "Polymarket bloqueado desde AR"]
+    }
+  },
+  {
+    id: "crypto-copytrade",
+    name: "Crypto Copy-Trade",
+    type: "bot",
+    accent: "green",
+    desc: "Bot paper trading que copia wallets rentables de Solana. Detecta smart money, copia swaps, gestiona SL/TP autom\u00e1tico.",
+    stack: ["Python", "Helius", "DexScreener", "CoinGecko", "Telegram"],
+    status: "paper",
+    statusText: "Paper trading \u2014 ~90 wallets encontradas",
+    metrics: [
+      { label: "Wallets", value: "~90", class: "info" },
+      { label: "Tests", value: "33/33", class: "positive" },
+      { label: "Capital Paper", value: "$200", class: "" },
+      { label: "Max/Trade", value: "$40", class: "" }
+    ],
+    revenue: "medium",
+    revenueText: "Si valida edge \u2192 capital real",
+    next: "100+ trades cerrados con PnL+, WR>50%, Sharpe>1 antes de real.",
+    links: [],
+    details: {
+      features: [
+        "Discovery: escanea Solana, rankea wallets por PnL/WR",
+        "Monitor: detecta swaps nuevos cada 2 min",
+        "Executor: paper trading SL -15% / TP +50%",
+        "Telegram: resumen diario 21:00 AR",
+        "APIs gratis: Helius, DexScreener, CoinGecko"
+      ],
+      blockers: ["Necesita 100+ trades cerrados", "Jupiter Price API v2 requiere key"]
+    }
+  }
+];
+
+const IDEAS = [
+  {
+    id: "compra-grupal",
+    name: "Compra Grupal Instant\u00e1nea",
+    desc: "Tipo Pinduoduo para Argentina. Compradores se agrupan \u2192 precio mayorista. Vac\u00edo total en LATAM.",
+    fire: 3,
+    tags: [{ label: "Alta prioridad", class: "hot" }, { label: "Sin equivalente AR", class: "ready" }],
+    revenue: "high"
+  },
+  {
+    id: "arcade-skill",
+    name: "Arcade Competitivo por Plata",
+    desc: "Trivia, puzzles, l\u00f3gica. Mercado $3.5B en India, vac\u00edo en LATAM. Habilidad \u2260 azar (legal). Background poker = ventaja.",
+    fire: 3,
+    tags: [{ label: "Alta prioridad", class: "hot" }, { label: "Legal: habilidad", class: "ready" }],
+    revenue: "high"
+  },
+  {
+    id: "pokerdesk",
+    name: "PokerDesk",
+    desc: "Agregador de torneos poker + staking integrado. Scoring autom\u00e1tico, one-click launch, calculadora EV/MU. Suscripci\u00f3n $20-40/mes.",
+    fire: 2,
+    tags: [{ label: "Despu\u00e9s de ingresos", class: "" }, { label: "Mercado nicho", class: "ready" }],
+    revenue: "high"
+  },
+  {
+    id: "curso-ia",
+    name: "Curso: Constru\u00ed con IA sin Programar",
+    desc: "Margen 90%+. Historia personal como marketing. Target: profesionales sin c\u00f3digo que quieren automatizar.",
+    fire: 2,
+    tags: [{ label: "EV alta", class: "hot" }, { label: "Historia personal", class: "ready" }],
+    revenue: "high"
+  },
+  {
+    id: "casapibot",
+    name: "CasaPibot Automatizaci\u00f3n",
+    desc: "Chatbot WhatsApp + notificaciones para Casa Pibot (uniformes). Primer cliente real del servicio PyMES.",
+    fire: 1,
+    tags: [{ label: "Cliente real", class: "ready" }, { label: "Pendiente discovery", class: "" }],
+    revenue: "medium"
+  },
+  {
+    id: "duolingo-practico",
+    name: "Duolingo de Habilidades Pr\u00e1cticas",
+    desc: "Gamificaci\u00f3n de cosas que nadie te ense\u00f1a: AFIP, c\u00f3mo hacer un CV, leer un recibo de sueldo, etc.",
+    fire: 2,
+    tags: [{ label: "EV alta", class: "hot" }, { label: "Sin equivalente AR", class: "ready" }],
+    revenue: "medium"
+  },
+  {
+    id: "nutricionista-ia",
+    name: "Nutricionista IA + Precios AR",
+    desc: "Plan nutricional con precios reales de supermercado argentino. \u00danico en el mundo.",
+    fire: 1,
+    tags: [{ label: "EV media-alta", class: "hot" }, { label: "\u00danico", class: "ready" }],
+    revenue: "medium"
+  },
+  {
+    id: "prediction-markets",
+    name: "Bot Polymarket/Kalshi",
+    desc: "Trading bot en mercados de predicci\u00f3n. Background poker = ventaja. Bloqueado por geo-restriction desde Argentina.",
+    fire: 1,
+    tags: [{ label: "Bloqueado geo", class: "blocked" }, { label: "Post $2k/mes", class: "" }],
+    revenue: "high"
+  },
+  {
+    id: "secretos-ciudad",
+    name: "Secretos de la Ciudad",
+    desc: "Marketplace de gu\u00edas hiperlocales desbloqueables ($200-500). OnlyFans de conocimiento urbano.",
+    fire: 2,
+    tags: [{ label: "Innovador", class: "hot" }, { label: "Contenido local", class: "" }],
+    revenue: "medium"
+  },
+  {
+    id: "experiencias-random",
+    name: "Delivery de Experiencias Random",
+    desc: "Pag\u00e1s y te llega algo sorpresa (experiencia digital, objeto, aventura). Arrancar 100% digital.",
+    fire: 2,
+    tags: [{ label: "Innovador", class: "hot" }, { label: "Arrancar digital", class: "ready" }],
+    revenue: "medium"
+  },
+  {
+    id: "subasta-experiencias",
+    name: "Subasta de Experiencias \u00danicas",
+    desc: "Chef en tu casa, m\u00fasico en tu cumplea\u00f1os, ex futbolista juega con tus amigos. Subasta presencial (\u2260 Cameo).",
+    fire: 2,
+    tags: [{ label: "Innovador", class: "hot" }, { label: "Presencial", class: "" }],
+    revenue: "high"
+  },
+  {
+    id: "dilemas-eticos",
+    name: "Dilemas \u00c9ticos Reales",
+    desc: "Vot\u00e1s dilemas \u2192 la app ejecuta la decisi\u00f3n mayoritaria (dona plata real, hace algo concreto). Reality show + democracia.",
+    fire: 2,
+    tags: [{ label: "Muy innovador", class: "hot" }, { label: "Viral potential", class: "ready" }],
+    revenue: "medium"
+  },
+  {
+    id: "multas-colectivas",
+    name: "Multas/Quejas Colectivas",
+    desc: "App junta afectados \u2192 abogado toma caso colectivo. Diego tiene amigo abogado.",
+    fire: 2,
+    tags: [{ label: "Contacto abogado", class: "ready" }, { label: "Legal complejo", class: "" }],
+    revenue: "medium"
+  }
+];
+
+// =====================================================
+// RENDER FUNCTIONS
+// =====================================================
+
+function renderStats() {
+  const developed = PROJECTS.length;
+  const ideas = IDEAS.length;
+  const live = PROJECTS.filter(p => p.status === 'live').length;
+  const paperTrading = PROJECTS.filter(p => p.status === 'paper').length;
+  const withRevenue = PROJECTS.filter(p => p.revenue === 'high').length + IDEAS.filter(i => i.revenue === 'high').length;
+
+  document.getElementById('stats-bar').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Proyectos Activos</div>
+      <div class="stat-value cyan">${developed}</div>
+      <div class="stat-sub">en desarrollo</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Ideas Pipeline</div>
+      <div class="stat-value purple">${ideas}</div>
+      <div class="stat-sub">en evaluaci\u00f3n</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Deployados Live</div>
+      <div class="stat-value green">${live}</div>
+      <div class="stat-sub">accesibles online</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Paper Trading</div>
+      <div class="stat-value amber">${paperTrading}</div>
+      <div class="stat-sub">validando edge</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Alto Potencial $</div>
+      <div class="stat-value green">${withRevenue}</div>
+      <div class="stat-sub">revenue path claro</div>
+    </div>
+  `;
+
+  document.getElementById('count-developed').textContent = developed;
+  document.getElementById('count-ideas').textContent = ideas;
+  document.getElementById('last-update').textContent = 'Actualizado: ' + new Date().toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function getTypeLabel(type) {
+  const map = { app: 'App', bot: 'Bot', tool: 'Tool', service: 'Servicio', content: 'Contenido', idea: 'Idea' };
+  return map[type] || type;
+}
+
+function getRevenueLabel(revenue) {
+  const map = { high: '$ Alto potencial', medium: '$ Medio', low: '$ Bajo', personal: 'Uso personal' };
+  return map[revenue] || '';
+}
+
+function renderDevelopedProjects(filter = 'all', search = '') {
+  const grid = document.getElementById('grid-developed');
+  const filtered = PROJECTS.filter(p => {
+    if (filter !== 'all' && p.type !== filter) return false;
+    if (search && !p.name.toLowerCase().includes(search) && !p.desc.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  grid.innerHTML = filtered.map(p => `
+    <div class="project-card" data-accent="${p.accent}" data-type="${p.type}" onclick="openModal('${p.id}')">
+      <div class="card-header">
+        <div class="card-title">${p.name}</div>
+        <span class="card-type type-${p.type}">${getTypeLabel(p.type)}</span>
+      </div>
+      <div class="card-desc">${p.desc}</div>
+      <div class="card-metrics">
+        ${p.metrics.map(m => `
+          <div class="metric">
+            <div class="metric-label">${m.label}</div>
+            <div class="metric-value ${m.class}">${m.value}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="card-stack">
+        ${p.stack.map(s => `<span class="stack-tag">${s}</span>`).join('')}
+      </div>
+      <div class="revenue-badge ${p.revenue}">${getRevenueLabel(p.revenue)}</div>
+      <div class="card-status">
+        <span class="status-dot ${p.status}"></span>
+        <span class="status-text">${p.statusText}</span>
+      </div>
+      <div class="next-step"><strong>Next:</strong> ${p.next}</div>
+      ${p.links.length ? `<div class="card-links">${p.links.map(l => `<a class="card-link" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`).join('')}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderIdeas(search = '') {
+  const grid = document.getElementById('grid-ideas');
+  const filtered = IDEAS.filter(i => {
+    if (search && !i.name.toLowerCase().includes(search) && !i.desc.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  grid.innerHTML = filtered.map(i => `
+    <div class="idea-card">
+      <div class="idea-header">
+        <span class="idea-fire">${'\uD83D\uDD25'.repeat(i.fire)}</span>
+        <span class="idea-title">${i.name}</span>
+      </div>
+      <div class="idea-desc">${i.desc}</div>
+      <div class="idea-tags">
+        ${i.tags.map(t => `<span class="idea-tag ${t.class}">${t.label}</span>`).join('')}
+        <span class="idea-tag" style="border-color:${i.revenue === 'high' ? 'var(--green)' : 'var(--amber)'};color:${i.revenue === 'high' ? 'var(--green)' : 'var(--amber)'}">${getRevenueLabel(i.revenue)}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// =====================================================
+// INTERACTION
+// =====================================================
+
+let currentTab = 'developed';
+let currentFilter = 'all';
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + tab));
+
+  // Show/hide type filters for ideas tab
+  const filterBtns = document.querySelectorAll('.filter-btn:not([data-filter="all"])');
+  filterBtns.forEach(btn => btn.style.display = tab === 'ideas' ? 'none' : '');
+}
+
+function setFilter(filter) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === filter));
+  renderDevelopedProjects(filter, document.getElementById('search').value.toLowerCase());
+}
+
+function filterProjects() {
+  const search = document.getElementById('search').value.toLowerCase();
+  renderDevelopedProjects(currentFilter, search);
+  renderIdeas(search);
+}
+
+function openModal(id) {
+  const p = PROJECTS.find(x => x.id === id);
+  if (!p || !p.details) return;
+
+  const modal = document.getElementById('modal');
+  document.getElementById('modal-content').innerHTML = `
+    <h2>${p.name}</h2>
+    <span class="card-type type-${p.type}" style="margin-top:0.3rem;display:inline-block">${getTypeLabel(p.type)}</span>
+    <div class="revenue-badge ${p.revenue}" style="margin-left:0.5rem">${getRevenueLabel(p.revenue)}</div>
+    <p style="color:var(--text-secondary);font-size:0.8rem;margin-top:0.8rem">${p.desc}</p>
+
+    <div class="modal-section">
+      <h3>M\u00e9tricas</h3>
+      <div class="card-metrics" style="margin-bottom:0">
+        ${p.metrics.map(m => `
+          <div class="metric">
+            <div class="metric-label">${m.label}</div>
+            <div class="metric-value ${m.class}">${m.value}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <h3>Features</h3>
+      <ul>${p.details.features.map(f => `<li>${f}</li>`).join('')}</ul>
+    </div>
+
+    <div class="modal-section">
+      <h3>Blockers / Pendientes</h3>
+      <ul>${p.details.blockers.map(b => `<li style="color:var(--amber)">${b}</li>`).join('')}</ul>
+    </div>
+
+    <div class="modal-section">
+      <h3>Stack</h3>
+      <div class="card-stack">${p.stack.map(s => `<span class="stack-tag">${s}</span>`).join('')}</div>
+    </div>
+
+    <div class="next-step" style="margin-top:1.2rem"><strong>Pr\u00f3ximo paso:</strong> ${p.next}</div>
+
+    ${p.links.length ? `<div class="card-links" style="margin-top:1rem">${p.links.map(l => `<a class="card-link" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`).join('')}</div>` : ''}
+  `;
+  modal.classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// =====================================================
+// INIT
+// =====================================================
+renderStats();
+renderDevelopedProjects();
+renderIdeas();
+</script>
+</body>
+</html>
