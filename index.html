@@ -298,6 +298,71 @@ body::before{
 .idea-tag.blocked{border-color:var(--red);color:var(--red);background:var(--red-dim)}
 .idea-tag.ready{border-color:var(--green);color:var(--green);background:var(--green-dim)}
 
+/* IDEA ACTIONS */
+.idea-actions{
+  display:flex;gap:6px;margin-top:0.7rem;padding-top:0.6rem;border-top:1px solid var(--border);
+}
+.idea-btn{
+  font-family:var(--font-mono);font-size:0.62rem;
+  padding:3px 10px;border-radius:6px;
+  border:1px solid var(--border);background:var(--bg-surface);
+  color:var(--text-secondary);cursor:pointer;transition:all .2s;
+}
+.idea-btn:hover{border-color:var(--border-hover);color:var(--text-primary)}
+.idea-btn.edit:hover{border-color:var(--cyan);color:var(--cyan)}
+.idea-btn.delete:hover{border-color:var(--red);color:var(--red)}
+.idea-btn.star{border-color:var(--amber-dim)}
+.idea-btn.star.active{border-color:var(--amber);color:var(--amber);background:var(--amber-dim)}
+
+/* EDIT MODAL */
+.edit-overlay{
+  display:none;position:fixed;inset:0;
+  background:#000c;backdrop-filter:blur(8px);
+  z-index:200;justify-content:center;align-items:center;padding:1rem;
+}
+.edit-overlay.active{display:flex}
+.edit-modal{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:16px;max-width:500px;width:100%;
+  padding:2rem;position:relative;
+}
+.edit-modal h2{font-family:var(--font-display);font-size:1.2rem;margin-bottom:1.2rem;color:var(--cyan)}
+.edit-modal label{
+  display:block;font-size:0.65rem;text-transform:uppercase;
+  letter-spacing:0.08em;color:var(--text-muted);margin-bottom:0.3rem;margin-top:0.8rem;
+}
+.edit-modal input,.edit-modal textarea,.edit-modal select{
+  width:100%;background:var(--bg-surface);border:1px solid var(--border);
+  border-radius:8px;padding:0.6rem 0.8rem;color:var(--text-primary);
+  font-family:var(--font-mono);font-size:0.8rem;outline:none;
+  transition:border-color .2s;
+}
+.edit-modal input:focus,.edit-modal textarea:focus{border-color:var(--cyan)}
+.edit-modal textarea{resize:vertical;min-height:60px}
+.edit-modal .btn-row{display:flex;gap:0.75rem;margin-top:1.2rem;justify-content:flex-end}
+.edit-modal .btn-save{
+  background:var(--cyan);color:#080b14;border:none;border-radius:8px;
+  padding:0.5rem 1.5rem;font-family:var(--font-display);font-weight:600;
+  font-size:0.85rem;cursor:pointer;transition:opacity .2s;
+}
+.edit-modal .btn-save:hover{opacity:.85}
+.edit-modal .btn-cancel{
+  background:none;border:1px solid var(--border);border-radius:8px;
+  padding:0.5rem 1.2rem;color:var(--text-secondary);font-family:var(--font-mono);
+  font-size:0.8rem;cursor:pointer;transition:all .2s;
+}
+.edit-modal .btn-cancel:hover{border-color:var(--text-muted);color:var(--text-primary)}
+
+/* TOP PICK badge */
+.idea-card.top-pick{border-color:var(--amber-dim)}
+.idea-card.top-pick::after{
+  content:'TOP';position:absolute;top:10px;right:12px;
+  font-family:var(--font-display);font-size:0.55rem;font-weight:700;
+  padding:2px 8px;border-radius:4px;letter-spacing:0.1em;
+  background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber);
+}
+.idea-card{position:relative}
+
 /* REVENUE BADGE */
 .revenue-badge{
   display:inline-flex;align-items:center;gap:4px;
@@ -512,6 +577,36 @@ body::before{
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">&times;</button>
     <div id="modal-content"></div>
+  </div>
+</div>
+
+<!-- EDIT IDEA MODAL -->
+<div class="edit-overlay" id="edit-overlay" onclick="if(event.target===this)closeEditModal()">
+  <div class="edit-modal">
+    <h2 id="edit-title">Editar Idea</h2>
+    <input type="hidden" id="edit-id">
+    <label>Nombre</label>
+    <input type="text" id="edit-name">
+    <label>Descripci&oacute;n</label>
+    <textarea id="edit-desc" rows="3"></textarea>
+    <label>Prioridad (1-3 fuegos)</label>
+    <select id="edit-fire">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+    </select>
+    <label>Revenue potencial</label>
+    <select id="edit-revenue">
+      <option value="high">Alto</option>
+      <option value="medium">Medio</option>
+      <option value="low">Bajo</option>
+    </select>
+    <label>Tags (separados por coma)</label>
+    <input type="text" id="edit-tags" placeholder="ej: Alta prioridad, Recurrente">
+    <div class="btn-row">
+      <button class="btn-cancel" onclick="closeEditModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveIdea()">Guardar</button>
+    </div>
   </div>
 </div>
 
@@ -990,6 +1085,48 @@ const IDEAS = [
     fire: 2,
     tags: [{ label: "Contacto abogado", class: "ready" }, { label: "Legal complejo", class: "" }],
     revenue: "medium"
+  },
+  {
+    id: "lead-gen-us",
+    name: "Lead Generation para negocios US",
+    desc: "Scraping Google Maps/Yelp + cold email para dentistas, plomeros, roofers US. Ticket alto ($500-1500/mes). Hermano cobra en USD.",
+    fire: 3,
+    tags: [{ label: "TOP PICK", class: "hot" }, { label: "Hermano EEUU", class: "ready" }, { label: "B2B ticket alto", class: "ready" }],
+    revenue: "high",
+    topPick: true
+  },
+  {
+    id: "email-mktg-ecommerce",
+    name: "Email Marketing Setup Ecommerce",
+    desc: "Configurar flujos Klaviyo/Mailchimp para Shopify (welcome, carrito abandonado, win-back). Setup $300-800 + gesti\u00f3n $200/mes.",
+    fire: 3,
+    tags: [{ label: "TOP PICK", class: "hot" }, { label: "Recurrente", class: "ready" }, { label: "Aprendible en 3 d\u00edas", class: "ready" }],
+    revenue: "high",
+    topPick: true
+  },
+  {
+    id: "chatbots-custom",
+    name: "Chatbots Custom para Negocios",
+    desc: "Configurar bots no-code (Tidio/Botpress/Voiceflow) para FAQs, turnos, leads. Setup $300-800 + $50-100/mes mantenimiento.",
+    fire: 2,
+    tags: [{ label: "No-code", class: "ready" }, { label: "B2B recurrente", class: "ready" }],
+    revenue: "high"
+  },
+  {
+    id: "transcripcion-podcasters",
+    name: "Transcripci\u00f3n + Resumen Podcasters",
+    desc: "Show notes, timestamps, quotes para redes, clips sugeridos. IA hace el 90%. $20-50/episodio o $99-199/mes.",
+    fire: 2,
+    tags: [{ label: "Automatizable", class: "ready" }, { label: "Recurrente", class: "ready" }],
+    revenue: "medium"
+  },
+  {
+    id: "clips-streamers",
+    name: "Clips para YouTubers/Streamers",
+    desc: "Extraer 5-10 clips virales de VODs largos para TikTok/Shorts/Reels. OpusClip + CapCut. $100-300/mes por canal.",
+    fire: 2,
+    tags: [{ label: "IA hace 80%", class: "ready" }, { label: "Recurrente", class: "ready" }],
+    revenue: "medium"
   }
 ];
 
@@ -1091,8 +1228,11 @@ function renderIdeas(search = '') {
     return true;
   });
 
-  grid.innerHTML = filtered.map(i => `
-    <div class="idea-card">
+  // Sort: topPick first, then by fire desc
+  filtered.sort((a, b) => (b.topPick ? 1 : 0) - (a.topPick ? 1 : 0) || b.fire - a.fire);
+
+  grid.innerHTML = filtered.map((i, idx) => `
+    <div class="idea-card${i.topPick ? ' top-pick' : ''}" data-idea-id="${i.id}">
       <div class="idea-header">
         <span class="idea-fire">${'\uD83D\uDD25'.repeat(i.fire)}</span>
         <span class="idea-title">${i.name}</span>
@@ -1101,6 +1241,10 @@ function renderIdeas(search = '') {
       <div class="idea-tags">
         ${i.tags.map(t => `<span class="idea-tag ${t.class}">${t.label}</span>`).join('')}
         <span class="idea-tag" style="border-color:${i.revenue === 'high' ? 'var(--green)' : 'var(--amber)'};color:${i.revenue === 'high' ? 'var(--green)' : 'var(--amber)'}">${getRevenueLabel(i.revenue)}</span>
+      </div>
+      <div class="idea-actions">
+        <button class="idea-btn edit" onclick="editIdea('${i.id}')">Editar</button>
+        <button class="idea-btn delete" onclick="deleteIdea('${i.id}')">Borrar</button>
       </div>
     </div>
   `).join('');
@@ -1435,6 +1579,64 @@ function renderPredictionsPanel(panel) {
       </a>
     </div>`;
 }
+
+// =====================================================
+// IDEA CRUD
+// =====================================================
+
+function editIdea(id) {
+  const idea = IDEAS.find(i => i.id === id);
+  if (!idea) return;
+  document.getElementById('edit-id').value = id;
+  document.getElementById('edit-name').value = idea.name;
+  document.getElementById('edit-desc').value = idea.desc;
+  document.getElementById('edit-fire').value = idea.fire;
+  document.getElementById('edit-revenue').value = idea.revenue;
+  document.getElementById('edit-tags').value = idea.tags.map(t => t.label).join(', ');
+  document.getElementById('edit-title').textContent = 'Editar: ' + idea.name;
+  document.getElementById('edit-overlay').classList.add('active');
+}
+
+function closeEditModal() {
+  document.getElementById('edit-overlay').classList.remove('active');
+}
+
+function saveIdea() {
+  const id = document.getElementById('edit-id').value;
+  const idx = IDEAS.findIndex(i => i.id === id);
+  if (idx === -1) return;
+
+  IDEAS[idx].name = document.getElementById('edit-name').value;
+  IDEAS[idx].desc = document.getElementById('edit-desc').value;
+  IDEAS[idx].fire = parseInt(document.getElementById('edit-fire').value);
+  IDEAS[idx].revenue = document.getElementById('edit-revenue').value;
+
+  const tagsRaw = document.getElementById('edit-tags').value;
+  IDEAS[idx].tags = tagsRaw.split(',').map(t => t.trim()).filter(Boolean).map(label => {
+    const lower = label.toLowerCase();
+    let cls = '';
+    if (lower.includes('alta') || lower.includes('top') || lower.includes('ev') || lower.includes('innovador')) cls = 'hot';
+    else if (lower.includes('bloqueado') || lower.includes('complejo')) cls = 'blocked';
+    else if (lower.includes('ready') || lower.includes('cliente') || lower.includes('recurrente') || lower.includes('hermano') || lower.includes('contacto') || lower.includes('legal:') || lower.includes('automatiz') || lower.includes('no-code') || lower.includes('aprendible') || lower.includes('b2b') || lower.includes('ia hace') || lower.includes('sin equiv') || lower.includes('único')) cls = 'ready';
+    return { label, class: cls };
+  });
+
+  closeEditModal();
+  renderIdeas(document.getElementById('search').value.toLowerCase());
+  renderStats();
+}
+
+function deleteIdea(id) {
+  const idea = IDEAS.find(i => i.id === id);
+  if (!idea) return;
+  if (!confirm('Borrar "' + idea.name + '"?')) return;
+  const idx = IDEAS.findIndex(i => i.id === id);
+  IDEAS.splice(idx, 1);
+  renderIdeas(document.getElementById('search').value.toLowerCase());
+  renderStats();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEditModal(); });
 
 // =====================================================
 // INIT
