@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crypto Copy-Trade | Multi-Chain Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#080b14;
+  --bg-card:#0d1220;
+  --bg-card-hover:#111829;
+  --bg-surface:#151d30;
+  --border:#1a2540;
+  --border-hover:#253560;
+  --text-primary:#e8ecf4;
+  --text-secondary:#7b8bb2;
+  --text-muted:#4a5a80;
+  --cyan:#00d4ff;
+  --cyan-dim:#00d4ff30;
+  --green:#00e676;
+  --green-dim:#00e67630;
+  --amber:#ffab00;
+  --amber-dim:#ffab0030;
+  --red:#ff3d5a;
+  --red-dim:#ff3d5a30;
+  --purple:#b388ff;
+  --purple-dim:#b388ff30;
+  --font-display:'Chakra Petch',sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-mono);
+  background:var(--bg-primary);
+  color:var(--text-primary);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;top:0;left:0;right:0;bottom:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 0%, #00d4ff08 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, #b388ff06 0%, transparent 60%);
+  pointer-events:none;z-index:0;
+}
+
+.container{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:1.5rem 2rem}
+
+/* HEADER */
+.header-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem}
+.brand{display:flex;align-items:center;gap:0.75rem}
+.brand-icon{
+  width:40px;height:40px;background:linear-gradient(135deg,var(--cyan),#0066ff);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:700;font-size:1.1rem;color:#fff;
+  box-shadow:0 0 20px #00d4ff20;
+}
+.brand h1{font-family:var(--font-display);font-weight:700;font-size:1.3rem;letter-spacing:0.03em}
+.brand h1 span{color:var(--cyan)}
+.header-meta{display:flex;gap:1rem;align-items:center;font-size:0.7rem;color:var(--text-muted)}
+.header-meta a{color:var(--cyan);text-decoration:none;font-size:0.7rem}
+.header-meta a:hover{text-decoration:underline}
+.pulse{display:inline-block;width:8px;height:8px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 #00e67660}50%{opacity:.7;box-shadow:0 0 0 6px #00e67600}}
+.btn-refresh{
+  background:var(--bg-card);border:1px solid var(--border);border-radius:8px;
+  padding:0.4rem 1rem;color:var(--cyan);font-family:var(--font-mono);font-size:0.72rem;
+  cursor:pointer;transition:all .2s;
+}
+.btn-refresh:hover{border-color:var(--cyan);background:var(--cyan-dim)}
+.data-tag{font-size:0.65rem;color:var(--text-muted);padding:3px 8px;background:var(--bg-surface);border-radius:4px}
+
+/* TABS */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:1.5rem;overflow-x:auto}
+.tab{
+  font-family:var(--font-display);font-weight:600;font-size:0.78rem;
+  letter-spacing:0.03em;padding:0.7rem 1.2rem;
+  background:none;border:none;color:var(--text-muted);
+  cursor:pointer;position:relative;transition:color .2s;white-space:nowrap;
+  display:flex;align-items:center;gap:0.5rem;
+}
+.tab:hover{color:var(--text-secondary)}
+.tab.active{color:var(--cyan)}
+.tab.active::after{
+  content:'';position:absolute;bottom:-1px;left:0;right:0;
+  height:2px;background:var(--cyan);box-shadow:0 0 10px var(--cyan);
+}
+.status-dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.status-dot.online{background:var(--green);box-shadow:0 0 6px var(--green)}
+.status-dot.offline{background:var(--red);box-shadow:0 0 6px var(--red)}
+.status-dot.waiting{background:var(--amber);box-shadow:0 0 6px var(--amber)}
+
+/* OVERVIEW */
+.overview-stats{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:0.75rem;margin-bottom:1.5rem;
+}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1rem;transition:all .2s}
+.stat-card:hover{border-color:var(--border-hover);transform:translateY(-1px)}
+.stat-label{font-size:0.6rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:0.2rem}
+.stat-value{font-family:var(--font-display);font-size:1.3rem;font-weight:700}
+
+.section-title{font-family:var(--font-display);font-size:0.9rem;font-weight:700;margin-bottom:0.75rem;margin-top:0.5rem}
+
+/* CHAIN CARDS */
+.chain-cards{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:1rem;margin-bottom:1.5rem;
+}
+.chain-card{
+  background:var(--bg-card);border:1px solid var(--border);border-radius:12px;
+  padding:1.2rem;cursor:pointer;transition:all .3s;
+}
+.chain-card:hover{border-color:var(--border-hover);transform:translateY(-2px);box-shadow:0 8px 30px #00000040}
+.chain-card-header{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.8rem}
+.chain-card-name{font-family:var(--font-display);font-weight:700;font-size:1rem}
+.chain-card-status{font-size:0.65rem;color:var(--text-muted);margin-left:auto}
+.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem}
+.mini-metric{background:var(--bg-surface);border-radius:8px;padding:0.5rem 0.7rem}
+.mini-metric-label{font-size:0.58rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em}
+.mini-metric-value{font-family:var(--font-display);font-size:0.9rem;font-weight:600;margin-top:0.1rem}
+
+/* TABLES */
+.table-wrap{overflow-x:auto;margin-bottom:1.5rem}
+table{width:100%;border-collapse:collapse;font-size:0.72rem}
+th{
+  text-align:left;padding:0.5rem 0.7rem;font-size:0.58rem;text-transform:uppercase;
+  letter-spacing:0.08em;color:var(--text-muted);border-bottom:1px solid var(--border);font-weight:600;
+}
+td{padding:0.5rem 0.7rem;border-bottom:1px solid var(--border);color:var(--text-secondary)}
+tr:hover td{background:var(--bg-card-hover)}
+
+.loading{color:var(--text-muted);text-align:center;padding:3rem;font-size:0.8rem}
+
+.footer{
+  text-align:center;padding:1.5rem;font-size:0.6rem;color:var(--text-muted);
+  border-top:1px solid var(--border);margin-top:2rem;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .container{padding:1rem}
+  .chain-cards{grid-template-columns:1fr}
+  .overview-stats{grid-template-columns:repeat(2,1fr)}
+  .mini-grid{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .overview-stats{grid-template-columns:1fr}
+}
+
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg-primary)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text-muted)}
+
+@keyframes fadeInUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+.chain-card,.stat-card{animation:fadeInUp .3s ease both}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header-row">
+    <div class="brand">
+      <div class="brand-icon">CT</div>
+      <h1>CRYPTO <span>COPY-TRADE</span></h1>
+    </div>
+    <div class="header-meta">
+      <a href="index.html">&larr; Volver al Command Center</a>
+      <span><span class="pulse" id="main-pulse"></span> <span id="live-label">Conectando...</span></span>
+      <button class="btn-refresh" onclick="refreshAll()">Actualizar</button>
+      <span class="data-tag" id="data-tag">...</span>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tab="overview" onclick="switchTab('overview')">Overview</button>
+    <button class="tab" data-tab="crypto" onclick="switchTab('crypto')"><span class="status-dot waiting" id="dot-crypto"></span> Solana</button>
+    <button class="tab" data-tab="eth" onclick="switchTab('eth')"><span class="status-dot waiting" id="dot-eth"></span> Ethereum</button>
+    <button class="tab" data-tab="base" onclick="switchTab('base')"><span class="status-dot waiting" id="dot-base"></span> Base</button>
+    <button class="tab" data-tab="bsc" onclick="switchTab('bsc')"><span class="status-dot waiting" id="dot-bsc"></span> BSC</button>
+  </div>
+
+  <div id="content"><div class="loading">Cargando datos...</div></div>
+</div>
+
+<div class="footer">
+  Multi-chain copy-trade paper trading &mdash; Solana $200 | ETH $2,000 | Base $200 | BSC $200 &mdash; Trade size: 1% bankroll
+</div>
+
+<script>
+const API = 'http://localhost:5001';
+const CHAINS = [
+  { id: 'crypto', name: 'Solana', symbol: 'SOL', capital: 200 },
+  { id: 'eth', name: 'Ethereum', symbol: 'ETH', capital: 2000 },
+  { id: 'base', name: 'Base', symbol: 'ETH', capital: 200 },
+  { id: 'bsc', name: 'BSC', symbol: 'BNB', capital: 200 }
+];
+
+let data = {};
+let currentTab = 'overview';
+let isLive = false;
+
+function pnlColor(v) { return v >= 0 ? 'var(--green)' : 'var(--red)'; }
+function fmtPct(v) { return (v||0).toFixed(1) + '%'; }
+function fmtUsd(v) { return '$' + (v||0).toFixed(2); }
+function shortAddr(a) { return a ? a.slice(0,6)+'...'+a.slice(-4) : '?'; }
+
+async function fetchChain(chain) {
+  try {
+    const [ping, stats, open, closed, wallets] = await Promise.all([
+      fetch(API+'/api/'+chain.id+'/ping').then(r=>r.json()).catch(()=>({ok:false})),
+      fetch(API+'/api/'+chain.id+'/stats').then(r=>r.json()).catch(()=>null),
+      fetch(API+'/api/'+chain.id+'/trades/open').then(r=>r.json()).catch(()=>[]),
+      fetch(API+'/api/'+chain.id+'/trades/closed?sort=time&order=desc').then(r=>r.json()).catch(()=>[]),
+      fetch(API+'/api/'+chain.id+'/wallets').then(r=>r.json()).catch(()=>[])
+    ]);
+    data[chain.id] = { online: ping.ok, stats, open, closed, wallets };
+  } catch(e) {
+    data[chain.id] = { online: false, stats: null, open: [], closed: [], wallets: [] };
+  }
+}
+
+async function refreshAll() {
+  document.getElementById('data-tag').textContent = 'Actualizando...';
+  try {
+    await Promise.all(CHAINS.map(fetchChain));
+    isLive = CHAINS.some(c => data[c.id]?.online);
+  } catch(e) {
+    isLive = false;
+  }
+
+  CHAINS.forEach(c => {
+    const dot = document.getElementById('dot-'+c.id);
+    if(dot) dot.className = 'status-dot ' + (data[c.id]?.online ? 'online' : 'offline');
+  });
+
+  const mp = document.getElementById('main-pulse');
+  const ll = document.getElementById('live-label');
+  if (isLive) {
+    mp.style.background = 'var(--green)';
+    const total = CHAINS.reduce((s,c) => s + (data[c.id]?.online?1:0), 0);
+    ll.textContent = total + '/4 bots online';
+    const totalTrades = CHAINS.reduce((s,c) => {
+      const st = data[c.id]?.stats;
+      return s + (st ? (st.closed_by_tp||0)+(st.closed_by_sl||0)+(st.closed_by_ws||0)+(st.open_trades||0) : 0);
+    }, 0);
+    document.getElementById('data-tag').textContent = 'Datos live (' + totalTrades + ' trades)';
+  } else {
+    mp.style.background = 'var(--red)';
+    ll.textContent = 'Bots offline';
+    document.getElementById('data-tag').textContent = 'Sin conexion a localhost:5001';
+  }
+
+  render();
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  render();
+}
+
+function render() {
+  const panel = document.getElementById('content');
+  if (currentTab === 'overview') renderOverview(panel);
+  else { const c = CHAINS.find(x=>x.id===currentTab); if(c) renderChain(panel, c); }
+}
+
+function renderOverview(panel) {
+  let tb=0, tp=0, to=0, tc=0, tu=0;
+  CHAINS.forEach(c => {
+    const s = data[c.id]?.stats;
+    if(s) {
+      tb += s.bankroll||0;
+      tp += s.pnl_usd||0;
+      to += s.open_trades||0;
+      tc += (s.closed_by_tp||0)+(s.closed_by_sl||0)+(s.closed_by_ws||0);
+      tu += s.unrealized_pnl_usd||0;
+    }
+  });
+  const roi = tb > 0 ? (tp / 2600 * 100) : 0;
+
+  let h = '<div class="overview-stats">';
+  h += stat('Bankroll Total', fmtUsd(tb), 'var(--cyan)');
+  h += stat('Capital Inicial', '$2,600', 'var(--text-secondary)');
+  h += stat('PnL Realizado', fmtUsd(tp), pnlColor(tp));
+  h += stat('PnL No Realizado', fmtUsd(tu), pnlColor(tu));
+  h += stat('ROI Total', roi.toFixed(1)+'%', pnlColor(roi));
+  h += stat('Trades Abiertos', to, 'var(--text-primary)');
+  h += stat('Trades Cerrados', tc, 'var(--text-primary)');
+  h += stat('Config', 'SL -15% / TP +50%', 'var(--text-secondary)');
+  h += '</div>';
+
+  h += '<div class="section-title">Chains</div><div class="chain-cards">';
+  CHAINS.forEach(c => {
+    const d2 = data[c.id], s = d2?.stats, on = d2?.online;
+    const closed = (s?.closed_by_tp||0)+(s?.closed_by_sl||0)+(s?.closed_by_ws||0);
+    h += '<div class="chain-card" onclick="switchTab(\''+c.id+'\')">';
+    h += '<div class="chain-card-header"><span class="status-dot '+(on?'online':'offline')+'"></span>';
+    h += '<span class="chain-card-name">'+c.name+'</span>';
+    h += '<span class="chain-card-status">'+(on?'Online':'Offline')+' &mdash; $'+c.capital+' paper</span></div>';
+    if(s) {
+      h += '<div class="mini-grid">';
+      h += mini('Bankroll', fmtUsd(s.bankroll||0), 'var(--cyan)');
+      h += mini('ROI', fmtPct(s.roi||0), pnlColor(s.roi||0));
+      h += mini('Open', s.open_trades||0, 'var(--text-primary)');
+      h += mini('Cerrados', closed, 'var(--text-primary)');
+      h += mini('Wallets', s.active_wallets||0, 'var(--text-primary)');
+      h += mini('Win Rate', s.wins+s.losses>0 ? ((s.wins/(s.wins+s.losses))*100).toFixed(0)+'%' : '-', s.wins>s.losses?'var(--green)':'var(--amber)');
+      h += '</div>';
+    } else {
+      h += '<div style="color:var(--text-muted);font-size:0.75rem;padding:0.5rem 0">Sin datos &mdash; bot offline</div>';
+    }
+    h += '</div>';
+  });
+  h += '</div>';
+  panel.innerHTML = h;
+}
+
+function renderChain(panel, chain) {
+  const d2 = data[chain.id];
+  if(!d2||!d2.stats) { panel.innerHTML = '<div class="loading">'+chain.name+' bot offline &mdash; asegurate de que est\u00e9 corriendo en localhost</div>'; return; }
+  const s = d2.stats;
+  const closed = (s.closed_by_tp||0)+(s.closed_by_sl||0)+(s.closed_by_ws||0);
+  const wr = s.wins+s.losses>0 ? ((s.wins/(s.wins+s.losses))*100).toFixed(1) : '0';
+
+  let h = '<div class="overview-stats">';
+  h += stat('Bankroll', fmtUsd(s.bankroll||0), 'var(--cyan)');
+  h += stat('ROI', fmtPct(s.roi||0), pnlColor(s.roi||0));
+  h += stat('PnL USD', fmtUsd(s.pnl_usd||0), pnlColor(s.pnl_usd||0));
+  h += stat('Unrealized', fmtUsd(s.unrealized_pnl_usd||0), pnlColor(s.unrealized_pnl_usd||0));
+  h += stat('Trade Size', fmtUsd(s.trade_size||0), 'var(--text-primary)');
+  h += stat('Capital en Open', fmtUsd(s.capital_abierto||0), 'var(--text-secondary)');
+  h += stat('Open Trades', s.open_trades||0, 'var(--text-primary)');
+  h += stat('Wallets', s.active_wallets||0, 'var(--text-primary)');
+  h += stat('Win / Loss', (s.wins||0)+'W / '+(s.losses||0)+'L', 'var(--text-primary)');
+  h += stat('Win Rate', wr+'%', parseFloat(wr)>50?'var(--green)':'var(--amber)');
+  h += stat('Config', 'SL '+s.stop_loss+'% / TP +'+s.take_profit+'%', 'var(--text-secondary)');
+  h += stat('EV/Trade', fmtPct(s.ev_per_trade_pct||0), pnlColor(s.ev_per_trade_pct||0));
+  h += stat('Mejor Trade', '+'+fmtPct(s.best_trade_pct||0), 'var(--green)');
+  h += stat('Peor Trade', fmtPct(s.worst_trade_pct||0), 'var(--red)');
+  h += stat('Take Profit', s.closed_by_tp||0, 'var(--green)');
+  h += stat('Stop Loss', s.closed_by_sl||0, 'var(--red)');
+  h += stat('Wallet Sold', s.closed_by_ws||0, 'var(--amber)');
+  h += '</div>';
+
+  // Open trades
+  if(d2.open && d2.open.length) {
+    h += '<div class="section-title">Trades Abiertos ('+d2.open.length+')</div>';
+    h += '<div class="table-wrap"><table><thead><tr><th>Token</th><th>Entry</th><th>Current</th><th>PnL%</th><th>Amount</th><th>Wallet</th></tr></thead><tbody>';
+    d2.open.forEach(t => {
+      const p = t.pnl_percent||0;
+      h += '<tr><td style="color:var(--text-primary);font-weight:600">'+
+        (t.token_symbol||'?')+'</td><td>$'+(t.entry_price||0).toFixed(8)+'</td><td>$'+(t.current_price||0).toFixed(8)+
+        '</td><td style="color:'+pnlColor(p)+'">'+p.toFixed(1)+'%</td><td>$'+(t.simulated_amount||0).toFixed(2)+
+        '</td><td style="font-size:0.6rem;color:var(--text-muted)">'+shortAddr(t.wallet_address)+'</td></tr>';
+    });
+    h += '</tbody></table></div>';
+  }
+
+  // Closed trades
+  if(d2.closed && d2.closed.length) {
+    h += '<div class="section-title">Trades Cerrados ('+d2.closed.length+' total, \u00faltimos 20)</div>';
+    h += '<div class="table-wrap"><table><thead><tr><th>Token</th><th>PnL%</th><th>Amount</th><th>Motivo</th><th>Fecha</th></tr></thead><tbody>';
+    d2.closed.slice(0,20).forEach(t => {
+      const p = t.pnl_percent||0;
+      h += '<tr><td style="color:var(--text-primary);font-weight:600">'+(t.token_symbol||'?')+
+        '</td><td style="color:'+pnlColor(p)+'">'+p.toFixed(1)+'%</td><td>$'+(t.simulated_amount||0).toFixed(2)+
+        '</td><td>'+(t.close_reason||'-')+'</td><td style="font-size:0.65rem">'+(t.exit_time||'-').replace('T',' ').slice(0,19)+'</td></tr>';
+    });
+    h += '</tbody></table></div>';
+  }
+
+  // Wallets
+  if(d2.wallets && d2.wallets.length) {
+    h += '<div class="section-title">Wallets Activas ('+d2.wallets.length+')</div>';
+    h += '<div class="table-wrap"><table><thead><tr><th>Address</th><th>Win Rate</th></tr></thead><tbody>';
+    d2.wallets.forEach(w => {
+      h += '<tr><td style="color:var(--cyan);font-size:0.65rem">'+shortAddr(w.address)+
+        '</td><td>'+((w.win_rate||0)*100).toFixed(0)+'%</td></tr>';
+    });
+    h += '</tbody></table></div>';
+  }
+
+  panel.innerHTML = h;
+}
+
+function stat(label, value, color) {
+  return '<div class="stat-card"><div class="stat-label">'+label+'</div><div class="stat-value" style="color:'+color+'">'+value+'</div></div>';
+}
+function mini(label, value, color) {
+  return '<div class="mini-metric"><div class="mini-metric-label">'+label+'</div><div class="mini-metric-value" style="color:'+color+'">'+value+'</div></div>';
+}
+
+// Init
+refreshAll();
+setInterval(refreshAll, 60000);
+</script>
+</body>
+</html>
