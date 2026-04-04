@@ -395,6 +395,51 @@ body::before{
   line-height:1.4;
 }
 .next-step strong{color:var(--cyan);font-weight:600}
+
+/* DASHBOARD TAB */
+.dash-subtabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:1.5rem;overflow-x:auto}
+.dash-subtab{
+  font-family:var(--font-display);font-weight:600;font-size:0.75rem;
+  letter-spacing:0.03em;padding:0.6rem 1.2rem;
+  background:none;border:none;color:var(--text-muted);
+  cursor:pointer;position:relative;transition:color .2s;white-space:nowrap;
+  display:flex;align-items:center;gap:0.5rem;
+}
+.dash-subtab:hover{color:var(--text-secondary)}
+.dash-subtab.active{color:var(--cyan)}
+.dash-subtab.active::after{
+  content:'';position:absolute;bottom:-1px;left:0;right:0;
+  height:2px;background:var(--cyan);box-shadow:0 0 10px var(--cyan);
+}
+.dash-status-dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.dash-status-dot.online{background:var(--green);box-shadow:0 0 6px var(--green)}
+.dash-status-dot.offline{background:var(--red);box-shadow:0 0 6px var(--red)}
+.dash-stats{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:0.75rem;margin-bottom:1.5rem;
+}
+.dash-stat{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1rem}
+.dash-stat-label{font-size:0.6rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:0.2rem}
+.dash-stat-value{font-family:var(--font-display);font-size:1.2rem;font-weight:700}
+.dash-table-wrap{overflow-x:auto;margin-bottom:1.5rem}
+.dash-table{width:100%;border-collapse:collapse;font-size:0.72rem}
+.dash-table th{
+  text-align:left;padding:0.5rem 0.7rem;font-size:0.6rem;text-transform:uppercase;
+  letter-spacing:0.08em;color:var(--text-muted);border-bottom:1px solid var(--border);font-weight:600;
+}
+.dash-table td{padding:0.5rem 0.7rem;border-bottom:1px solid var(--border);color:var(--text-secondary)}
+.dash-table tr:hover td{background:var(--bg-card-hover)}
+.dash-section-title{font-family:var(--font-display);font-size:0.85rem;font-weight:700;margin-bottom:0.75rem}
+.overview-chains{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:1rem;margin-bottom:1.5rem;
+}
+.overview-chain-card{
+  background:var(--bg-card);border:1px solid var(--border);border-radius:12px;
+  padding:1.2rem;cursor:pointer;transition:all .3s;
+}
+.overview-chain-card:hover{border-color:var(--border-hover);transform:translateY(-2px)}
+.dash-loading{color:var(--text-muted);text-align:center;padding:3rem;font-size:0.8rem}
 </style>
 </head>
 <body>
@@ -421,6 +466,9 @@ body::before{
     <button class="tab" data-tab="ideas" onclick="switchTab('ideas')">
       Ideas / Fase Inicial <span class="count" id="count-ideas">0</span>
     </button>
+    <button class="tab" data-tab="dashboards" onclick="switchTab('dashboards')">
+      Dashboards <span class="count" id="count-dashboards">5</span>
+    </button>
   </div>
 
   <div class="filters">
@@ -440,6 +488,17 @@ body::before{
   </div>
   <div class="tab-content" id="tab-ideas">
     <div class="projects-grid" id="grid-ideas"></div>
+  </div>
+  <div class="tab-content" id="tab-dashboards">
+    <div class="dash-subtabs">
+      <button class="dash-subtab active" data-dashtab="overview" onclick="switchDashTab('overview')">Overview</button>
+      <button class="dash-subtab" data-dashtab="crypto" onclick="switchDashTab('crypto')"><span class="dash-status-dot offline" id="dash-dot-crypto"></span> Solana</button>
+      <button class="dash-subtab" data-dashtab="eth" onclick="switchDashTab('eth')"><span class="dash-status-dot offline" id="dash-dot-eth"></span> Ethereum</button>
+      <button class="dash-subtab" data-dashtab="base" onclick="switchDashTab('base')"><span class="dash-status-dot offline" id="dash-dot-base"></span> Base</button>
+      <button class="dash-subtab" data-dashtab="bsc" onclick="switchDashTab('bsc')"><span class="dash-status-dot offline" id="dash-dot-bsc"></span> BSC</button>
+      <button class="dash-subtab" data-dashtab="tenis" onclick="switchDashTab('tenis')"><span class="dash-status-dot offline" id="dash-dot-tenis"></span> Tenis EV</button>
+    </div>
+    <div id="dash-content"><div class="dash-loading">Cargando dashboards...</div></div>
   </div>
 </div>
 
@@ -789,29 +848,31 @@ const PROJECTS = [
     name: "Crypto Copy-Trade",
     type: "bot",
     accent: "green",
-    desc: "Bot paper trading que copia wallets rentables de Solana. Detecta smart money, copia swaps, gestiona SL/TP autom\u00e1tico.",
-    stack: ["Python", "Helius", "DexScreener", "CoinGecko", "Telegram"],
+    desc: "Copy-trade multi-chain: Solana, Ethereum, Base, BSC. Detecta smart money, copia swaps, gestiona SL/TP. 4 bots independientes.",
+    stack: ["Python", "Helius", "Etherscan V2", "NodeReal", "DexScreener", "Telegram"],
     status: "paper",
-    statusText: "Paper trading \u2014 ~90 wallets encontradas",
+    statusText: "Paper trading \u2014 4 cadenas activas",
     metrics: [
-      { label: "Wallets", value: "~90", class: "info" },
-      { label: "Tests", value: "33/33", class: "positive" },
-      { label: "Capital Paper", value: "$200", class: "" },
-      { label: "Max/Trade", value: "$40", class: "" }
+      { label: "Cadenas", value: "4", class: "info" },
+      { label: "Capital Total", value: "$2,600", class: "" },
+      { label: "Trade Size", value: "1% bankroll", class: "" },
+      { label: "Tests", value: "32+/chain", class: "positive" }
     ],
     revenue: "medium",
     revenueText: "Si valida edge \u2192 capital real",
-    next: "100+ trades cerrados con PnL+, WR>50%, Sharpe>1 antes de real.",
+    next: "Acumular 100+ trades cerrados por chain con PnL+, WR>50%.",
     links: [],
     details: {
       features: [
-        "Discovery: escanea Solana, rankea wallets por PnL/WR",
-        "Monitor: detecta swaps nuevos cada 2 min",
-        "Executor: paper trading SL -15% / TP +50%",
-        "Telegram: resumen diario 21:00 AR",
-        "APIs gratis: Helius, DexScreener, CoinGecko"
+        "4 cadenas: Solana ($200), Ethereum ($2,000), Base ($200), BSC ($200)",
+        "Discovery autom\u00e1tico: smart money wallets por chain",
+        "Trade sizing: 1% del bankroll (exponencial)",
+        "SL -15% / TP +50% autom\u00e1tico",
+        "Dashboard unificado multi-chain en puerto 5001",
+        "Telegram: resumen diario por chain",
+        "APIs: Helius (SOL), Etherscan V2 (ETH/Base), NodeReal (BSC), DexScreener, CoinGecko"
       ],
-      blockers: ["Necesita 100+ trades cerrados", "Jupiter Price API v2 requiere key"]
+      blockers: ["Necesita 100+ trades cerrados por chain", "ETH/Base/BSC discovery reci\u00e9n arranc\u00f3"]
     }
   }
 ];
@@ -1048,9 +1109,12 @@ function switchTab(tab) {
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + tab));
 
-  // Show/hide type filters for ideas tab
+  const filtersEl = document.querySelector('.filters');
+  filtersEl.style.display = tab === 'dashboards' ? 'none' : '';
   const filterBtns = document.querySelectorAll('.filter-btn:not([data-filter="all"])');
-  filterBtns.forEach(btn => btn.style.display = tab === 'ideas' ? 'none' : '');
+  filterBtns.forEach(btn => btn.style.display = (tab === 'ideas' || tab === 'dashboards') ? 'none' : '');
+
+  if (tab === 'dashboards') loadAllDashboards();
 }
 
 function setFilter(filter) {
@@ -1115,6 +1179,201 @@ function closeModal() {
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// =====================================================
+// DASHBOARDS - LIVE DATA
+// =====================================================
+const CRYPTO_API = 'http://localhost:5001';
+const CHAINS = [
+  { id: 'crypto', name: 'Solana', symbol: 'SOL' },
+  { id: 'eth', name: 'Ethereum', symbol: 'ETH' },
+  { id: 'base', name: 'Base', symbol: 'ETH' },
+  { id: 'bsc', name: 'BSC', symbol: 'BNB' }
+];
+let chainData = {};
+let currentDashTab = 'overview';
+
+async function fetchChainData(chain) {
+  try {
+    const [ping, stats, open, closed, wallets] = await Promise.all([
+      fetch(`${CRYPTO_API}/api/${chain.id}/ping`).then(r=>r.json()).catch(()=>({ok:false})),
+      fetch(`${CRYPTO_API}/api/${chain.id}/stats`).then(r=>r.json()).catch(()=>null),
+      fetch(`${CRYPTO_API}/api/${chain.id}/trades/open`).then(r=>r.json()).catch(()=>[]),
+      fetch(`${CRYPTO_API}/api/${chain.id}/trades/closed?sort=time&order=desc`).then(r=>r.json()).catch(()=>[]),
+      fetch(`${CRYPTO_API}/api/${chain.id}/wallets`).then(r=>r.json()).catch(()=>[])
+    ]);
+    chainData[chain.id] = { online: ping.ok, stats, open, closed, wallets };
+  } catch(e) {
+    chainData[chain.id] = { online: false, stats: null, open: [], closed: [], wallets: [] };
+  }
+}
+
+async function loadAllDashboards() {
+  await Promise.all(CHAINS.map(fetchChainData));
+  try {
+    const [status, historial, bankroll] = await Promise.all([
+      fetch(`${CRYPTO_API}/api/tenis/status`).then(r=>r.json()).catch(()=>({online:false})),
+      fetch(`${CRYPTO_API}/api/tenis/historial`).then(r=>r.json()).catch(()=>[]),
+      fetch(`${CRYPTO_API}/api/tenis/bankroll`).then(r=>r.json()).catch(()=>({bankroll:0}))
+    ]);
+    chainData.tenis = { online: status.online, stats: status.stats, historial, bankroll: bankroll.bankroll || 0 };
+  } catch(e) {
+    chainData.tenis = { online: false, stats: null, historial: [], bankroll: 0 };
+  }
+  renderDashContent();
+}
+
+function renderDashContent() {
+  CHAINS.forEach(c => {
+    const dot = document.getElementById(`dash-dot-${c.id}`);
+    if(dot) dot.className = `dash-status-dot ${chainData[c.id]?.online ? 'online' : 'offline'}`;
+  });
+  const td = document.getElementById('dash-dot-tenis');
+  if(td) td.className = `dash-status-dot ${chainData.tenis?.online ? 'online' : 'offline'}`;
+  renderDashPanel();
+}
+
+function switchDashTab(tab) {
+  currentDashTab = tab;
+  document.querySelectorAll('.dash-subtab').forEach(t => t.classList.toggle('active', t.dataset.dashtab === tab));
+  renderDashPanel();
+}
+
+function renderDashPanel() {
+  const panel = document.getElementById('dash-content');
+  if (currentDashTab === 'overview') renderOverview(panel);
+  else if (currentDashTab === 'tenis') renderTenisPanel(panel);
+  else { const c = CHAINS.find(x => x.id === currentDashTab); if(c) renderChainPanel(panel, c); }
+}
+
+function pnlColor(v) { return v >= 0 ? 'var(--green)' : 'var(--red)'; }
+
+function renderOverview(panel) {
+  let totalBankroll=0, totalPnl=0, totalOpen=0, totalClosed=0;
+  CHAINS.forEach(c => {
+    const s = chainData[c.id]?.stats;
+    if(s) { totalBankroll += s.bankroll||0; totalPnl += s.pnl_usd||0; totalOpen += s.open_trades||0; totalClosed += (s.closed_by_tp||0)+(s.closed_by_sl||0)+(s.closed_by_ws||0); }
+  });
+
+  let html = `
+    <div class="dash-stats">
+      <div class="dash-stat"><div class="dash-stat-label">Bankroll Total</div><div class="dash-stat-value" style="color:var(--cyan)">$${totalBankroll.toFixed(0)}</div></div>
+      <div class="dash-stat"><div class="dash-stat-label">PnL Realizado</div><div class="dash-stat-value" style="color:${pnlColor(totalPnl)}">$${totalPnl.toFixed(2)}</div></div>
+      <div class="dash-stat"><div class="dash-stat-label">Trades Abiertos</div><div class="dash-stat-value">${totalOpen}</div></div>
+      <div class="dash-stat"><div class="dash-stat-label">Trades Cerrados</div><div class="dash-stat-value">${totalClosed}</div></div>
+    </div>
+    <div class="dash-section-title">Crypto Chains</div>
+    <div class="overview-chains">`;
+
+  CHAINS.forEach(c => {
+    const d = chainData[c.id], s = d?.stats, on = d?.online;
+    html += `<div class="overview-chain-card" onclick="switchDashTab('${c.id}')">
+      <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.8rem">
+        <span class="dash-status-dot ${on?'online':'offline'}"></span>
+        <span style="font-family:var(--font-display);font-weight:700;font-size:1rem">${c.name}</span>
+        <span style="font-size:0.65rem;color:var(--text-muted);margin-left:auto">${on?'Online':'Offline'}</span>
+      </div>
+      ${s ? `<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
+        <div class="metric"><div class="metric-label">Bankroll</div><div class="metric-value info">$${(s.bankroll||0).toFixed(0)}</div></div>
+        <div class="metric"><div class="metric-label">ROI</div><div class="metric-value ${(s.roi||0)>=0?'positive':'warning'}">${(s.roi||0).toFixed(1)}%</div></div>
+        <div class="metric"><div class="metric-label">Open</div><div class="metric-value">${s.open_trades||0}</div></div>
+        <div class="metric"><div class="metric-label">Wallets</div><div class="metric-value">${s.active_wallets||0}</div></div>
+      </div>` : '<div style="color:var(--text-muted);font-size:0.75rem">Sin datos</div>'}
+    </div>`;
+  });
+  html += '</div>';
+
+  const t = chainData.tenis;
+  html += `<div class="dash-section-title">Tenis EV</div>
+    <div class="overview-chains"><div class="overview-chain-card" onclick="switchDashTab('tenis')">
+      <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.8rem">
+        <span class="dash-status-dot ${t?.online?'online':'offline'}"></span>
+        <span style="font-family:var(--font-display);font-weight:700;font-size:1rem">Tenis EV</span>
+        <span style="font-size:0.65rem;color:var(--text-muted);margin-left:auto">${t?.online?'Online':'Offline'}</span>
+      </div>
+      ${t?.stats ? `<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
+        <div class="metric"><div class="metric-label">Bankroll</div><div class="metric-value info">$${t.bankroll}</div></div>
+        <div class="metric"><div class="metric-label">Apuestas</div><div class="metric-value">${t.stats.total_apuestas||0}</div></div>
+      </div>` : '<div style="color:var(--text-muted);font-size:0.75rem">Sin datos</div>'}
+    </div></div>`;
+
+  panel.innerHTML = html;
+}
+
+function renderChainPanel(panel, chain) {
+  const d = chainData[chain.id];
+  if(!d || !d.stats) { panel.innerHTML = `<div class="dash-loading">${chain.name} bot offline</div>`; return; }
+  const s = d.stats;
+
+  let html = `<div class="dash-stats">
+    <div class="dash-stat"><div class="dash-stat-label">Bankroll</div><div class="dash-stat-value" style="color:var(--cyan)">$${(s.bankroll||0).toFixed(2)}</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">ROI</div><div class="dash-stat-value" style="color:${pnlColor(s.roi||0)}">${(s.roi||0).toFixed(1)}%</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">PnL USD</div><div class="dash-stat-value" style="color:${pnlColor(s.pnl_usd||0)}">$${(s.pnl_usd||0).toFixed(2)}</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">Trade Size</div><div class="dash-stat-value">$${(s.trade_size||0).toFixed(2)}</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">Open</div><div class="dash-stat-value">${s.open_trades||0}</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">Wallets</div><div class="dash-stat-value">${s.active_wallets||0}</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">Win/Loss</div><div class="dash-stat-value">${s.wins||0}W / ${s.losses||0}L</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">EV/Trade</div><div class="dash-stat-value" style="color:${pnlColor(s.ev_per_trade_pct||0)}">${(s.ev_per_trade_pct||0).toFixed(2)}%</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">SL / TP</div><div class="dash-stat-value">${s.stop_loss||0}% / +${s.take_profit||0}%</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">Mejor</div><div class="dash-stat-value" style="color:var(--green)">${(s.best_trade_pct||0).toFixed(1)}%</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">Peor</div><div class="dash-stat-value" style="color:var(--red)">${(s.worst_trade_pct||0).toFixed(1)}%</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">Unrealized</div><div class="dash-stat-value" style="color:${pnlColor(s.unrealized_pnl_usd||0)}">$${(s.unrealized_pnl_usd||0).toFixed(2)}</div></div>
+  </div>`;
+
+  if(d.open.length) {
+    html += `<div class="dash-section-title">Trades Abiertos (${d.open.length})</div>
+    <div class="dash-table-wrap"><table class="dash-table"><thead><tr><th>Token</th><th>Entry</th><th>Current</th><th>PnL%</th><th>Amount</th></tr></thead><tbody>`;
+    d.open.slice(0,20).forEach(t => {
+      const p = t.pnl_percent||0;
+      html += `<tr><td style="color:var(--text-primary);font-weight:600">${t.token_symbol||'?'}</td><td>$${(t.entry_price||0).toFixed(6)}</td><td>$${(t.current_price||0).toFixed(6)}</td><td style="color:${pnlColor(p)}">${p.toFixed(1)}%</td><td>$${(t.simulated_amount||0).toFixed(2)}</td></tr>`;
+    });
+    html += '</tbody></table></div>';
+    if(d.open.length>20) html += `<div style="color:var(--text-muted);font-size:0.7rem;margin-bottom:1rem">+${d.open.length-20} m\u00e1s...</div>`;
+  }
+
+  if(d.closed.length) {
+    html += `<div class="dash-section-title">Trades Cerrados Recientes</div>
+    <div class="dash-table-wrap"><table class="dash-table"><thead><tr><th>Token</th><th>PnL%</th><th>Motivo</th><th>Fecha</th></tr></thead><tbody>`;
+    d.closed.slice(0,10).forEach(t => {
+      const p = t.pnl_percent||0;
+      html += `<tr><td style="color:var(--text-primary);font-weight:600">${t.token_symbol||'?'}</td><td style="color:${pnlColor(p)}">${p.toFixed(1)}%</td><td>${t.close_reason||'-'}</td><td>${t.exit_time||'-'}</td></tr>`;
+    });
+    html += '</tbody></table></div>';
+  }
+
+  if(d.wallets.length) {
+    html += `<div class="dash-section-title">Wallets Activas (${d.wallets.length})</div>
+    <div class="dash-table-wrap"><table class="dash-table"><thead><tr><th>Wallet</th><th>PnL</th><th>Win Rate</th><th>Added</th></tr></thead><tbody>`;
+    d.wallets.forEach(w => {
+      const a = w.address||'';
+      html += `<tr><td style="color:var(--cyan);font-size:0.65rem">${a.slice(0,6)}...${a.slice(-4)}</td><td>${(w.total_pnl_pct||0).toFixed(1)}%</td><td>${(w.win_rate||0).toFixed(0)}%</td><td>${w.added_at||'-'}</td></tr>`;
+    });
+    html += '</tbody></table></div>';
+  }
+
+  panel.innerHTML = html;
+}
+
+function renderTenisPanel(panel) {
+  const t = chainData.tenis;
+  if(!t || !t.online) { panel.innerHTML = '<div class="dash-loading">Tenis EV server offline</div>'; return; }
+  const s = t.stats || {};
+  let html = `<div class="dash-stats">
+    <div class="dash-stat"><div class="dash-stat-label">Bankroll</div><div class="dash-stat-value" style="color:var(--cyan)">$${t.bankroll}</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">Apuestas</div><div class="dash-stat-value">${s.total_apuestas||0}</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">Pendientes</div><div class="dash-stat-value">${s.pendientes||0}</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">ROI</div><div class="dash-stat-value" style="color:${pnlColor(s.roi||0)}">${(s.roi||0).toFixed(1)}%</div></div>
+  </div>`;
+  if(t.historial && t.historial.length) {
+    html += `<div class="dash-section-title">Historial Reciente</div>
+    <div class="dash-table-wrap"><table class="dash-table"><thead><tr><th>Partido</th><th>Pick</th><th>Cuota</th><th>Resultado</th><th>P/L</th></tr></thead><tbody>`;
+    t.historial.forEach(h => {
+      html += `<tr><td style="color:var(--text-primary)">${h.jugador1||''} vs ${h.jugador2||''}</td><td>${h.pick||'-'}</td><td>${(h.cuota||0).toFixed(2)}</td><td>${h.resultado||'pendiente'}</td><td style="color:${pnlColor(h.ganancia||0)}">${h.ganancia ? '$'+h.ganancia.toFixed(2) : '-'}</td></tr>`;
+    });
+    html += '</tbody></table></div>';
+  }
+  panel.innerHTML = html;
+}
 
 // =====================================================
 // INIT
