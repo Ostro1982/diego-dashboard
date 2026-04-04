@@ -497,6 +497,7 @@ body::before{
       <button class="dash-subtab" data-dashtab="base" onclick="switchDashTab('base')"><span class="dash-status-dot offline" id="dash-dot-base"></span> Base</button>
       <button class="dash-subtab" data-dashtab="bsc" onclick="switchDashTab('bsc')"><span class="dash-status-dot offline" id="dash-dot-bsc"></span> BSC</button>
       <button class="dash-subtab" data-dashtab="tenis" onclick="switchDashTab('tenis')"><span class="dash-status-dot offline" id="dash-dot-tenis"></span> Tenis EV</button>
+      <button class="dash-subtab" data-dashtab="predictions" onclick="switchDashTab('predictions')">Prediction Bots</button>
     </div>
     <div id="dash-content"><div class="dash-loading">Cargando dashboards...</div></div>
   </div>
@@ -815,32 +816,37 @@ const PROJECTS = [
     }
   },
   {
-    id: "manifold-bot",
-    name: "Manifold Bot",
+    id: "prediction-bots",
+    name: "Prediction Bots",
     type: "bot",
     accent: "green",
-    desc: "Bot aut\u00f3nomo de predicciones en Manifold Markets. Valida calibraci\u00f3n con mana ficticio antes de Polymarket con dinero real.",
+    desc: "4 bots de predicci\u00f3n: Manifold (real mana) + Kalshi (paper) + Polymarket Copy-Trade (paper) + Polymarket Predict (paper). Meta: 2000 apuestas antes de ir real.",
     stack: ["Python", "Groq", "GitHub Actions", "Telegram", "SQLite"],
     status: "live",
-    statusText: "Desplegado \u2014 20 apuestas colocadas",
+    statusText: "Manifold live + 3 bots paper trading",
     metrics: [
-      { label: "Apuestas", value: "20", class: "info" },
-      { label: "Target", value: "200", class: "" },
+      { label: "Plataformas", value: "4", class: "info" },
+      { label: "Target", value: "2000 bets", class: "" },
       { label: "Tests", value: "30/30", class: "positive" },
       { label: "Brier Target", value: "<0.20", class: "" }
     ],
     revenue: "medium",
-    revenueText: "Gateway a Polymarket ($500 capital)",
-    next: "Monitorear \u2192 200+ apuestas resueltas \u2192 evaluar Brier Score + ROI.",
-    links: [],
+    revenueText: "Gateway a Polymarket real ($500+)",
+    next: "Acumular apuestas resueltas \u2192 evaluar Brier Score + ROI por plataforma.",
+    dashboard: "prediction-bots.html",
+    links: [
+      { label: "Dashboard Live", url: "prediction-bots.html" }
+    ],
     details: {
       features: [
+        "4 plataformas: Manifold, Kalshi, Poly Copy-Trade, Poly Predict",
         "Scans: general 3x/d\u00eda + sports cada 2h",
         "Groq llama-3.3-70b (gratis, 1000 req/d\u00eda)",
         "Telegram: notificaciones autom\u00e1ticas",
-        "GitHub Actions: corre solo 24/7"
+        "GitHub Actions: corre solo 24/7",
+        "Dashboard con tabs + comparaci\u00f3n lado a lado"
       ],
-      blockers: ["Solo 20 apuestas (necesita 200)", "Polymarket bloqueado desde AR"]
+      blockers: ["Polymarket bloqueado desde AR (paper trading ok)", "Kalshi necesita cuenta hermano para real"]
     }
   },
   {
@@ -1246,6 +1252,7 @@ function renderDashPanel() {
   const panel = document.getElementById('dash-content');
   if (currentDashTab === 'overview') renderOverview(panel);
   else if (currentDashTab === 'tenis') renderTenisPanel(panel);
+  else if (currentDashTab === 'predictions') renderPredictionsPanel(panel);
   else { const c = CHAINS.find(x => x.id === currentDashTab); if(c) renderChainPanel(panel, c); }
 }
 
@@ -1376,6 +1383,57 @@ function renderTenisPanel(panel) {
     html += '</tbody></table></div>';
   }
   panel.innerHTML = html;
+}
+
+function renderPredictionsPanel(panel) {
+  panel.innerHTML = `
+    <div class="dash-stats">
+      <div class="dash-stat"><div class="dash-stat-label">Plataformas</div><div class="dash-stat-value" style="color:var(--cyan)">4</div></div>
+      <div class="dash-stat"><div class="dash-stat-label">Estado</div><div class="dash-stat-value" style="color:var(--green)">Manifold live</div></div>
+      <div class="dash-stat"><div class="dash-stat-label">Meta</div><div class="dash-stat-value">2000 bets</div></div>
+      <div class="dash-stat"><div class="dash-stat-label">Brier Target</div><div class="dash-stat-value">&lt;0.20</div></div>
+    </div>
+    <div class="dash-section-title">Plataformas</div>
+    <div class="overview-chains">
+      <div class="overview-chain-card">
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem">
+          <span class="dash-status-dot online"></span>
+          <span style="font-family:var(--font-display);font-weight:700">Manifold</span>
+          <span style="font-size:0.65rem;color:var(--text-muted);margin-left:auto">Live (mana)</span>
+        </div>
+        <div style="color:var(--text-secondary);font-size:0.75rem">Bot aut\u00f3nomo con Groq. General 3x/d\u00eda + sports cada 2h.</div>
+      </div>
+      <div class="overview-chain-card">
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem">
+          <span class="dash-status-dot" style="background:var(--amber);box-shadow:0 0 6px var(--amber)"></span>
+          <span style="font-family:var(--font-display);font-weight:700">Kalshi</span>
+          <span style="font-size:0.65rem;color:var(--text-muted);margin-left:auto">Paper</span>
+        </div>
+        <div style="color:var(--text-secondary);font-size:0.75rem">Paper trading. Necesita cuenta hermano para real.</div>
+      </div>
+      <div class="overview-chain-card">
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem">
+          <span class="dash-status-dot" style="background:var(--amber);box-shadow:0 0 6px var(--amber)"></span>
+          <span style="font-family:var(--font-display);font-weight:700">Polymarket Copy</span>
+          <span style="font-size:0.65rem;color:var(--text-muted);margin-left:auto">Paper</span>
+        </div>
+        <div style="color:var(--text-secondary);font-size:0.75rem">Copy-trade de top traders. Bloqueado desde AR.</div>
+      </div>
+      <div class="overview-chain-card">
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem">
+          <span class="dash-status-dot" style="background:var(--purple);box-shadow:0 0 6px var(--purple)"></span>
+          <span style="font-family:var(--font-display);font-weight:700">Polymarket Predict</span>
+          <span style="font-size:0.65rem;color:var(--text-muted);margin-left:auto">Paper</span>
+        </div>
+        <div style="color:var(--text-secondary);font-size:0.75rem">Predicciones propias con IA. Paper trading.</div>
+      </div>
+    </div>
+    <div style="margin-top:1.5rem;text-align:center">
+      <a href="prediction-bots.html" style="color:var(--cyan);font-size:0.85rem;text-decoration:none;border:1px solid var(--cyan);padding:0.5rem 1.5rem;border-radius:8px;display:inline-block;transition:all .2s"
+         onmouseover="this.style.background='var(--cyan-dim)'" onmouseout="this.style.background='transparent'">
+        Dashboard Detallado &rarr;
+      </a>
+    </div>`;
 }
 
 // =====================================================

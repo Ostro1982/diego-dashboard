@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prediction Bots | Dashboard</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; padding: 12px; }
+h1 { font-size: 1.3em; margin-bottom: 4px; }
+.sub { color: #7d8590; font-size: 0.85em; margin-bottom: 16px; }
+.back { color:#58a6ff;text-decoration:none;font-size:0.85em;display:inline-block;margin-bottom:10px; }
+.back:hover { text-decoration:underline; }
+/* Stats grid */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
+.st { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 12px; }
+.st .v { font-size: 1.4em; font-weight: 700; }
+.st .l { font-size: 0.72em; color: #7d8590; margin-top: 2px; }
+.pos { color: #3fb950; } .neg { color: #f85149; } .neut { color: #58a6ff; } .warn { color: #d29922; }
+/* Tabs */
+.tabs { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+.tab-btn { background: #161b22; border: 1px solid #30363d; color: #8b949e; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.88em; transition: all .15s; }
+.tab-btn:hover { border-color: #58a6ff; color: #e6edf3; }
+.tab-btn.active { background: #1c2128; border-color: #3fb950; color: #3fb950; font-weight: 600; }
+.tab-btn.manifold.active { border-color: #58a6ff; color: #58a6ff; }
+.tab-btn.kalshi.active { border-color: #d29922; color: #d29922; }
+.tab-btn.poly-copy.active { border-color: #3fb950; color: #3fb950; }
+.tab-btn.poly-predict.active { border-color: #b388ff; color: #b388ff; }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+/* Table */
+table { width: 100%; border-collapse: collapse; font-size: 0.82em; background: #161b22; border: 1px solid #30363d; border-radius: 8px; overflow: hidden; }
+th { background: #1c2128; padding: 8px 10px; text-align: left; font-size: 0.72em; color: #7d8590; text-transform: uppercase; white-space: nowrap; }
+td { padding: 8px 10px; border-top: 1px solid #21262d; font-size: 0.85em; }
+tr:hover { background: #1c2128; }
+/* Badges */
+.badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75em; font-weight: 600; }
+.badge-w { background: #1f3a2e; color: #3fb950; }
+.badge-l { background: #2a1f1f; color: #f85149; }
+.badge-p { background: #2a2a1f; color: #d29922; }
+/* Filters */
+.filters { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
+.filters select, .filters input { background: #161b22; border: 1px solid #30363d; color: #e6edf3; padding: 6px 10px; border-radius: 4px; font-size: 0.85em; }
+.filters input { width: 200px; }
+/* Bar chart */
+.bar-chart { margin-bottom: 20px; }
+.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.bar-label { width: 110px; font-size: 0.82em; color: #8b949e; flex-shrink: 0; }
+.bar-track { flex: 1; background: #21262d; border-radius: 4px; height: 20px; position: relative; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; transition: width .4s; min-width: 2px; }
+.bar-val { position: absolute; right: 6px; top: 2px; font-size: 0.78em; color: #e6edf3; font-weight: 600; }
+/* Compare table */
+.cmp-table { width: 100%; border-collapse: collapse; font-size: 0.85em; background: #161b22; border: 1px solid #30363d; border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+.cmp-table th { background: #1c2128; padding: 10px; text-align: left; font-size: 0.78em; color: #7d8590; text-transform: uppercase; }
+.cmp-table td { padding: 10px; border-top: 1px solid #21262d; }
+.empty { color: #7d8590; font-size: 0.9em; padding: 24px; text-align: center; background: #161b22; border: 1px solid #30363d; border-radius: 8px; }
+h2 { font-size: 1em; font-weight: 600; margin: 20px 0 10px; color: #c9d1d9; }
+.chip { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; font-weight: 600; }
+.chip-m  { background: #1a2a3a; color: #58a6ff; }
+.chip-k  { background: #2a2010; color: #d29922; }
+.chip-pc { background: #1a2e1a; color: #3fb950; }
+.chip-pp { background: #22103a; color: #b388ff; }
+@media(max-width:600px) { .bar-label { width: 80px; } }
+</style>
+</head>
+<body>
+<a href="index.html" class="back">&larr; Command Center</a>
+<h1>Prediction Bots &mdash; Dashboard</h1>
+<div class="sub">4 bots en paralelo | Manifold (real) + Kalshi + Poly Copy-Trade + Poly Predict (paper) | Target: 2000 apuestas/bot</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('compare')">Compare <span style="color:#7d8590;font-size:0.85em">59</span></button>
+  <button class="tab-btn manifold" onclick="showTab('manifold')">Manifold <span style="color:#7d8590;font-size:0.85em">59</span></button>
+  <button class="tab-btn kalshi" onclick="showTab('kalshi')">Kalshi <span style="color:#7d8590;font-size:0.85em">0</span></button>
+  <button class="tab-btn poly-copy" onclick="showTab('poly-copy')">Poly Copy <span style="color:#7d8590;font-size:0.85em">0</span></button>
+  <button class="tab-btn poly-predict" onclick="showTab('poly-predict')">Poly Predict <span style="color:#7d8590;font-size:0.85em">0</span></button>
+</div>
+
+<!-- ═══ COMPARE TAB ═══ -->
+<div class="tab-pane active" id="tab-compare">
+  <div class="stats">
+    <div class="st"><div class="v neut">59</div><div class="l">Total Trades</div></div>
+    <div class="st"><div class="v neg">-17.3</div><div class="l">P&L Combinado</div></div>
+    <div class="st"><div class="v neut">Kalshi</div><div class="l">Mejor ROI</div></div>
+    <div class="st"><div class="v warn">2000</div><div class="l">Target/bot</div></div>
+  </div>
+
+  <h2>ROI por Bot (%)</h2>
+  <div class="bar-chart" id="chart-roi"></div>
+
+  <h2>Win Rate por Bot (%)</h2>
+  <div class="bar-chart" id="chart-wr"></div>
+
+  <h2>Comparacion lado a lado</h2>
+  <table class="cmp-table">
+    <thead><tr>
+      <th>Bot</th><th>Trades</th><th>Resueltas</th><th>Win Rate</th><th>P&L</th><th>ROI</th><th>Brier</th>
+    </tr></thead>
+    <tbody id="cmp-tbody"></tbody>
+  </table>
+</div>
+
+<!-- ═══ MANIFOLD TAB ═══ -->
+<div class="tab-pane" id="tab-manifold">
+  <div class="stats" id="stats-manifold"></div>
+  <div class="filters">
+    <select id="mf-cat" onchange="renderManifold()"><option value="">Categoria: Todas</option></select>
+    <select id="mf-status" onchange="renderManifold()"><option value="">Estado: Todos</option><option value="resolved">Resueltas</option><option value="pending">Pendientes</option></select>
+    <select id="mf-dir" onchange="renderManifold()"><option value="">Dir: Todas</option><option value="YES">YES</option><option value="NO">NO</option></select>
+    <input type="text" id="mf-search" placeholder="Buscar..." oninput="renderManifold()">
+    <span id="mf-count" style="color:#7d8590;font-size:0.82em;margin-left:auto;"></span>
+  </div>
+  <div id="manifold-content"></div>
+</div>
+
+<!-- ═══ KALSHI TAB ═══ -->
+<div class="tab-pane" id="tab-kalshi">
+  <div class="stats" id="stats-kalshi"></div>
+  <div id="kalshi-content"></div>
+</div>
+
+<!-- ═══ POLY COPY TAB ═══ -->
+<div class="tab-pane" id="tab-poly-copy">
+  <div class="stats" id="stats-poly-copy"></div>
+  <div id="poly-copy-content"></div>
+</div>
+
+<!-- ═══ POLY PREDICT TAB ═══ -->
+<div class="tab-pane" id="tab-poly-predict">
+  <div class="stats" id="stats-poly-predict"></div>
+  <div id="poly-predict-content"></div>
+</div>
+
+<script>
+const D = {"manifold":[{"id":115,"market_id":"ELsNNhtCud","market_question":"1 USD worth more than 1520 KRW on May 1st 2026","market_category":"other","market_prob":0.4744945718251362,"estimated_prob":0.55,"ev":0.07550542817486383,"bet_amount":10.0,"bet_direction":"YES","reasoning":"The current market probability of 47% seems plausible given the fluctuating nature of currency exchange rates, and without specific information on economic trends or events that could significantly impact the USD/KRW exchange rate by May 1st 2026, it's reasonable to estimate the probability close to the market consensus, adjusting slightly for the general volatility in foreign exchange markets.","created_at":"2026-03-30T14:54:18.785136+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":114,"market_id":"O6N5hqE8un","market_question":"Daily Coinflip","market_category":"other","market_prob":0.5024077399860187,"estimated_prob":0.5,"ev":0.002407739986018731,"bet_amount":10.0,"bet_direction":"NO","reasoning":"The event is described as a 'Daily Coinflip', which suggests a fair coin with two equally likely outcomes. Base rates for coin flips indicate a true probability of 0.5, and the market probability of 50% appears well-calibrated. There is no relevant context to suggest an alternative probability.","created_at":"2026-03-30T14:54:17.947156+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":113,"market_id":"OI2E5Cl0Pt","market_question":"Bab el-Mandeb strait closed by April 30?","market_category":"other","market_prob":0.40983606557377045,"estimated_prob":0.3,"ev":0.10983606557377046,"bet_amount":10.0,"bet_direction":"NO","reasoning":"The market probability of 41% seems somewhat high given the relatively rare occurrence of major shipping straits being closed, and considering the geopolitical and economic factors that would need to align for such an event to happen, a lower probability is estimated, although the situation in the region does pose some risk.","created_at":"2026-03-30T14:54:16.007321+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":108,"market_id":"nCz025Z6cE","market_question":"Will I stay off mobile devices in bed 6+ days per CW in April?","market_category":"other","market_prob":0.35546026856315244,"estimated_prob":0.28,"ev":0.07546026856315241,"bet_amount":1.41,"bet_direction":"NO","reasoning":"The market probability of 36% seems somewhat reasonable given the challenging nature of staying off mobile devices in bed for 6+ days per week, but human self-control and habits can be unpredictable. Considering base rates for similar self-regulation tasks, the true probability might be slightly lower due to the difficulty in maintaining such discipline consistently throughout the month. My estimate reflects a moderately pessimistic view of the individual's ability to adhere to this goal.","created_at":"2026-03-29T23:04:01.918559+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":100,"market_id":"NuuRS86ZSu","market_question":"Will ERCOT set a new battery discharging record in April 2026?","market_category":"other","market_prob":0.4235294117647059,"estimated_prob":0.65,"ev":0.22647058823529415,"bet_amount":2.47,"bet_direction":"YES","reasoning":"Given the increasing demand for renewable energy sources and the growing capacity of battery storage in the ERCOT grid, it is plausible that a new record for battery discharging could be set in April 2026, especially considering seasonal patterns of energy usage. Historical data shows a trend of escalating peak demand and corresponding increases in battery discharge. However, the lack of specific details about current battery capacity and upcoming demand makes the estimate less certain.","created_at":"2026-03-29T17:06:32.372156+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":98,"market_id":"qydAhgd92Q","market_question":"Mi vs kkr Mi win yes kkr win no","market_category":"other","market_prob":0.8199999999999998,"estimated_prob":0.75,"ev":0.06999999999999984,"bet_amount":1.05,"bet_direction":"NO","reasoning":"The market probability of 82% suggests a strong favorites status for Mi, which is plausible given typical sports matchups, but may be slightly overestimating given the general unpredictability of cricket matches and the potential for KKR to pull off an upset, thus a slight adjustment downwards seems reasonable.","created_at":"2026-03-29T17:06:29.496871+00:00","resolved_at":"2026-03-30T07:07:31.924571+00:00","resolution":"YES","profit_loss":-1.05},{"id":97,"market_id":"nztlh9uCA2","market_question":"Will xAI sell compute to hyperscalers / big 3 frontier labs in 2026?","market_category":"other","market_prob":0.2891462881901348,"estimated_prob":0.65,"ev":0.3608537118098652,"bet_amount":2.35,"bet_direction":"YES","reasoning":"Given the growing demand for compute resources from hyperscalers and the increasing capabilities of xAI, it's likely that xAI will explore selling compute to these major players. Historical trends also suggest that companies with advanced AI capabilities often form partnerships with big tech firms, supporting this probability estimate. The current market probability of 29% seems undercalibrated.","created_at":"2026-03-29T17:06:28.384805+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":96,"market_id":"9QAyyllnhs","market_question":"Will bitcoin be above $60000 at the end of march?","market_category":"crypto","market_prob":0.9420112962231377,"estimated_prob":0.85,"ev":0.09201129622313775,"bet_amount":1.15,"bet_direction":"NO","reasoning":"While the current market probability of 94% seems overly optimistic, historical data suggests that bitcoin's price can be volatile and prone to large swings, making it plausible for the price to remain above $60,000 by the end of March, given its current momentum and the category's general trends.","created_at":"2026-03-29T17:06:27.404503+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":95,"market_id":"z6p65t6O9n","market_question":"Will Astra get an online internship 2026","market_category":"other","market_prob":0.48999999999999994,"estimated_prob":0.55,"ev":0.06000000000000011,"bet_amount":1.38,"bet_direction":"YES","reasoning":"The market probability of 49% seems reasonably well-calibrated given the uncertainty of the event, and without specific information about Astra's qualifications or the internship market, it's difficult to significantly deviate from this estimate. Base rates for internships can vary widely depending on the field and competition. My estimate is a minor adjustment based on general trends of increasing online internship opportunities.","created_at":"2026-03-29T17:06:26.617791+00:00","resolved_at":"2026-03-29T19:57:59.015688+00:00","resolution":"NO","profit_loss":-1.38},{"id":94,"market_id":"koSPH3Zhy2","market_question":"Will any G7 country pass a mandatory AI-generated content labeling law before Dec 31, 2026?","market_category":"other","market_prob":0.1473292640975294,"estimated_prob":0.42,"ev":0.2726707359024706,"bet_amount":2.47,"bet_direction":"YES","reasoning":"The market probability seems slightly undercalibrated given the increasing regulatory focus on AI-generated content, but passing such a law before Dec 31, 2026, still faces significant hurdles, including bureaucratic processes and international coordination among G7 countries.","created_at":"2026-03-29T17:06:25.734700+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":93,"market_id":"9yqQnNtEcQ","market_question":"Will US and Iranian military forces engage in direct armed combat by end of April 2026?","market_category":"other","market_prob":0.4471921884023877,"estimated_prob":0.55,"ev":0.10280781159761232,"bet_amount":2.45,"bet_direction":"YES","reasoning":"Historical base rates for military engagement between the US and Iran suggest a lower probability than the current market estimate, considering the diplomatic efforts and international pressure to avoid conflict. However, recent geopolitical tensions and proxy conflicts may increase the likelihood of direct combat. The market probability seems slightly overestimated, given the complexity of the situation and the involvement of multiple stakeholders.","created_at":"2026-03-29T11:55:54.295042+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":92,"market_id":"0qI5ZdnULu","market_question":"Will the 2026 Chess Candidates Tournament go to tiebreaks?","market_category":"other","market_prob":0.2621362520126081,"estimated_prob":0.65,"ev":0.3878637479873919,"bet_amount":3.23,"bet_direction":"YES","reasoning":"The 2026 Chess Candidates Tournament features a strong field of competitors, increasing the likelihood of a close competition that may go to tiebreaks. Historical data from similar tournaments suggests that around 60-70% of recent Candidates Tournaments have required tiebreaks to determine the winner. The current market probability of 26% appears to be an underestimation, considering the competitive nature of the event.","created_at":"2026-03-29T11:55:51.733022+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":90,"market_id":"lzQU0u5sLh","market_question":"NCAA Quarter final - UConn vs Duke","market_category":"other","market_prob":0.3581818657881606,"estimated_prob":0.42,"ev":0.061818134211839404,"bet_amount":1.49,"bet_direction":"YES","reasoning":"Historical NCAA quarter final data shows that top seeds like UConn tend to have a higher winning rate, but Duke is also a strong team, making the market probability of 36% slightly underestimating UConn's chances, given their recent performance and rankings.","created_at":"2026-03-29T11:55:50.168368+00:00","resolved_at":"2026-03-30T07:07:31.379199+00:00","resolution":"YES","profit_loss":1.49},{"id":85,"market_id":"zOR968hdqP","market_question":"Will OpenAI name another model Codex by the end of this year?","market_category":"other","market_prob":0.5500000000000002,"estimated_prob":0.65,"ev":0.09999999999999987,"bet_amount":3.1,"bet_direction":"YES","reasoning":"Given the context that OpenAI has already named a model Codex, the base rate for similar events suggests they might not reuse the name soon, but their rapid development pace and diverse model offerings could lead to a new Codex. The current market probability seems slightly undercalibrated. OpenAI's naming conventions are not entirely predictable based on available data.","created_at":"2026-03-29T11:55:44.424797+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":84,"market_id":"SqzLglNOAO","market_question":"Will Clavicular be charged with another felony?","market_category":"other","market_prob":0.5460310973262547,"estimated_prob":0.65,"ev":0.10396890267374537,"bet_amount":3.27,"bet_direction":"YES","reasoning":"Given the market probability of 55%, I've adjusted my estimate upward to 65% considering potential base rates for individuals with prior felony charges being more likely to be charged again, and assuming Clavicular may have a history that increases their likelihood of being charged with another felony.","created_at":"2026-03-29T11:55:41.732983+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":83,"market_id":"C5qzIOIL5I","market_question":"Will any AI achieve a score of 25% on ARC-AGI-3 by the end of 2026?","market_category":"other","market_prob":0.6871892030534319,"estimated_prob":0.62,"ev":0.0671892030534319,"bet_amount":1.64,"bet_direction":"NO","reasoning":"The current market probability of 69% seems slightly overconfident given the ambitious nature of achieving a score of 25% on ARC-AGI-3, which is a challenging benchmark for artificial general intelligence. Considering base rates for similar events and the rapid progress in AI research, a lower probability is more plausible. However, the true probability is still substantial due to ongoing advancements in the field.","created_at":"2026-03-29T11:55:40.188456+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":80,"market_id":"hIINpz0PdR","market_question":"Repeated random reduction of a number, and it's still 10 or more?","market_category":"other","market_prob":0.30000000000000004,"estimated_prob":0.65,"ev":0.35,"bet_amount":3.56,"bet_direction":"YES","reasoning":"The problem seems to describe a process where a number is repeatedly reduced by a random amount, and we're interested in the probability that the final result is 10 or more. Without knowing the initial number or the distribution of the reductions, it's difficult to give a precise estimate, but the market probability of 30% seems somewhat low considering the broad nature of the question, suggesting that the true probability could be higher, perhaps around 65%.","created_at":"2026-03-28T17:04:59.216747+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":79,"market_id":"h0UE6yuqCC","market_question":"Will Sheila Cherfilus-McCormick be expelled from the House of Representatives?","market_category":"other","market_prob":0.7626341077648113,"estimated_prob":0.65,"ev":0.11263410776481131,"bet_amount":2.09,"bet_direction":"NO","reasoning":"The base rate for expulsion from the House of Representatives is relatively low, and while Sheila Cherfilus-McCormick has been involved in controversies, the market probability of 76% seems somewhat high. Considering the rarity of expulsions and the lack of concrete evidence of severe misconduct, a lower probability is estimated. My confidence is medium due to the limited information available on this specific case.","created_at":"2026-03-28T17:04:57.452555+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":77,"market_id":"ulOtq8y02Z","market_question":"Will the US run out of weapons in 2026?","market_category":"other","market_prob":0.2307370469431095,"estimated_prob":0.05,"ev":0.1807370469431095,"bet_amount":3.77,"bet_direction":"NO","reasoning":"The base rate for a country running out of weapons is relatively low, and the US has a large and diverse military industrial complex, making it less likely to completely deplete its arsenal in a short timeframe. The current market probability of 23% seems overly high given these factors, suggesting a downward adjustment is warranted.","created_at":"2026-03-28T17:04:54.017974+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":75,"market_id":"p0Pz06U8sl","market_question":"Will John Williams become a centenarian?","market_category":"other","market_prob":0.44553562753337017,"estimated_prob":0.35,"ev":0.0955356275333702,"bet_amount":3.77,"bet_direction":"NO","reasoning":"John Williams is currently 91 years old, and while he is in good health, the base rate for centenarians is relatively low. Given his age and the natural decline in health that often accompanies it, the market probability of 45% seems overoptimistic. A more realistic estimate would be around 35%.","created_at":"2026-03-28T17:04:51.223136+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":72,"market_id":"AlqCySyqQu","market_question":"Can anyone tell me if there's a service where I can quickly compare several online casinos?","market_category":"other","market_prob":0.7352941176470589,"estimated_prob":0.85,"ev":0.1147058823529411,"bet_amount":4.2,"bet_direction":"YES","reasoning":"The market probability of 74% seems slightly under-calibrated given the context that online casino comparison services are common and readily available. Many websites already provide reviews, ratings, and comparisons of online casinos, making it likely that such a service exists. Therefore, I estimate the true probability to be higher, at 85%.","created_at":"2026-03-28T17:04:48.902462+00:00","resolved_at":"2026-03-28T21:57:52.470112+00:00","resolution":"CANCEL","profit_loss":0.0},{"id":71,"market_id":"LRuSLPhZR6","market_question":"NCAA Quarter final - Tennessee vs Michigan","market_category":"other","market_prob":0.27000000000000013,"estimated_prob":0.31,"ev":0.03999999999999987,"bet_amount":1.12,"bet_direction":"YES","reasoning":"The market probability of 27% seems slightly low considering Tennessee's performance in the tournament, but without more specific information about the teams' current strengths and past matchups, it's difficult to significantly adjust from the market probability, so a slight adjustment upwards is made to account for potential market underestimation.","created_at":"2026-03-28T17:04:48.091728+00:00","resolved_at":"2026-03-30T07:07:30.591707+00:00","resolution":"NO","profit_loss":-1.12},{"id":70,"market_id":"Lth6hSZIIl","market_question":"Will Ro Khanna finish in first place in the Ca-17 primary?","market_category":"other","market_prob":0.9,"estimated_prob":0.85,"ev":0.050000000000000044,"bet_amount":1.17,"bet_direction":"NO","reasoning":"Given Ro Khanna's incumbency and the market's high confidence, the estimated probability is close to the market probability, but slightly adjusted downward to account for potential primary challenges and the uncertainty inherent in electoral outcomes.","created_at":"2026-03-28T17:04:47.174461+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":69,"market_id":"00yQQLu9UE","market_question":"Will Elon Musk's Tesla release a super long-term battery or breakthrough energy technology that lasts months or years wi","market_category":"other","market_prob":0.1603350786126988,"estimated_prob":0.35,"ev":0.18966492138730118,"bet_amount":4.09,"bet_direction":"YES","reasoning":"While Elon Musk's Tesla has been at the forefront of electric vehicle innovation, breakthroughs in battery technology that last months or years are highly complex and rare, suggesting the market probability may be slightly underestimating the potential but still within a reasonable range considering the base rates for similar technological advancements.","created_at":"2026-03-28T17:04:46.469774+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":66,"market_id":"9CL8QOSlIp","market_question":"Is Claude Mythos real","market_category":"other","market_prob":0.9257259353789379,"estimated_prob":0.65,"ev":0.27572593537893786,"bet_amount":4.2,"bet_direction":"NO","reasoning":"The market probability of 93% seems overly optimistic considering the lack of concrete evidence supporting the existence of Claude Mythos. Base rates for similar events, such as mythical creatures or characters, suggest a lower probability of being real. My estimate is lower to reflect a more conservative assessment based on available information.","created_at":"2026-03-28T17:04:43.749383+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":62,"market_id":"gn0t8cAucl","market_question":"NCAA Quarter final -Purdue vs Arizona","market_category":"other","market_prob":0.30161660403924057,"estimated_prob":0.42,"ev":0.11838339596075942,"bet_amount":4.38,"bet_direction":"YES","reasoning":"Historically, NCAA quarterfinal matches are competitive, and market probabilities tend to be somewhat accurate, but may not fully account for team-specific factors such as recent performance and injury reports, suggesting a slight adjustment to the current market probability of 30%.","created_at":"2026-03-28T11:54:13.720369+00:00","resolved_at":"2026-03-29T06:03:31.900651+00:00","resolution":"NO","profit_loss":-4.38},{"id":59,"market_id":"nRyCA65gzt","market_question":"Will the physical remains of Donald Trump lie in state in the capitol rotunda?","market_category":"other","market_prob":0.5613933661869248,"estimated_prob":0.65,"ev":0.08860663381307521,"bet_amount":6.91,"bet_direction":"YES","reasoning":"Historically, U.S. presidents and other high-ranking government officials have often lain in state in the capitol rotunda after their passing, suggesting a base rate that supports a higher probability. The market probability of 56% seems slightly low given this context. Considering Trump's presidency and his impact on American politics, it is reasonable to adjust the estimated probability upwards.","created_at":"2026-03-28T11:54:06.864167+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":58,"market_id":"0IdLzg2Qs0","market_question":"Will Trump try to have his face engraved on Mt Rushmore during his second term?","market_category":"other","market_prob":0.132542206012233,"estimated_prob":0.02,"ev":0.11254220601223298,"bet_amount":6.37,"bet_direction":"NO","reasoning":"The base rate for similar events, such as significant alterations to national monuments, is extremely low, and there is no recent context suggesting a significant increase in such attempts. Additionally, the market probability of 13% seems overly optimistic given the lack of historical precedent and potential bureaucratic and public backlash. Trump's personality and past actions may suggest some willingness to challenge norms, but this specific action is unlikely.","created_at":"2026-03-28T11:54:05.709336+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":57,"market_id":"QhgOcpRSzl","market_question":"Will Anthropic release Claude 5 (or Opus 5) before July 1, 2026?","market_category":"other","market_prob":0.7924334263356483,"estimated_prob":0.75,"ev":0.04243342633564828,"bet_amount":1.85,"bet_direction":"NO","reasoning":"The current market probability of 79% seems reasonably well-calibrated, considering the pace of advancements in AI technology and the potential for Anthropic to meet their development milestones. However, without specific details on Anthropic's development timeline and challenges, there is some uncertainty. The estimated probability is adjusted slightly downward to account for potential unforeseen delays.","created_at":"2026-03-28T11:54:04.640037+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":56,"market_id":"g9yL8ShCl2","market_question":"Will I restrict my food-buying behaviour in line with this market in April?","market_category":"other","market_prob":0.8151571164510165,"estimated_prob":0.75,"ev":0.06515711645101652,"bet_amount":2.76,"bet_direction":"NO","reasoning":"The market probability of 82% seems slightly overconfident, as base rates for restricting food-buying behavior often show lower success rates. However, the high market probability suggests a strong intention to change behavior, so a moderate adjustment is reasonable. My estimate takes into account the potential for self-reported intentions to overestimate actual follow-through.","created_at":"2026-03-28T11:54:03.397895+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":55,"market_id":"8utRgRcRIy","market_question":"Will the UK Government reverse its current stance by approving at least one new North Sea oil & gas licence in 2026?","market_category":"other","market_prob":0.29137816165601993,"estimated_prob":0.42,"ev":0.12862183834398005,"bet_amount":6.27,"bet_direction":"YES","reasoning":"The current market probability of 29% seems slightly underestimating given the historical context of the UK's energy policy and the potential economic benefits of new oil and gas licenses. However, considering the increasing global focus on renewable energy and climate change, the UK government might maintain its current stance. The true probability likely lies somewhere in between, taking into account the political and environmental factors at play.","created_at":"2026-03-28T11:54:02.405944+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":50,"market_id":"u9O9ER8UyI","market_question":"Will I become profitable in trading before December 31, 2026?","market_category":"other","market_prob":0.14070723438519925,"estimated_prob":0.25,"ev":0.10929276561480075,"bet_amount":5.77,"bet_direction":"YES","reasoning":"The market probability of 14% seems somewhat low, but becoming profitable in trading often requires significant experience and skill, so a moderate adjustment upwards is reasonable. Base rates for similar events, such as learning a new skill or achieving a specific goal, suggest that a small but notable portion of individuals can succeed. Given the broad time frame and assuming dedication to improvement, a quarter of traders might achieve profitability by the end of 2026.","created_at":"2026-03-27T23:06:16.548790+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":39,"market_id":"QtchLp6Sqy","market_question":"Will RFK Jr. have an official role in the Trump Administration at the start of 2027?","market_category":"other","market_prob":0.7929877199838642,"estimated_prob":0.65,"ev":0.14298771998386417,"bet_amount":9.85,"bet_direction":"NO","reasoning":"RFK Jr.'s involvement in the Trump Administration is plausible given his previous interactions with the former president, but the market probability seems overly optimistic considering the unpredictability of Trump's decisions and the potential for changes in administration roles over time.","created_at":"2026-03-27T23:06:05.331119+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":38,"market_id":"Cguhsgu50h","market_question":"Will US ground troops physically enter Iranian territory by May 1, 2026?","market_category":"other","market_prob":0.6360969895980527,"estimated_prob":0.25,"ev":0.3860969895980527,"bet_amount":14.08,"bet_direction":"NO","reasoning":"The market probability of 64% seems overly optimistic given historical base rates for similar geopolitical events, and considering the diplomatic and international implications of such an action, a more conservative estimate is warranted. Relevant context from training data suggests that military interventions of this nature are often preceded by extensive diplomatic efforts and are relatively rare. The true probability is likely lower than the current market consensus.","created_at":"2026-03-27T18:38:42.320591+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":32,"market_id":"ZQqRL9cINc","market_question":"This market will resolve yes randomly at some point before April 1st (inclusive)","market_category":"crypto","market_prob":0.99,"estimated_prob":0.85,"ev":0.14,"bet_amount":10.9,"bet_direction":"NO","reasoning":"The market probability of 99% seems overly confident given the nature of the event, which is a random resolution before a specific date. Base rates for similar events in the crypto category do not typically approach such high certainty. However, given the simplicity and specificity of the event, the true probability is likely still relatively high.","created_at":"2026-03-27T18:38:36.621317+00:00","resolved_at":"2026-03-28T17:04:39.866934+00:00","resolution":"YES","profit_loss":-10.9},{"id":28,"market_id":"8Ph8lpNzSc","market_question":"Bitcoin Prev-Close below $65,000 on April 25, 2026?","market_category":"crypto","market_prob":0.3497945687435724,"estimated_prob":0.42,"ev":0.07020543125642759,"bet_amount":9.04,"bet_direction":"YES","reasoning":"Considering the volatility of Bitcoin, the market probability of 35% seems slightly underestimating given historical fluctuations, but still within a reasonable range, so I'm adjusting it to 42% based on base rates for similar price movements and contextual crypto market trends.","created_at":"2026-03-27T18:38:31.446501+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":26,"market_id":"RqhPOhccRl","market_question":"Will the wild population of Saola (Pseudoryx nghetinhensis) become Extinct by 2100?","market_category":"other","market_prob":0.9180572053470036,"estimated_prob":0.85,"ev":0.06805720534700366,"bet_amount":6.64,"bet_direction":"NO","reasoning":"The Saola is a critically endangered species with a highly restricted range and low population numbers, making it vulnerable to extinction. The market probability of 92% seems plausible, but may be slightly overestimated due to recency bias and availability heuristic. Considering base rates for similar species and conservation efforts, a slightly lower probability is estimated.","created_at":"2026-03-27T18:38:29.262247+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":24,"market_id":"OpLdQCctIQ","market_question":"This market will resolve YES if its probability is above 1% at April 1. 13:00 CET","market_category":"crypto","market_prob":0.6987197505396622,"estimated_prob":0.75,"ev":0.05128024946033782,"bet_amount":15.24,"bet_direction":"YES","reasoning":"The current market probability of 70% suggests a strong consensus, and given that this market is related to crypto, which is known for its volatility and unpredictability, the market seems to be taking a bullish stance. The event is also specific and time-sensitive, which may contribute to a higher probability. Overall, the market probability appears well-calibrated, so I've adjusted it slightly upwards to 75%.","created_at":"2026-03-27T18:38:27.912126+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":21,"market_id":"Lp965Q2PRs","market_question":"Claude Mythos releases alongside a more expensive subscription plan in Claude.ai","market_category":"other","market_prob":0.1862712892233815,"estimated_prob":0.25,"ev":0.06372871077661851,"bet_amount":7.01,"bet_direction":"YES","reasoning":"The market probability of 19% seems relatively well-calibrated, considering the base rate for similar events in the tech industry where companies often release new features or plans. However, I've adjusted the estimate upwards slightly, as Claude.ai may be more likely to release a premium subscription plan to differentiate their offerings and increase revenue. This adjustment is based on general trends in the industry, but the true probability remains uncertain.","created_at":"2026-03-27T18:38:24.593384+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":20,"market_id":"PdlUOR8E90","market_question":"Will the US and Iran reach a formal nuclear deal framework by July 1, 2026?","market_category":"other","market_prob":0.2023486282407647,"estimated_prob":0.35,"ev":0.1476513717592353,"bet_amount":32.07,"bet_direction":"YES","reasoning":"Historical base rates for similar international negotiations suggest a lower success rate, and given the current geopolitical tensions and complex nature of nuclear negotiations, the market probability of 20% might be slightly underestimating the chances, but not significantly so, thus a moderate adjustment upwards is reasonable.","created_at":"2026-03-27T14:57:53.515425+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":19,"market_id":"UhlOP80nlZ","market_question":"Will the U.S. and Iran reach a formal nuclear deal framework agreement by June 30, 2026?","market_category":"other","market_prob":0.21668050600271796,"estimated_prob":0.35,"ev":0.13331949399728202,"bet_amount":22.59,"bet_direction":"YES","reasoning":"Given the complexity and historical challenges of U.S.-Iran nuclear negotiations, the current market probability of 22% may underestimate the efforts and diplomatic progress that could lead to an agreement. However, considering base rates for similar geopolitical agreements and the time-sensitive nature of such negotiations, a moderate increase in the estimated probability seems reasonable. The market probability seems somewhat low but not entirely mis-calibrated.","created_at":"2026-03-27T14:57:52.675300+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":18,"market_id":"9NCNLquCQy","market_question":"Will ECSA conduct a formal recount for the seat of Narungga in the 2026 SA Election?","market_category":"politics","market_prob":0.8430738360719275,"estimated_prob":0.75,"ev":0.09307383607192754,"bet_amount":13.39,"bet_direction":"NO","reasoning":"The current market probability of 84% seems slightly overconfident given the base rates for electoral recounts, which tend to be relatively rare. However, the specific context of the Narungga seat and the closeness of the election may justify a higher probability. My estimate of 0.75 reflects a balance between these factors.","created_at":"2026-03-27T14:57:51.851932+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":17,"market_id":"hR5udqQuUA","market_question":"Will 100 People Bet On This Market?","market_category":"other","market_prob":0.30000000000000004,"estimated_prob":0.85,"ev":0.5499999999999999,"bet_amount":26.54,"bet_direction":"YES","reasoning":"The market question is self-referential and attention-grabbing, which tends to attract more bets, and the relatively low market probability suggests underconfidence. Given the nature of prediction markets and the curiosity they inspire, it's likely that more than 100 people will bet on this market. The base rate for similar events, such as novelty or self-referential markets, supports a higher probability estimate.","created_at":"2026-03-27T14:57:51.166315+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":16,"market_id":"sstININcU8","market_question":"Will the US national average gas price exceed $5 per gallon at any point in April 2026?","market_category":"other","market_prob":0.2719474541030868,"estimated_prob":0.32,"ev":0.04805254589691321,"bet_amount":8.0,"bet_direction":"YES","reasoning":"Historical gas price trends and seasonal fluctuations suggest that exceeding $5 per gallon in April is possible but not highly likely, and the current market probability seems slightly overestimated considering the base rates for similar events.","created_at":"2026-03-27T14:57:50.363133+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":15,"market_id":"h5cPtR9ghU","market_question":"Will the DHS partial shutdown end by April 15, 2026?","market_category":"other","market_prob":0.8828893659960214,"estimated_prob":0.75,"ev":0.1328893659960214,"bet_amount":24.46,"bet_direction":"NO","reasoning":"Historical data suggests that government shutdowns often end within a few weeks, and an 88% market probability may be overly optimistic given the complexity of negotiations, but context suggests a higher probability than not, with some likelihood of resolution by the given deadline.","created_at":"2026-03-27T14:57:49.165682+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":14,"market_id":"hqNA8ucRhZ","market_question":"Will the Trump-Xi April 2026 summit produce a bilateral trade agreement?","market_category":"other","market_prob":0.0909608567859455,"estimated_prob":0.15,"ev":0.0590391432140545,"bet_amount":10.56,"bet_direction":"YES","reasoning":"Historical base rates for high-stakes diplomatic summits like the Trump-Xi meeting suggest a low to moderate probability of a bilateral trade agreement, and given the current geopolitical tensions and complexities, the market probability of 9% seems somewhat plausible but potentially slightly underestimated, hence a moderate adjustment to 15%.","created_at":"2026-03-27T14:57:48.374504+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":13,"market_id":"pR8gU0pnzt","market_question":"Will the first social media addiction jury trial find companies liable?","market_category":"other","market_prob":0.7186712250033255,"estimated_prob":0.58,"ev":0.13867122500332552,"bet_amount":35.19,"bet_direction":"NO","reasoning":"The market probability of 72% seems slightly high given the complexity of social media addiction cases and the difficulty in proving liability, suggesting a need for adjustment. Historical base rates for similar cases, such as tobacco or opioid lawsuits, indicate a lower likelihood of immediate liability findings. My estimate reflects a more cautious approach, considering the novelty of social media addiction trials.","created_at":"2026-03-27T14:57:47.748870+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":12,"market_id":"hdlC5UN8lg","market_question":"Will Apple ship a Gemini-powered Siri update to iPhones in 2026?","market_category":"other","market_prob":0.43,"estimated_prob":0.65,"ev":0.22000000000000003,"bet_amount":34.65,"bet_direction":"YES","reasoning":"The market probability seems slightly under-calibrated considering Apple's history of incorporating new technologies into their devices, and the growing trend of AI-powered virtual assistants. Gemini's capabilities, if integrated, would significantly enhance Siri's performance. However, the actual deployment timeline is uncertain and subject to various factors, including testing and refinement.","created_at":"2026-03-27T14:57:46.980397+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":11,"market_id":"Ud6gc8288N","market_question":"Will North Korea join the war by the end of april","market_category":"other","market_prob":0.15759003393746407,"estimated_prob":0.12,"ev":0.037590033937464074,"bet_amount":34.65,"bet_direction":"NO","reasoning":"The base rate for North Korea engaging in major conflicts is relatively low, and the current market probability of 16% may be slightly inflated due to recency bias and media attention. Considering the historical context and diplomatic efforts, the true probability is likely closer to 12%. The market probability seems reasonably well-calibrated given the available information.","created_at":"2026-03-27T14:57:46.282427+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":10,"market_id":"ldZ9ZqIN8t","market_question":"Will Trump visit China before US-Iran ceasefire?","market_category":"other","market_prob":0.24666248208130406,"estimated_prob":0.15,"ev":0.09666248208130407,"bet_amount":50.0,"bet_direction":"NO","reasoning":"The market probability of 25% seems relatively high given the current geopolitical tensions and lack of recent diplomatic efforts between the US and China, as well as the unpredictable nature of US-Iran relations, suggesting a lower true probability of Trump visiting China before a US-Iran ceasefire.","created_at":"2026-03-27T14:57:44.829837+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":9,"market_id":"LgcIc6PlAC","market_question":"Will Very Tall Bart make a YTP about Switzerland in 2026?","market_category":"other","market_prob":0.5000000000000009,"estimated_prob":0.65,"ev":0.14999999999999913,"bet_amount":42.91,"bet_direction":"YES","reasoning":"Given the lack of specific information about Very Tall Bart's content creation plans, I'm relying on general trends in YouTube Poop (YTP) creators' behavior and the broad category of 'other' events. The market probability of 50% seems somewhat arbitrary, so I'm adjusting it based on the assumption that a creator with a track record of producing YTPs might be more likely to create content about a unique topic like Switzerland. However, without more context about Very Tall Bart's interests or previous work, my confidence remains medium.","created_at":"2026-03-27T14:57:43.591474+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":8,"market_id":"pS5nAORsyc","market_question":"Will the US, Israel and/or one of the non-Iranian Gulf states occupy Larak Island (Iran) before June 1 2026?","market_category":"other","market_prob":0.51,"estimated_prob":0.35,"ev":0.16000000000000003,"bet_amount":36.48,"bet_direction":"NO","reasoning":"The market probability of 51% seems overly optimistic given the geopolitical tensions and complexities involved in occupying a foreign island, and historical base rates for similar events suggest a lower likelihood of such an event occurring within a short timeframe.","created_at":"2026-03-27T14:57:42.524729+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":7,"market_id":"CszS9yuZzL","market_question":"Will Trump apologize for anything in 2026?","market_category":"other","market_prob":0.19070867343046755,"estimated_prob":0.15,"ev":0.04070867343046755,"bet_amount":42.91,"bet_direction":"NO","reasoning":"Historical data suggests that Donald Trump rarely apologizes for his actions or statements, and the current market probability of 19% seems slightly high given this context, so I estimate the true probability to be lower, around 15%.","created_at":"2026-03-27T14:57:40.665413+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":6,"market_id":"S9lCRLUNgL","market_question":"Will the US conduct additional airstrikes on Iranian soil before April 25, 2026?","market_category":"other","market_prob":0.9521139871978769,"estimated_prob":0.65,"ev":0.30211398719787685,"bet_amount":42.91,"bet_direction":"NO","reasoning":"The current market probability of 95% seems overly optimistic given the complexities of international relations and military decisions. Historical base rates for similar events suggest a lower probability, and without more specific context, it's difficult to justify such a high confidence level. My estimate of 0.65 reflects a more cautious approach, considering the uncertainties involved.","created_at":"2026-03-27T14:57:39.813235+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":5,"market_id":"nAu8N5lI8c","market_question":"Will a frontier model score above 90% on the APEX-SWE benchmark before 2028?","market_category":"other","market_prob":0.4123178808313293,"estimated_prob":0.65,"ev":0.2376821191686707,"bet_amount":42.91,"bet_direction":"YES","reasoning":"The recent advancements in frontier models and their increasing performance on various benchmarks suggest a high likelihood of achieving a score above 90% on the APEX-SWE benchmark before 2028. Additionally, the current market probability of 41% seems undercalibrated given the rapid progress in AI research. Historical data on similar models and benchmarks supports a more optimistic estimate.","created_at":"2026-03-27T14:57:38.191677+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":4,"market_id":"tU0AQssAOl","market_question":"At least 1 frame of live-action in The Amazing Digital Circus Episode 9?","market_category":"other","market_prob":0.5475113122171946,"estimated_prob":0.65,"ev":0.1024886877828054,"bet_amount":50.0,"bet_direction":"YES","reasoning":"The market probability of 55% seems slightly understated given the creative freedom often seen in digital circus productions, and the potential for at least one frame of live-action to enhance the episode's engagement. Historical data on similar productions suggests a higher likelihood of incorporating live-action elements. However, without more specific details on the episode's content, the estimate remains moderately confident.","created_at":"2026-03-27T14:57:37.205288+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":3,"market_id":"06zhE22Adt","market_question":"Will OpenAI Fail by EOY 2028?","market_category":"other","market_prob":0.08947750171987814,"estimated_prob":0.12,"ev":0.03052249828012185,"bet_amount":8.38,"bet_direction":"YES","reasoning":"The current market probability of 9% seems reasonably well-calibrated given the base rates for similar events, such as the failure of promising tech startups, and considering the context of OpenAI's strong performance and backing, the estimated probability is slightly higher but still below 15%.","created_at":"2026-03-27T14:57:36.409387+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":2,"market_id":"OQlgIhysQp","market_question":"Will the AI Data Center Moratorium Act (S.4214) pass Congress by end of the 119th Congress?","market_category":"politics","market_prob":0.08510150725931481,"estimated_prob":0.05,"ev":0.03510150725931481,"bet_amount":50.0,"bet_direction":"NO","reasoning":"The current market probability of 9% seems relatively well-calibrated given the challenges of passing legislation in Congress, especially considering the complexity and potential controversy surrounding AI data center regulation. Historical base rates for similar bills suggest a low likelihood of passage. The market's estimate may be slightly pessimistic, but not significantly so, given the many factors that can influence legislative outcomes.","created_at":"2026-03-27T14:57:35.332107+00:00","resolved_at":null,"resolution":null,"profit_loss":null},{"id":1,"market_id":"2E8qdP5Acn","market_question":"Will \"The AI Doc: Or How I Became an Apocaloptimist\" be nominated for Best Documentary Feature at the 2027 Academy Award","market_category":"other","market_prob":0.36924226686689454,"estimated_prob":0.32,"ev":0.049242266866894535,"bet_amount":33.34,"bet_direction":"NO","reasoning":"The base rate for documentary feature nominations is relatively low, and without specific information about the documentary's quality, production, or reception, it's difficult to significantly deviate from the market probability. However, considering the market probability of 37% seems slightly high for a documentary with no clear indicators of award-winning potential, a downward adjustment is reasonable.","created_at":"2026-03-27T14:57:33.916759+00:00","resolved_at":null,"resolution":null,"profit_loss":null}],"kalshi":[],"poly_copy":[],"poly_predict":[],"daily":[],"stats":{"manifold":{"total":59,"resolved":6,"pending":52,"wins":1,"wr":16.666666666666664,"pl":-17.34,"roi":-85.33464566929133,"brier":0.16606666666666667},"kalshi":{"total":0,"resolved":0,"pending":0,"wins":0,"wr":0,"pl":0,"roi":0,"brier":null},"poly_copy":{"total":0,"resolved":0,"pending":0,"wins":0,"wr":0,"pl":0,"roi":0,"brier":null},"poly_predict":{"total":0,"resolved":0,"pending":0,"wins":0,"wr":0,"pl":0,"roi":0,"brier":null}}};
+const COLORS = {manifold:'#58a6ff',kalshi:'#d29922',poly_copy:'#3fb950',poly_predict:'#b388ff'};
+const BOT_NAMES = {manifold:'Manifold',kalshi:'Kalshi',poly_copy:'Poly Copy',poly_predict:'Poly Predict'};
+
+// ── Tab switching ──────────────────────────────────────────────────────
+function showTab(id) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  const btn = [...document.querySelectorAll('.tab-btn')].find(b => b.getAttribute('onclick').includes("'"+id+"'"));
+  if (btn) btn.classList.add('active');
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────
+function fmt(v, digits=1) { return v == null ? 'N/A' : (v >= 0 ? '+' : '') + v.toFixed(digits); }
+function pct(v) { return v == null ? 'N/A' : v.toFixed(1)+'%'; }
+function plClass(v) { return (v||0) > 0 ? 'pos' : (v||0) < 0 ? 'neg' : ''; }
+function badgeRes(res, dir) {
+  if (!res) return '<span class="badge badge-p">Pendiente</span>';
+  if (res === 'CANCEL' || res === 'N/A') return '<span class="badge" style="background:#21262d;color:#7d8590">Cancelada</span>';
+  const win = res === dir;
+  return win ? '<span class="badge badge-w">WIN</span>' : '<span class="badge badge-l">LOSS</span>';
+}
+function stBar(items) {
+  return '<div class="stats">'+items.map(s=>`<div class="st"><div class="v ${s.c||'neut'}">${s.v}</div><div class="l">${s.l}</div></div>`).join('')+'</div>';
+}
+function statsFromObj(s, label, unit='') {
+  const bc = s.brier == null ? 'neut' : s.brier < 0.20 ? 'pos' : s.brier < 0.30 ? 'warn' : 'neg';
+  return [
+    {l:'Total',v:s.total,c:'neut'},
+    {l:'Resueltas',v:s.resolved,c:'neut'},
+    {l:'Pendientes',v:s.pending,c:'warn'},
+    {l:'Win Rate',v:pct(s.wr),c:s.wr>50?'pos':'neg'},
+    {l:'P&L'+unit,v:fmt(s.pl),c:plClass(s.pl)},
+    {l:'ROI',v:pct(s.roi),c:s.roi>=0?'pos':'neg'},
+    {l:'Brier',v:s.brier!=null?s.brier.toFixed(4):'N/A',c:bc},
+    {l:'Target',v:'2000',c:'neut'}
+  ];
+}
+
+// ── Bar chart renderer ─────────────────────────────────────────────────
+function renderBarChart(elId, data) {
+  // data = [{label, value, color}]
+  const maxAbs = Math.max(...data.map(d => Math.abs(d.value||0)), 1);
+  document.getElementById(elId).innerHTML = data.map(d => {
+    const pct = Math.abs(d.value||0) / maxAbs * 100;
+    const isNeg = (d.value||0) < 0;
+    const fillColor = isNeg ? '#f85149' : d.color;
+    return `<div class="bar-row">
+      <div class="bar-label">${d.label}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${pct}%;background:${fillColor}"></div>
+        <div class="bar-val">${d.value != null ? (d.value >= 0 ? '+' : '') + d.value.toFixed(1) : 'N/A'}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Compare tab ────────────────────────────────────────────────────────
+function renderCompare() {
+  const s = D.stats;
+  // ROI chart
+  renderBarChart('chart-roi', [
+    {label:'Manifold',    value:s.manifold.roi,    color:COLORS.manifold},
+    {label:'Kalshi',      value:s.kalshi.roi,      color:COLORS.kalshi},
+    {label:'Poly Copy',   value:s.poly_copy.roi,   color:COLORS.poly_copy},
+    {label:'Poly Predict',value:s.poly_predict.roi,color:COLORS.poly_predict},
+  ]);
+  // WR chart
+  renderBarChart('chart-wr', [
+    {label:'Manifold',    value:s.manifold.wr,    color:COLORS.manifold},
+    {label:'Kalshi',      value:s.kalshi.wr,      color:COLORS.kalshi},
+    {label:'Poly Copy',   value:s.poly_copy.wr,   color:COLORS.poly_copy},
+    {label:'Poly Predict',value:s.poly_predict.wr,color:COLORS.poly_predict},
+  ]);
+  // Table
+  const rows = [
+    ['manifold','chip-m'],['kalshi','chip-k'],['poly_copy','chip-pc'],['poly_predict','chip-pp']
+  ].map(([k,chip]) => {
+    const st = s[k];
+    const bc = st.brier == null ? 'neut' : st.brier < 0.20 ? 'pos' : st.brier < 0.30 ? 'warn' : 'neg';
+    return `<tr>
+      <td><span class="chip ${chip}">${BOT_NAMES[k]}</span></td>
+      <td>${st.total}</td>
+      <td>${st.resolved}</td>
+      <td class="${st.wr>50?'pos':'neg'}">${pct(st.wr)}</td>
+      <td class="${plClass(st.pl)}">${fmt(st.pl)}</td>
+      <td class="${st.roi>=0?'pos':'neg'}">${pct(st.roi)}</td>
+      <td class="${bc}">${st.brier!=null?st.brier.toFixed(4):'N/A'}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('cmp-tbody').innerHTML = rows;
+}
+
+// ── Manifold tab ───────────────────────────────────────────────────────
+let mfSort = 'id', mfDir = -1;
+function renderManifold() {
+  const s = D.stats.manifold;
+  document.getElementById('stats-manifold').innerHTML = stBar(statsFromObj(s,'Manifold','(mana)'));
+
+  let data = [...D.manifold];
+  const cat = document.getElementById('mf-cat').value;
+  const status = document.getElementById('mf-status').value;
+  const dir = document.getElementById('mf-dir').value;
+  const search = document.getElementById('mf-search').value.toLowerCase();
+  if (cat) data = data.filter(b => b.market_category === cat);
+  if (status === 'resolved') data = data.filter(b => b.resolution && !['CANCEL','N/A'].includes(b.resolution));
+  if (status === 'pending') data = data.filter(b => !b.resolution);
+  if (dir) data = data.filter(b => b.bet_direction === dir);
+  if (search) data = data.filter(b => (b.market_question||'').toLowerCase().includes(search));
+  data.sort((a,b) => {
+    let va = a[mfSort], vb = b[mfSort];
+    if (va == null) va = ''; if (vb == null) vb = '';
+    if (typeof va === 'string') return mfDir * va.localeCompare(vb);
+    return mfDir * ((va||0)-(vb||0));
+  });
+  document.getElementById('mf-count').textContent = data.length+' de '+D.manifold.length;
+
+  if (!data.length) {
+    document.getElementById('manifold-content').innerHTML = '<div class="empty">Sin datos todavia</div>';
+    return;
+  }
+  // Populate category filter
+  const cats = [...new Set(D.manifold.map(b=>b.market_category).filter(Boolean))];
+  const mfCat = document.getElementById('mf-cat');
+  if (mfCat.options.length <= 1) cats.forEach(c => { const o=document.createElement('option'); o.value=c; o.textContent=c; mfCat.appendChild(o); });
+
+  document.getElementById('manifold-content').innerHTML = `
+  <table>
+    <thead><tr>
+      <th>ID</th><th>Fecha</th><th>Mercado</th><th>Cat</th><th>Dir</th>
+      <th>Mkt%</th><th>Est%</th><th>EV</th><th>Monto</th><th>Resultado</th><th>P&L</th>
+    </tr></thead>
+    <tbody>`+data.map(b => `<tr>
+      <td>${b.id}</td>
+      <td>${(b.created_at||'').slice(0,10)}</td>
+      <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${b.market_question}">${b.market_question}</td>
+      <td>${b.market_category||'-'}</td>
+      <td style="font-weight:700;color:${b.bet_direction==='YES'?'#3fb950':'#f85149'}">${b.bet_direction}</td>
+      <td>${b.market_prob != null ? (b.market_prob*100).toFixed(0)+'%' : '-'}</td>
+      <td>${b.estimated_prob != null ? (b.estimated_prob*100).toFixed(0)+'%' : '-'}</td>
+      <td style="color:#58a6ff">${b.ev != null ? (b.ev*100).toFixed(1)+'%' : '-'}</td>
+      <td>${b.bet_amount != null ? b.bet_amount.toFixed(0) : '-'}</td>
+      <td>${badgeRes(b.resolution, b.bet_direction)}</td>
+      <td class="${plClass(b.profit_loss)}">${b.profit_loss != null ? fmt(b.profit_loss) : '-'}</td>
+    </tr>`).join('')+`</tbody></table>`;
+}
+
+// ── Generic paper tab ──────────────────────────────────────────────────
+function renderPaperTab(key, elStat, elContent, colMap) {
+  const s = D.stats[key];
+  document.getElementById(elStat).innerHTML = stBar(statsFromObj(s, BOT_NAMES[key],'(paper)'));
+  const data = D[key];
+  if (!data || !data.length) {
+    document.getElementById(elContent).innerHTML = '<div class="empty">Sin datos todavia</div>';
+    return;
+  }
+  const q = colMap.question, d = colMap.direction, r = colMap.resolution,
+        p = colMap.pnl, a = colMap.amount, ep = colMap.ep;
+  document.getElementById(elContent).innerHTML = `
+  <table>
+    <thead><tr>
+      <th>#</th><th>Fecha</th><th>Mercado</th><th>Dir</th><th>Monto</th><th>Resultado</th><th>P&L</th>
+    </tr></thead>
+    <tbody>`+data.map((b,i) => `<tr>
+      <td>${i+1}</td>
+      <td>${(b.created_at||'').slice(0,10)}</td>
+      <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${b[q]||''}">${b[q]||'-'}</td>
+      <td style="font-weight:700;color:${b[d]==='YES'?'#3fb950':'#f85149'}">${b[d]||'-'}</td>
+      <td>${b[a] != null ? '$'+Number(b[a]).toFixed(2) : '-'}</td>
+      <td>${badgeRes(b[r], b[d])}</td>
+      <td class="${plClass(b[p])}">${b[p] != null ? fmt(b[p]) : '-'}</td>
+    </tr>`).join('')+`</tbody></table>`;
+}
+
+// ── Poly Copy tab ──────────────────────────────────────────────────────
+function renderPolyCopy() {
+  const s = D.stats.poly_copy;
+  document.getElementById('stats-poly-copy').innerHTML = stBar(statsFromObj(s,'Poly Copy','(paper)'));
+  const data = D.poly_copy;
+  if (!data || !data.length) {
+    document.getElementById('poly-copy-content').innerHTML = '<div class="empty">Sin datos todavia</div>';
+    return;
+  }
+  document.getElementById('poly-copy-content').innerHTML = `
+  <table>
+    <thead><tr>
+      <th>#</th><th>Fecha</th><th>Mercado</th><th>Wallet</th><th>Dir</th>
+      <th>Entry%</th><th>Monto</th><th>Fuente</th><th>Resultado</th><th>P&L</th>
+    </tr></thead>
+    <tbody>`+data.map((b,i) => `<tr>
+      <td>${i+1}</td>
+      <td>${(b.created_at||'').slice(0,10)}</td>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${b.question||''}">${b.question||'-'}</td>
+      <td style="font-size:0.75em;color:#7d8590;max-width:80px;overflow:hidden;text-overflow:ellipsis">${(b.wallet_address||'').slice(0,8)+'...'}</td>
+      <td style="font-weight:700;color:${b.direction==='YES'?'#3fb950':'#f85149'}">${b.direction||'-'}</td>
+      <td>${b.entry_price != null ? (b.entry_price*100).toFixed(1)+'%' : '-'}</td>
+      <td>${b.paper_amount != null ? '$'+Number(b.paper_amount).toFixed(2) : '-'}</td>
+      <td style="color:#7d8590;font-size:0.8em">${b.source||'-'}</td>
+      <td>${badgeRes(b.resolution, b.direction)}</td>
+      <td class="${plClass(b.pnl)}">${b.pnl != null ? fmt(b.pnl) : '-'}</td>
+    </tr>`).join('')+`</tbody></table>`;
+}
+
+// ── Init ───────────────────────────────────────────────────────────────
+renderCompare();
+renderManifold();
+renderPaperTab('kalshi',       'stats-kalshi',       'kalshi-content',
+  {question:'question',direction:'direction',resolution:'resolution',pnl:'pnl',amount:'paper_amount',ep:'estimated_prob'});
+renderPolyCopy();
+renderPaperTab('poly_predict', 'stats-poly-predict', 'poly-predict-content',
+  {question:'question',direction:'direction',resolution:'resolution',pnl:'pnl',amount:'paper_amount',ep:'estimated_prob'});
+</script>
+</body>
+</html>
