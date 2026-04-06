@@ -141,12 +141,11 @@ a.qa-btn { text-decoration: none; }
 
 <!-- ═══ POLY COPY TAB ═══ -->
 <div class="tab-pane" id="tab-poly-copy">
-  <div style="background:#1c2128;border:1px solid #d29922;padding:10px 14px;border-radius:6px;margin-bottom:12px;color:#d29922;font-size:0.85em">
-    <strong>DESACTIVADO 2026-04-06.</strong> Este bot solo registraba transacciones on-chain sin
-    decodificar el mercado real, el precio de entrada ni la dirección, y nunca tuvo lógica de
-    resolución. Los trades acumulados son ruido y no contribuyen a las métricas de la pestaña
-    Compare. Para reactivar hay que arreglar el pipeline (ver comentarios en
-    <code>polymarket-copy.yml</code>).
+  <div style="background:#0d2818;border:1px solid #2ea043;padding:10px 14px;border-radius:6px;margin-bottom:12px;color:#3fb950;font-size:0.85em">
+    <strong>REACTIVADO 2026-04-06</strong> con pipeline funcional. Ahora usa la Polymarket Data API
+    (trades estructurados con conditionId, price, side, outcome) y un resolver vía Gamma API que
+    cierra los trades cuando los markets resuelven. Dedup por <code>tx_hash</code>. Monitor cada 30 min,
+    discovery diario 6am AR. Paper amount $10/trade.
   </div>
   <div class="stats" id="stats-poly-copy"></div>
   <div id="poly-copy-content"></div>
@@ -221,7 +220,7 @@ function renderBarChart(elId, data) {
 // Bots cuyas stats son válidas para "mejor ROI / P&L combinado".
 // poly_copy quedó desactivado el 2026-04-06 (ver workflow): sus filas
 // son TXs on-chain sin market real, así que no contribuyen a métricas.
-const ACTIVE_BOTS = ['manifold','kalshi','poly_predict'];
+const ACTIVE_BOTS = ['manifold','kalshi','poly_predict','poly_copy'];
 
 function renderCompare() {
   const s = D.stats;
