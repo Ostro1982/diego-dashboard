@@ -89,19 +89,19 @@ a.qa-btn { text-decoration: none; }
 </div>
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="showTab('compare')">Compare <span style="color:#7d8590;font-size:0.85em">59</span></button>
-  <button class="tab-btn manifold" onclick="showTab('manifold')">Manifold <span style="color:#7d8590;font-size:0.85em">59</span></button>
-  <button class="tab-btn kalshi" onclick="showTab('kalshi')">Kalshi <span style="color:#7d8590;font-size:0.85em">0</span></button>
-  <button class="tab-btn poly-copy" onclick="showTab('poly-copy')">Poly Copy <span style="color:#7d8590;font-size:0.85em">0</span></button>
-  <button class="tab-btn poly-predict" onclick="showTab('poly-predict')">Poly Predict <span style="color:#7d8590;font-size:0.85em">0</span></button>
+  <button class="tab-btn active" onclick="showTab('compare')">Compare <span class="tab-count" id="cnt-compare" style="color:#7d8590;font-size:0.85em">…</span></button>
+  <button class="tab-btn manifold" onclick="showTab('manifold')">Manifold <span class="tab-count" id="cnt-manifold" style="color:#7d8590;font-size:0.85em">…</span></button>
+  <button class="tab-btn kalshi" onclick="showTab('kalshi')">Kalshi <span class="tab-count" id="cnt-kalshi" style="color:#7d8590;font-size:0.85em">…</span></button>
+  <button class="tab-btn poly-copy" onclick="showTab('poly-copy')">Poly Copy <span class="tab-count" id="cnt-poly_copy" style="color:#7d8590;font-size:0.85em">…</span></button>
+  <button class="tab-btn poly-predict" onclick="showTab('poly-predict')">Poly Predict <span class="tab-count" id="cnt-poly_predict" style="color:#7d8590;font-size:0.85em">…</span></button>
 </div>
 
 <!-- ═══ COMPARE TAB ═══ -->
 <div class="tab-pane active" id="tab-compare">
   <div class="stats">
-    <div class="st"><div class="v neut">59</div><div class="l">Total Trades</div></div>
-    <div class="st"><div class="v neg">-17.3</div><div class="l">P&L Combinado</div></div>
-    <div class="st"><div class="v neut">Kalshi</div><div class="l">Mejor ROI</div></div>
+    <div class="st"><div class="v neut" id="ov-total">…</div><div class="l">Total Trades</div></div>
+    <div class="st"><div class="v" id="ov-pl">…</div><div class="l">P&L Combinado</div></div>
+    <div class="st"><div class="v neut" id="ov-best">…</div><div class="l">Mejor ROI</div></div>
     <div class="st"><div class="v warn">2000</div><div class="l">Target/bot</div></div>
   </div>
 
@@ -141,6 +141,13 @@ a.qa-btn { text-decoration: none; }
 
 <!-- ═══ POLY COPY TAB ═══ -->
 <div class="tab-pane" id="tab-poly-copy">
+  <div style="background:#1c2128;border:1px solid #d29922;padding:10px 14px;border-radius:6px;margin-bottom:12px;color:#d29922;font-size:0.85em">
+    <strong>DESACTIVADO 2026-04-06.</strong> Este bot solo registraba transacciones on-chain sin
+    decodificar el mercado real, el precio de entrada ni la dirección, y nunca tuvo lógica de
+    resolución. Los trades acumulados son ruido y no contribuyen a las métricas de la pestaña
+    Compare. Para reactivar hay que arreglar el pipeline (ver comentarios en
+    <code>polymarket-copy.yml</code>).
+  </div>
   <div class="stats" id="stats-poly-copy"></div>
   <div id="poly-copy-content"></div>
 </div>
@@ -211,8 +218,36 @@ function renderBarChart(elId, data) {
 }
 
 // ── Compare tab ────────────────────────────────────────────────────────
+// Bots cuyas stats son válidas para "mejor ROI / P&L combinado".
+// poly_copy quedó desactivado el 2026-04-06 (ver workflow): sus filas
+// son TXs on-chain sin market real, así que no contribuyen a métricas.
+const ACTIVE_BOTS = ['manifold','kalshi','poly_predict'];
+
 function renderCompare() {
   const s = D.stats;
+
+  // Tab counts (siempre el total real, incluso para poly_copy)
+  for (const k of ['manifold','kalshi','poly_copy','poly_predict']) {
+    const el = document.getElementById('cnt-'+k);
+    if (el) el.textContent = s[k].total;
+  }
+  document.getElementById('cnt-compare').textContent =
+    ACTIVE_BOTS.reduce((acc,k)=>acc+s[k].total, 0);
+
+  // Overview cards (solo bots activos)
+  const totalActive = ACTIVE_BOTS.reduce((acc,k)=>acc+s[k].total, 0);
+  const plCombined  = ACTIVE_BOTS.reduce((acc,k)=>acc+(s[k].pl||0), 0);
+  let bestKey = null, bestRoi = -Infinity;
+  for (const k of ACTIVE_BOTS) {
+    if (s[k].resolved > 0 && s[k].roi > bestRoi) { bestRoi = s[k].roi; bestKey = k; }
+  }
+  document.getElementById('ov-total').textContent = totalActive;
+  const plEl = document.getElementById('ov-pl');
+  plEl.textContent = fmt(plCombined);
+  plEl.className = 'v ' + plClass(plCombined);
+  document.getElementById('ov-best').textContent =
+    bestKey ? `${BOT_NAMES[bestKey]} (${pct(bestRoi)})` : 'Sin datos';
+
   // ROI chart
   renderBarChart('chart-roi', [
     {label:'Manifold',    value:s.manifold.roi,    color:COLORS.manifold},
