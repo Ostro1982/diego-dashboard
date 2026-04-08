@@ -467,7 +467,7 @@ body::before{
       Ideas / Fase Inicial <span class="count" id="count-ideas">0</span>
     </button>
     <button class="tab" data-tab="dashboards" onclick="switchTab('dashboards')">
-      Dashboards <span class="count" id="count-dashboards">5</span>
+      Dashboards <span class="count" id="count-dashboards">6</span>
     </button>
   </div>
 
@@ -496,6 +496,7 @@ body::before{
       <button class="dash-subtab" data-dashtab="eth" onclick="switchDashTab('eth')"><span class="dash-status-dot offline" id="dash-dot-eth"></span> Ethereum</button>
       <button class="dash-subtab" data-dashtab="base" onclick="switchDashTab('base')"><span class="dash-status-dot offline" id="dash-dot-base"></span> Base</button>
       <button class="dash-subtab" data-dashtab="bsc" onclick="switchDashTab('bsc')"><span class="dash-status-dot offline" id="dash-dot-bsc"></span> BSC</button>
+      <button class="dash-subtab" data-dashtab="strategies" onclick="switchDashTab('strategies')"><span class="dash-status-dot offline" id="dash-dot-strategies"></span> Strategies TA</button>
       <button class="dash-subtab" data-dashtab="tenis" onclick="switchDashTab('tenis')"><span class="dash-status-dot offline" id="dash-dot-tenis"></span> Tenis EV</button>
       <button class="dash-subtab" data-dashtab="ema" onclick="switchDashTab('ema')">EMA Ribbon</button>
       <button class="dash-subtab" data-dashtab="predictions" onclick="switchDashTab('predictions')">Prediction Bots</button>
@@ -1218,8 +1219,24 @@ async function fetchChainData(chain) {
   }
 }
 
+async function fetchStrategiesData() {
+  try {
+    const [ping, stats, open, closed, backtest] = await Promise.all([
+      fetch(`${CRYPTO_API}/api/strategies/ping`).then(r=>r.json()).catch(()=>({ok:false})),
+      fetch(`${CRYPTO_API}/api/strategies/stats`).then(r=>r.json()).catch(()=>null),
+      fetch(`${CRYPTO_API}/api/strategies/open`).then(r=>r.json()).catch(()=>[]),
+      fetch(`${CRYPTO_API}/api/strategies/closed`).then(r=>r.json()).catch(()=>[]),
+      fetch(`${CRYPTO_API}/api/strategies/backtest`).then(r=>r.json()).catch(()=>[])
+    ]);
+    chainData.strategies = { online: !!ping.ok, stats, open, closed, backtest };
+  } catch(e) {
+    chainData.strategies = { online: false, stats: null, open: [], closed: [], backtest: [] };
+  }
+}
+
 async function loadAllDashboards() {
   await Promise.all(CHAINS.map(fetchChainData));
+  await fetchStrategiesData();
   try {
     const [status, historial, bankroll] = await Promise.all([
       fetch(`${CRYPTO_API}/api/tenis/status`).then(r=>r.json()).catch(()=>({online:false})),
@@ -1240,6 +1257,8 @@ function renderDashContent() {
   });
   const td = document.getElementById('dash-dot-tenis');
   if(td) td.className = `dash-status-dot ${chainData.tenis?.online ? 'online' : 'offline'}`;
+  const sd = document.getElementById('dash-dot-strategies');
+  if(sd) sd.className = `dash-status-dot ${chainData.strategies?.online ? 'online' : 'offline'}`;
   renderDashPanel();
 }
 
@@ -1252,6 +1271,7 @@ function switchDashTab(tab) {
 function renderDashPanel() {
   const panel = document.getElementById('dash-content');
   if (currentDashTab === 'overview') renderOverview(panel);
+  else if (currentDashTab === 'strategies') renderStrategiesPanel(panel);
   else if (currentDashTab === 'tenis') renderTenisPanel(panel);
   else if (currentDashTab === 'ema') renderEmaRibbonPanel(panel);
   else if (currentDashTab === 'predictions') renderPredictionsPanel(panel);
@@ -1300,7 +1320,27 @@ function renderOverview(panel) {
   });
   html += `</div></div>`;
 
-  // --- 2. TENIS EV ---
+  // --- 2. CRYPTO STRATEGIES TA ---
+  const st = chainData.strategies, sst = st?.stats;
+  html += `
+    <div style="margin-bottom:2rem;border-top:1px solid var(--border);padding-top:1.5rem">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem">
+        <span style="font-family:var(--font-display);font-weight:700;font-size:1.1rem;color:var(--purple)">CRYPTO STRATEGIES TA</span>
+        <span class="dash-status-dot ${st?.online?'online':'offline'}"></span>
+        <span style="font-size:0.65rem;color:var(--text-muted)">${st?.online?'Online':'Offline'} &mdash; 6 estrategias \u00d7 10 majors, paper trading</span>
+      </div>
+      <div class="overview-chains"><div class="overview-chain-card" onclick="switchDashTab('strategies')">
+        ${sst ? `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem">
+          <div class="metric"><div class="metric-label">Bankroll</div><div class="metric-value info">$${(sst.bankroll||0).toFixed(0)}</div></div>
+          <div class="metric"><div class="metric-label">ROI</div><div class="metric-value ${(sst.roi||0)>=0?'positive':'warning'}">${(sst.roi||0).toFixed(2)}%</div></div>
+          <div class="metric"><div class="metric-label">Open / Cerrados</div><div class="metric-value">${sst.open_trades||0} / ${sst.total_closed||0}</div></div>
+          <div class="metric"><div class="metric-label">Combos</div><div class="metric-value">${sst.active_combos||0}</div></div>
+        </div>
+        <div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.75rem">Trade size $${(sst.trade_size||0).toFixed(0)} (${((sst.trade_pct||0)*100).toFixed(1)}% BR fixed fractional) &mdash; capital $${(sst.capital_inicial||0).toFixed(0)}</div>` : '<div style="color:var(--text-muted);font-size:0.75rem">Servidor offline &mdash; levantar con: python app.py en crypto-strategies</div>'}
+      </div></div>
+    </div>`;
+
+  // --- 3. TENIS EV ---
   const t = chainData.tenis;
   html += `
     <div style="margin-bottom:2rem;border-top:1px solid var(--border);padding-top:1.5rem">
@@ -1434,6 +1474,64 @@ function renderChainPanel(panel, chain) {
     });
     html += '</tbody></table></div>';
   }
+
+  panel.innerHTML = html;
+}
+
+function renderStrategiesPanel(panel) {
+  const d = chainData.strategies;
+  if(!d || !d.online || !d.stats) { panel.innerHTML = '<div class="dash-loading">Strategies bot offline &mdash; levantar con: cd C:\\Users\\Ostro\\crypto-strategies && python app.py</div>'; return; }
+  const s = d.stats;
+  const trade_pct_str = ((s.trade_pct||0) * 100).toFixed(1);
+
+  let html = `<div class="dash-stats">
+    <div class="dash-stat"><div class="dash-stat-label">Capital Inicial</div><div class="dash-stat-value" style="color:var(--text-secondary)">$${(s.capital_inicial||0).toFixed(0)}</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">Bankroll</div><div class="dash-stat-value" style="color:var(--cyan)">$${(s.bankroll||0).toFixed(2)}</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">ROI</div><div class="dash-stat-value" style="color:${pnlColor(s.roi||0)}">${(s.roi||0).toFixed(2)}%</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">PnL Realizado</div><div class="dash-stat-value" style="color:${pnlColor(s.pnl_usd||0)}">$${(s.pnl_usd||0).toFixed(2)}</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">PnL No-Realizado</div><div class="dash-stat-value" style="color:${pnlColor(s.unrealized_pnl_usd||0)}">$${(s.unrealized_pnl_usd||0).toFixed(2)}</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">Trade Size</div><div class="dash-stat-value">$${(s.trade_size||0).toFixed(0)} <span style="font-size:0.6rem;color:var(--text-muted)">(${trade_pct_str}% BR)</span></div></div>
+    <div class="dash-stat"><div class="dash-stat-label">Combos Activos</div><div class="dash-stat-value">${s.active_combos||0}</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">Open / Cerrados</div><div class="dash-stat-value">${s.open_trades||0} / ${s.total_closed||0}</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">Win Rate</div><div class="dash-stat-value">${((s.win_rate||0)*100).toFixed(0)}%</div></div>
+  </div>`;
+
+  if(d.open && d.open.length) {
+    html += `<div class="dash-section-title">Posiciones Abiertas (${d.open.length})</div>
+    <div class="dash-table-wrap"><table class="dash-table"><thead><tr><th>Estrategia</th><th>Par</th><th>Entry</th><th>Current</th><th>PnL %</th><th>Size</th></tr></thead><tbody>`;
+    d.open.forEach(t => {
+      const p = t.pnl_pct||0;
+      html += `<tr><td style="color:var(--text-primary);font-weight:600">${t.strategy||'?'}</td><td>${t.pair||'?'}</td><td>$${(t.entry_price||0).toFixed(4)}</td><td>$${(t.current_price||0).toFixed(4)}</td><td style="color:${pnlColor(p)}">${p>=0?'+':''}${p.toFixed(2)}%</td><td>$${(t.simulated_amount||0).toFixed(0)}</td></tr>`;
+    });
+    html += '</tbody></table></div>';
+  }
+
+  if(d.closed && d.closed.length) {
+    html += `<div class="dash-section-title">Trades Cerrados Recientes</div>
+    <div class="dash-table-wrap"><table class="dash-table"><thead><tr><th>Estrategia</th><th>Par</th><th>Entry</th><th>Exit</th><th>PnL %</th><th>PnL USD</th></tr></thead><tbody>`;
+    d.closed.slice(0,15).forEach(t => {
+      const pct = t.pnl_pct||0;
+      const usd = t.pnl_usd||0;
+      html += `<tr><td style="color:var(--text-primary);font-weight:600">${t.strategy||'?'}</td><td>${t.pair||'?'}</td><td>$${(t.entry_price||0).toFixed(4)}</td><td>$${(t.exit_price||0).toFixed(4)}</td><td style="color:${pnlColor(pct)}">${pct>=0?'+':''}${pct.toFixed(2)}%</td><td style="color:${pnlColor(usd)}">$${usd.toFixed(2)}</td></tr>`;
+    });
+    html += '</tbody></table></div>';
+  }
+
+  if(d.backtest && d.backtest.length) {
+    html += `<div class="dash-section-title">Backtest 2024-2026 (combos activos)</div>
+    <div class="dash-table-wrap"><table class="dash-table"><thead><tr><th>Estrategia</th><th>Par</th><th>Trades</th><th>Win %</th><th>Sharpe</th><th>Max DD</th><th>PF</th><th>Return</th></tr></thead><tbody>`;
+    d.backtest.forEach(b => {
+      const ret = (b.total_return_pct||0) * 100;
+      const dd = (b.max_dd_pct||0) * 100;
+      const wr = (b.win_rate||0) * 100;
+      html += `<tr><td style="color:var(--text-primary);font-weight:600">${b.strategy||'?'}</td><td>${b.pair||'?'}</td><td>${b.total_trades||0}</td><td>${wr.toFixed(0)}%</td><td>${(b.sharpe||0).toFixed(2)}</td><td style="color:var(--red)">-${dd.toFixed(1)}%</td><td>${(b.profit_factor||0).toFixed(2)}</td><td style="color:${pnlColor(ret)}">${ret>=0?'+':''}${ret.toFixed(0)}%</td></tr>`;
+    });
+    html += '</tbody></table></div>';
+  }
+
+  html += `<div style="color:var(--text-muted);font-size:0.72rem;margin-top:1rem;border-left:2px solid var(--purple);padding-left:0.8rem">
+    <strong style="color:var(--purple)">Nota:</strong> 6 estrategias TA (MA crossover, Donchian, MACD, RSI2, Bollinger, Momentum ROC) sobre 10 majors. Whitelist live con ${s.active_combos||0} combos (retorno \u2265 8% en backtest). Fixed fractional: ${trade_pct_str}% del BR por trade.
+  </div>`;
 
   panel.innerHTML = html;
 }
