@@ -187,17 +187,21 @@ tr:hover td{background:var(--bg-card-hover)}
 </div>
 
 <div class="footer">
-  Multi-chain copy-trade paper trading &mdash; Solana $200 | ETH $2,000 | Base $200 | BSC $200 &mdash; Trade size: 1% bankroll
+  Multi-chain copy-trade paper trading &mdash; Unified Core $3,000 (Solana + Base + BSC) | ETH isolated $5,000 &mdash; Trade size: 1% bankroll
 </div>
 
 <script>
 const API = 'http://localhost:5001';
 const CHAINS = [
-  { id: 'crypto', name: 'Solana', symbol: 'SOL', capital: 200 },
-  { id: 'eth', name: 'Ethereum', symbol: 'ETH', capital: 2000 },
-  { id: 'base', name: 'Base', symbol: 'ETH', capital: 200 },
-  { id: 'bsc', name: 'BSC', symbol: 'BNB', capital: 200 }
+  { id: 'crypto', name: 'Solana', symbol: 'SOL', capital: 1000 },
+  { id: 'eth', name: 'Ethereum', symbol: 'ETH', capital: 5000 },
+  { id: 'base', name: 'Base', symbol: 'ETH', capital: 1000 },
+  { id: 'bsc', name: 'BSC', symbol: 'BNB', capital: 1000 }
 ];
+// Unified core = Solana + Base + BSC. ETH stays isolated.
+const CORE_IDS = ['crypto', 'base', 'bsc'];
+const CORE_CAPITAL = 3000;
+const ETH_CAPITAL = 5000;
 
 let data = {};
 let currentTab = 'overview';
@@ -269,32 +273,55 @@ function render() {
   else { const c = CHAINS.find(x=>x.id===currentTab); if(c) renderChain(panel, c); }
 }
 
-function renderOverview(panel) {
-  let tb=0, tp=0, to=0, tc=0, tu=0;
-  CHAINS.forEach(c => {
-    const s = data[c.id]?.stats;
-    if(s) {
-      tb += s.bankroll||0;
-      tp += s.pnl_usd||0;
-      to += s.open_trades||0;
-      tc += (s.closed_by_tp||0)+(s.closed_by_sl||0)+(s.closed_by_ws||0);
-      tu += s.unrealized_pnl_usd||0;
+function aggregateGroup(ids, capital) {
+  let bk=0, pnl=0, open=0, closed=0, unr=0, wins=0, losses=0, wallets=0, capOpen=0;
+  ids.forEach(id => {
+    const s = data[id]?.stats;
+    if (s) {
+      bk += s.bankroll||0;
+      pnl += s.pnl_usd||0;
+      open += s.open_trades||0;
+      closed += (s.closed_by_tp||0)+(s.closed_by_sl||0)+(s.closed_by_ws||0);
+      unr += s.unrealized_pnl_usd||0;
+      wins += s.wins||0;
+      losses += s.losses||0;
+      wallets += s.active_wallets||0;
+      capOpen += s.capital_abierto||0;
     }
   });
-  const roi = tb > 0 ? (tp / 2600 * 100) : 0;
+  const roi = capital > 0 ? (pnl / capital * 100) : 0;
+  const wr = (wins+losses) > 0 ? (wins/(wins+losses)*100) : 0;
+  return { bk, pnl, open, closed, unr, wins, losses, wallets, capOpen, roi, wr, capital };
+}
 
-  let h = '<div class="overview-stats">';
-  h += stat('Bankroll Total', fmtUsd(tb), 'var(--cyan)');
-  h += stat('Capital Inicial', '$2,600', 'var(--text-secondary)');
-  h += stat('PnL Realizado', fmtUsd(tp), pnlColor(tp));
-  h += stat('PnL No Realizado', fmtUsd(tu), pnlColor(tu));
-  h += stat('ROI Total', roi.toFixed(1)+'%', pnlColor(roi));
-  h += stat('Trades Abiertos', to, 'var(--text-primary)');
-  h += stat('Trades Cerrados', tc, 'var(--text-primary)');
+function renderGroupBlock(title, subtitle, g) {
+  let h = '<div class="section-title">'+title+' <span style="color:var(--text-muted);font-weight:400;font-size:0.7rem">&mdash; '+subtitle+'</span></div>';
+  h += '<div class="overview-stats">';
+  h += stat('Bankroll', fmtUsd(g.bk), 'var(--cyan)');
+  h += stat('Capital Inicial', fmtUsd(g.capital), 'var(--text-secondary)');
+  h += stat('PnL Realizado', fmtUsd(g.pnl), pnlColor(g.pnl));
+  h += stat('PnL No Realizado', fmtUsd(g.unr), pnlColor(g.unr));
+  h += stat('ROI', g.roi.toFixed(1)+'%', pnlColor(g.roi));
+  h += stat('Win Rate', (g.wins+g.losses)>0 ? g.wr.toFixed(0)+'%' : '-', g.wr>50?'var(--green)':'var(--amber)');
+  h += stat('Trades Abiertos', g.open, 'var(--text-primary)');
+  h += stat('Trades Cerrados', g.closed, 'var(--text-primary)');
+  h += stat('Wallets Activas', g.wallets, 'var(--text-primary)');
+  h += stat('Capital en Open', fmtUsd(g.capOpen), 'var(--text-secondary)');
+  h += stat('Wins / Losses', g.wins+'W / '+g.losses+'L', 'var(--text-primary)');
   h += stat('Config', 'SL -15% / TP +50%', 'var(--text-secondary)');
   h += '</div>';
+  return h;
+}
 
-  h += '<div class="section-title">Chains</div><div class="chain-cards">';
+function renderOverview(panel) {
+  const core = aggregateGroup(CORE_IDS, CORE_CAPITAL);
+  const eth = aggregateGroup(['eth'], ETH_CAPITAL);
+
+  let h = '';
+  h += renderGroupBlock('CORE UNIFIED', 'Solana + Base + BSC &mdash; bankroll y stats sumados', core);
+  h += renderGroupBlock('ETH ISOLATED', 'Ethereum mainnet &mdash; tracking separado por costos de gas', eth);
+
+  h += '<div class="section-title">Detalle por Chain</div><div class="chain-cards">';
   CHAINS.forEach(c => {
     const d2 = data[c.id], s = d2?.stats, on = d2?.online;
     const closed = (s?.closed_by_tp||0)+(s?.closed_by_sl||0)+(s?.closed_by_ws||0);
