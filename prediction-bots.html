@@ -143,17 +143,28 @@ a.qa-btn { text-decoration: none; }
 <div class="tab-pane" id="tab-poly-copy">
   <div style="background:#0d2818;border:1px solid #2ea043;padding:10px 14px;border-radius:6px;margin-bottom:12px;color:#3fb950;font-size:0.85em">
     <strong>REACTIVADO 2026-04-06</strong> con pipeline funcional. Ahora usa la Polymarket Data API
-    (trades estructurados con conditionId, price, side, outcome) y un resolver vía Gamma API que
+    (trades estructurados con conditionId, price, side, outcome) y un resolver v&iacute;a Gamma API que
     cierra los trades cuando los markets resuelven. Dedup por <code>tx_hash</code>. Monitor cada 30 min,
     discovery diario 6am AR. Paper amount $10/trade.
   </div>
   <div class="stats" id="stats-poly-copy"></div>
+  <h2>Top Wallets (por P&amp;L)</h2>
+  <div id="pc-wallets"></div>
+  <h2>Trades</h2>
   <div id="poly-copy-content"></div>
 </div>
 
 <!-- ═══ POLY PREDICT TAB ═══ -->
 <div class="tab-pane" id="tab-poly-predict">
+  <div style="background:#1a0a2e;border:1px solid #b388ff;padding:10px 14px;border-radius:6px;margin-bottom:12px;color:#b388ff;font-size:0.85em">
+    <strong>v2 DATA-DRIVEN</strong> — Evaluadores por categoria: Crypto (CoinGecko), Weather (Open-Meteo), Sports (Odds API), Politics (encuestas+LLM). 3 simuladores: Kelly, Flat $10, 2% BR.
+  </div>
   <div class="stats" id="stats-poly-predict"></div>
+  <h2>Performance por Categoria</h2>
+  <div id="pp-categories"></div>
+  <h2>Bankrolls (Simuladores)</h2>
+  <div class="stats" id="pp-bankrolls"></div>
+  <h2>Trades</h2>
   <div id="poly-predict-content"></div>
 </div>
 
@@ -361,6 +372,68 @@ function renderPaperTab(key, elStat, elContent, colMap) {
     </tr>`).join('')+`</tbody></table>`;
 }
 
+// ── Poly Predict categories ────────────────────────────────────────────
+const CAT_COLORS = {crypto:'#f7931a',weather:'#00bcd4',sports:'#ff5722',politics:'#9c27b0',other:'#7d8590'};
+const CAT_ICONS = {crypto:'₿',weather:'☁',sports:'⚽',politics:'🏛',other:'?'};
+
+function renderPPCategories() {
+  const cats = D.stats.poly_predict_categories || {};
+  const el = document.getElementById('pp-categories');
+  const catKeys = ['crypto','weather','sports','politics','other'].filter(k => cats[k]);
+  if (!catKeys.length) {
+    el.innerHTML = '<div class="empty">Sin datos por categoria todavia — esperando primeras apuestas v2</div>';
+    return;
+  }
+  el.innerHTML = `<table class="cmp-table">
+    <thead><tr><th>Categoria</th><th>Trades</th><th>Resueltas</th><th>Win Rate</th><th>P&L</th><th>ROI</th><th>Brier</th><th>Data Source</th></tr></thead>
+    <tbody>${catKeys.map(k => {
+      const s = cats[k];
+      const bc = s.brier == null ? 'neut' : s.brier < 0.20 ? 'pos' : s.brier < 0.30 ? 'warn' : 'neg';
+      return `<tr>
+        <td><span style="color:${CAT_COLORS[k]||'#7d8590'};font-weight:700">${(CAT_ICONS[k]||'')} ${k.charAt(0).toUpperCase()+k.slice(1)}</span></td>
+        <td>${s.total}</td><td>${s.resolved}</td>
+        <td class="${s.wr>50?'pos':'neg'}">${pct(s.wr)}</td>
+        <td class="${plClass(s.pl)}">${fmt(s.pl)}</td>
+        <td class="${s.roi>=0?'pos':'neg'}">${pct(s.roi)}</td>
+        <td class="${bc}">${s.brier!=null?s.brier.toFixed(4):'N/A'}</td>
+        <td style="color:#7d8590;font-size:0.8em">${(s.data_sources||[]).join(', ')||'—'}</td>
+      </tr>`;
+    }).join('')}</tbody></table>`;
+}
+
+function renderPPBankrolls() {
+  const br = D.stats.bankrolls || {};
+  const el = document.getElementById('pp-bankrolls');
+  const sims = [['kelly','Kelly (quarter, cap 2%)'],['flat','Flat $10'],['pct2','2% Bankroll']];
+  el.innerHTML = sims.map(([k,label]) => {
+    const bal = br[k];
+    const v = bal != null ? '$'+bal.toFixed(2) : '$1,000.00';
+    const diff = bal != null ? bal - 1000 : 0;
+    const cls = diff > 0 ? 'pos' : diff < 0 ? 'neg' : 'neut';
+    return `<div class="st"><div class="v ${cls}">${v}</div><div class="l">${label} ${diff !== 0 ? '('+fmt(diff)+')' : ''}</div></div>`;
+  }).join('');
+}
+
+// ── Poly Copy wallets ─────────────────────────────────────────────────
+function renderPCWallets() {
+  const wallets = D.stats.poly_copy_wallets || [];
+  const el = document.getElementById('pc-wallets');
+  if (!wallets.length) {
+    el.innerHTML = '<div class="empty">Sin datos de wallets</div>';
+    return;
+  }
+  el.innerHTML = `<table class="cmp-table">
+    <thead><tr><th>#</th><th>Wallet</th><th>Trades</th><th>Resueltas</th><th>Win Rate</th><th>P&L</th><th>ROI</th></tr></thead>
+    <tbody>${wallets.map((w,i) => `<tr>
+      <td>${i+1}</td>
+      <td style="font-family:monospace;font-size:0.8em;color:#8b949e">${w.wallet.slice(0,10)}...</td>
+      <td>${w.total}</td><td>${w.resolved}</td>
+      <td class="${w.wr>50?'pos':'neg'}">${pct(w.wr)}</td>
+      <td class="${plClass(w.pl)}">${fmt(w.pl)}</td>
+      <td class="${w.roi>=0?'pos':'neg'}">${pct(w.roi)}</td>
+    </tr>`).join('')}</tbody></table>`;
+}
+
 // ── Poly Copy tab ──────────────────────────────────────────────────────
 function renderPolyCopy() {
   const s = D.stats.poly_copy;
@@ -406,6 +479,9 @@ async function loadDashboard() {
   renderPaperTab('kalshi',       'stats-kalshi',       'kalshi-content',
     {question:'question',direction:'direction',resolution:'resolution',pnl:'pnl',amount:'paper_amount',ep:'estimated_prob'});
   renderPolyCopy();
+  renderPCWallets();
+  renderPPCategories();
+  renderPPBankrolls();
   renderPaperTab('poly_predict', 'stats-poly-predict', 'poly-predict-content',
     {question:'question',direction:'direction',resolution:'resolution',pnl:'pnl',amount:'paper_amount',ep:'estimated_prob'});
   // Show generated_at footer
