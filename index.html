@@ -816,37 +816,38 @@ const PROJECTS = [
       ],
       blockers: ["0 clientes pagando", "VPS n8n no configurado", "WhatsApp Cloud API no probado"]
     }
-  },
-  {
+  },{
     id: "prediction-bots",
     name: "Prediction Bots",
     type: "bot",
     accent: "green",
-    desc: "4 bots de predicci\u00f3n: Manifold (real mana) + Kalshi (paper) + Polymarket Copy-Trade (paper) + Polymarket Predict (paper). Meta: 2000 apuestas antes de ir real.",
-    stack: ["Python", "Groq", "GitHub Actions", "Telegram", "SQLite"],
+    desc: "4 bots de prediccion: Manifold (real mana) + Kalshi (paper) + Polymarket Copy-Trade (paper) + Polymarket Predict v2 (paper, data-driven). Crypto/Weather/Sports con formulas + Politics con encuestas+LLM.",
+    stack: ["Python", "CoinGecko", "Open-Meteo", "Odds API", "Groq", "GitHub Actions", "Telegram", "SQLite"],
     status: "live",
-    statusText: "Manifold live + 3 bots paper trading",
+    statusText: "Manifold live + 3 bots paper | Poly Predict v2 rebuild",
     metrics: [
       { label: "Plataformas", value: "4", class: "info" },
       { label: "Target", value: "2000 bets", class: "" },
-      { label: "Tests", value: "30/30", class: "positive" },
-      { label: "Brier Target", value: "<0.20", class: "" }
+      { label: "Tests", value: "51/51", class: "positive" },
+      { label: "Brier Target", value: "<0.25", class: "" }
     ],
     revenue: "medium",
     revenueText: "Gateway a Polymarket real ($500+)",
-    next: "Acumular apuestas resueltas \u2192 evaluar Brier Score + ROI por plataforma.",
+    next: "Paper trading v2 con data real. Validar edge por categoria (crypto/weather/sports/politics).",
     dashboard: "prediction-bots.html",
     links: [
       { label: "Dashboard Live", url: "prediction-bots.html" }
     ],
     details: {
       features: [
-        "4 plataformas: Manifold, Kalshi, Poly Copy-Trade, Poly Predict",
-        "Scans: general 3x/d\u00eda + sports cada 2h",
-        "Groq llama-3.3-70b (gratis, 1000 req/d\u00eda)",
-        "Telegram: notificaciones autom\u00e1ticas",
-        "GitHub Actions: corre solo 24/7",
-        "Dashboard con tabs + comparaci\u00f3n lado a lado"
+        "Poly Predict v2: 4 evaluadores con data real (CoinGecko, Open-Meteo, Odds API, encuestas)",
+        "Crypto: modelo log-normal + volatilidad historica",
+        "Weather: forecast directo + base rates historicas",
+        "Sports: probabilidad implicita de casas de apuestas",
+        "Politics: encuestas + LLM clamped ±5%",
+        "3 simuladores por apuesta: Kelly, Flat $10, 2% BR",
+        "Manifold, Kalshi, Poly Copy-Trade siguen activos",
+        "GitHub Actions 24/7 + Telegram + Dashboard auto-sync"
       ],
       blockers: ["Polymarket bloqueado desde AR (paper trading ok)", "Kalshi necesita cuenta hermano para real"]
     }
