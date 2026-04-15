@@ -74,7 +74,8 @@ tr:hover { background: #1c2128; }
   <button class="tab-btn" data-tab="manifold">Manifold</button>
   <button class="tab-btn" data-tab="kalshi">Kalshi</button>
   <button class="tab-btn" data-tab="poly-predict">Poly Predict</button>
-  <button class="tab-btn" data-tab="poly-copy">Poly Copy</button>
+  <button class="tab-btn" data-tab="poly-copy">Copy (All)</button>
+  <button class="tab-btn" data-tab="poly-copy-filtered">Copy WR55+</button>
 </div>
 
 <!-- OVERVIEW -->
@@ -127,20 +128,32 @@ tr:hover { background: #1c2128; }
     Copy-trade: copia trades de top wallets en Polymarket. Discovery diario, monitor cada 30 min. Los mercados de prediccion resuelven lento &mdash; muchos trades pendientes es normal.
   </div>
   <div class="cards" id="pc-cards"></div>
-  <div id="pc-backtest"></div>
   <h2>Top Wallets (por P&amp;L)</h2>
   <div id="pc-wallets"></div>
   <h2>Trades recientes</h2>
   <div id="pc-content"></div>
 </div>
 
+<!-- POLY COPY FILTERED (WR55+) -->
+<div class="tab-pane" id="tab-poly-copy-filtered">
+  <div class="note" style="border-left-color:#3fb950">
+    <strong style="color:#3fb950">Copy WR55+</strong> &mdash; Solo wallets con win rate &ge;55% (min 20 trades resueltos). Sizing: 0.5% del BR. Fee: 2% on profit. Activo desde 2026-04-15.
+  </div>
+  <div class="cards" id="pcf-cards"></div>
+  <div id="pcf-backtest"></div>
+  <h2>Wallets activas (WR &ge;55%)</h2>
+  <div id="pcf-wallets"></div>
+  <h2>Trades recientes</h2>
+  <div id="pcf-content"></div>
+</div>
+
 <div id="footer" style="color:#7d8590;font-size:0.72em;margin-top:20px;text-align:center"></div>
 
 <script>
 let D = null;
-const COLORS = {manifold:'#58a6ff',kalshi:'#d29922',poly_copy:'#3fb950',poly_predict:'#b388ff'};
-const NAMES = {manifold:'Manifold',kalshi:'Kalshi',poly_copy:'Poly Copy',poly_predict:'Poly Predict'};
-const CHIPS = {manifold:'chip-m',kalshi:'chip-k',poly_copy:'chip-pc',poly_predict:'chip-pp'};
+const COLORS = {manifold:'#58a6ff',kalshi:'#d29922',poly_copy:'#3fb950',poly_predict:'#b388ff',poly_copy_filtered:'#56d364'};
+const NAMES = {manifold:'Manifold',kalshi:'Kalshi',poly_copy:'Copy (All)',poly_predict:'Poly Predict',poly_copy_filtered:'Copy WR55+'};
+const CHIPS = {manifold:'chip-m',kalshi:'chip-k',poly_copy:'chip-pc',poly_predict:'chip-pp',poly_copy_filtered:'chip-pc'};
 const TARGET = 2000;
 
 // Tab switching
@@ -180,7 +193,7 @@ function botCards(s, unit='') {
 // Overview
 function renderOverview() {
   const s = D.stats;
-  const keys = ['manifold','kalshi','poly_predict','poly_copy'];
+  const keys = ['manifold','kalshi','poly_predict','poly_copy','poly_copy_filtered'];
   const total = keys.reduce((a,k)=>a+s[k].total,0);
   const resolved = keys.reduce((a,k)=>a+s[k].resolved,0);
   const pl = keys.reduce((a,k)=>a+(s[k].pl||0),0);
@@ -390,10 +403,25 @@ function renderPolyCopy() {
       <td>${badgeRes(b.resolution,b.direction)}</td>
       <td class="${cls(b.pnl)}">${b.pnl!=null?fmt(b.pnl):'-'}</td>
     </tr>`).join('')}</tbody></table>`;
+}
 
-  // Backtest retroactivo
+// Poly Copy Filtered (WR55+)
+function renderPolyCopyFiltered() {
+  const s = D.stats.poly_copy_filtered;
+  if (!s) { document.getElementById('pcf-cards').innerHTML='<div class="empty">Sin datos filtrados</div>'; return; }
+  const resRate = s.total>0?(s.resolved/s.total*100).toFixed(0)+'%':'0%';
+  document.getElementById('pcf-cards').innerHTML = cardHTML([
+    {l:'Total Trades',v:s.total,c:'neut'},
+    {l:'Resueltas',v:s.resolved,c:'neut',d:resRate+' resolucion'},
+    {l:'Pendientes',v:s.pending,c:'warn'},
+    {l:'Win Rate',v:s.resolved>0?pct(s.wr):'—',c:s.resolved>0?(s.wr>50?'pos':'neg'):'muted'},
+    {l:'P&L',v:s.resolved>0?fmt(s.pl):'—',c:cls(s.pl)},
+    {l:'ROI',v:s.resolved>0?pct(s.roi):'—',c:s.resolved>0?(s.roi>=0?'pos':'neg'):'muted'},
+  ]);
+
+  // Backtest
   const bt = D.stats.poly_copy_backtest;
-  const btEl = document.getElementById('pc-backtest');
+  const btEl = document.getElementById('pcf-backtest');
   if (bt && bt.trades > 0) {
     btEl.innerHTML = `
       <div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px;margin:16px 0">
@@ -410,11 +438,11 @@ function renderPolyCopy() {
         ${bt.equity_curve && bt.equity_curve.length > 1 ? `
         <div style="margin-top:8px">
           <div style="color:#8b949e;font-size:0.75em;margin-bottom:4px">Equity Curve ($${bt.initial_br} inicial)</div>
-          <canvas id="equity-canvas" width="600" height="150" style="width:100%;max-height:150px;background:#0d1117;border-radius:4px"></canvas>
+          <canvas id="equity-canvas-f" width="600" height="150" style="width:100%;max-height:150px;background:#0d1117;border-radius:4px"></canvas>
         </div>` : ''}
       </div>`;
     if (bt.equity_curve && bt.equity_curve.length > 1) {
-      const cv = document.getElementById('equity-canvas');
+      const cv = document.getElementById('equity-canvas-f');
       const ctx = cv.getContext('2d');
       const W = cv.width, H = cv.height;
       const pts = bt.equity_curve;
@@ -427,7 +455,7 @@ function renderPolyCopy() {
       const baseY = H - ((bt.initial_br - minBr) / range) * (H - 20) - 10;
       ctx.beginPath(); ctx.moveTo(0, baseY); ctx.lineTo(W, baseY); ctx.stroke();
       ctx.setLineDash([]);
-      ctx.strokeStyle = '#3fb950'; ctx.lineWidth = 2;
+      ctx.strokeStyle = '#56d364'; ctx.lineWidth = 2;
       ctx.beginPath();
       pts.forEach((p, i) => {
         const x = (p.trade / maxT) * W;
@@ -437,6 +465,39 @@ function renderPolyCopy() {
       ctx.stroke();
     }
   }
+
+  // Wallets
+  const wallets = D.stats.poly_copy_filtered_wallets || [];
+  const wEl = document.getElementById('pcf-wallets');
+  if (!wallets.length) { wEl.innerHTML='<div class="empty">Sin datos de wallets</div>'; }
+  else {
+    wEl.innerHTML = `<table>
+      <thead><tr><th>#</th><th>Wallet</th><th>Trades</th><th>Resueltas</th><th>WR</th><th>P&L</th><th>ROI</th></tr></thead>
+      <tbody>${wallets.map((w,i) => `<tr>
+        <td>${i+1}</td>
+        <td style="font-family:monospace;font-size:0.78em;color:#8b949e">${w.wallet.slice(0,10)}...</td>
+        <td>${w.total}</td><td>${w.resolved}</td>
+        <td class="${w.resolved>0?(w.wr>50?'pos':'neg'):'muted'}">${w.resolved>0?pct(w.wr):'—'}</td>
+        <td class="${cls(w.pl)}">${w.resolved>0?fmt(w.pl):'—'}</td>
+        <td class="${w.resolved>0?(w.roi>=0?'pos':'neg'):'muted'}">${w.resolved>0?pct(w.roi):'—'}</td>
+      </tr>`).join('')}</tbody></table>`;
+  }
+
+  // Trades
+  const data = D.poly_copy_filtered;
+  if (!data||!data.length) { document.getElementById('pcf-content').innerHTML='<div class="empty">Sin datos</div>'; return; }
+  document.getElementById('pcf-content').innerHTML = `<table>
+    <thead><tr><th>Fecha</th><th>Mercado</th><th>Wallet</th><th>Dir</th><th>Entry</th><th>Monto</th><th>Resultado</th><th>P&L</th></tr></thead>
+    <tbody>${data.map(b => `<tr>
+      <td>${(b.created_at||'').slice(0,10)}</td>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${b.question||''}">${b.question||'-'}</td>
+      <td style="font-size:0.75em;color:#7d8590">${(b.wallet_address||'').slice(0,8)}...</td>
+      <td style="font-weight:700;color:${b.direction==='YES'?'#3fb950':'#f85149'}">${b.direction||'-'}</td>
+      <td>${b.entry_price!=null?(b.entry_price*100).toFixed(0)+'%':'-'}</td>
+      <td>$${Number(b.paper_amount||0).toFixed(0)}</td>
+      <td>${badgeRes(b.resolution,b.direction)}</td>
+      <td class="${cls(b.pnl)}">${b.pnl!=null?fmt(b.pnl):'-'}</td>
+    </tr>`).join('')}</tbody></table>`;
 }
 
 // Init
@@ -458,6 +519,7 @@ async function init() {
   renderKalshi();
   renderPolyPredict();
   renderPolyCopy();
+  renderPolyCopyFiltered();
   document.getElementById('footer').textContent = 'Datos generados: '+ts;
 }
 init();
