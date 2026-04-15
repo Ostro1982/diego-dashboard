@@ -139,6 +139,7 @@ tr:hover { background: #1c2128; }
   <div class="note" style="border-left-color:#3fb950">
     <strong style="color:#3fb950">Copy WR55+</strong> &mdash; Solo wallets con win rate &ge;55% (min 20 trades resueltos). Sizing: 0.5% del BR. Fee: 2% on profit. Activo desde 2026-04-15.
   </div>
+  <div id="pcf-forward"></div>
   <div class="cards" id="pcf-cards"></div>
   <div id="pcf-backtest"></div>
   <h2>Wallets activas (WR &ge;55%)</h2>
@@ -407,6 +408,53 @@ function renderPolyCopy() {
 
 // Poly Copy Filtered (WR55+)
 function renderPolyCopyFiltered() {
+  // Forward test tracker
+  const ft = D.stats.forward_test;
+  const ftEl = document.getElementById('pcf-forward');
+  if (ft) {
+    const tg = ft.targets||{};
+    const chk = (v,t,above=true) => above ? (v>=t?'#3fb950':'#f85149') : (v<=t?'#3fb950':'#f85149');
+    const pctDone = tg.trades>0 ? Math.min(ft.resolved/tg.trades*100,100) : 0;
+    const allPass = ft.resolved>=tg.trades && ft.wr>=tg.wr && ft.pnl>0 && ft.max_dd<=tg.max_dd;
+    ftEl.innerHTML = `
+      <div style="background:${allPass?'#0d2818':'#161b22'};border:1px solid ${allPass?'#238636':'#d29922'};border-radius:8px;padding:16px;margin:0 0 16px">
+        <h3 style="margin:0 0 8px;color:${allPass?'#3fb950':'#d29922'}">${allPass?'FORWARD TEST PASSED — Listo para plata real':'Forward Test — Validación en curso'}</h3>
+        <div style="background:#21262d;border-radius:4px;height:20px;margin:0 0 12px;overflow:hidden">
+          <div style="background:${pctDone>=100?'#238636':'#d29922'};height:100%;width:${pctDone}%;transition:width 0.3s;display:flex;align-items:center;justify-content:center;font-size:0.7em;font-weight:700;color:#fff">${ft.resolved}/${tg.trades}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px">
+          <div style="text-align:center;padding:8px;background:#0d1117;border-radius:6px">
+            <div style="color:#8b949e;font-size:0.7em">Resueltos</div>
+            <div style="font-size:1.2em;font-weight:700;color:${chk(ft.resolved,tg.trades)}">${ft.resolved}</div>
+            <div style="font-size:0.65em;color:#8b949e">target: ${tg.trades}</div>
+          </div>
+          <div style="text-align:center;padding:8px;background:#0d1117;border-radius:6px">
+            <div style="color:#8b949e;font-size:0.7em">Win Rate</div>
+            <div style="font-size:1.2em;font-weight:700;color:${ft.resolved>0?chk(ft.wr,tg.wr):'#8b949e'}">${ft.resolved>0?ft.wr+'%':'—'}</div>
+            <div style="font-size:0.65em;color:#8b949e">target: >=${tg.wr}%</div>
+          </div>
+          <div style="text-align:center;padding:8px;background:#0d1117;border-radius:6px">
+            <div style="color:#8b949e;font-size:0.7em">P&L</div>
+            <div style="font-size:1.2em;font-weight:700;color:${ft.resolved>0?(ft.pnl>=0?'#3fb950':'#f85149'):'#8b949e'}">${ft.resolved>0?fmt(ft.pnl):'—'}</div>
+            <div style="font-size:0.65em;color:#8b949e">target: > $0</div>
+          </div>
+          <div style="text-align:center;padding:8px;background:#0d1117;border-radius:6px">
+            <div style="color:#8b949e;font-size:0.7em">Max DD</div>
+            <div style="font-size:1.2em;font-weight:700;color:${ft.resolved>0?chk(ft.max_dd,tg.max_dd,false):'#8b949e'}">${ft.resolved>0?ft.max_dd+'%':'—'}</div>
+            <div style="font-size:0.65em;color:#8b949e">target: <${tg.max_dd}%</div>
+          </div>
+          <div style="text-align:center;padding:8px;background:#0d1117;border-radius:6px">
+            <div style="color:#8b949e;font-size:0.7em">BR Actual</div>
+            <div style="font-size:1.2em;font-weight:700;color:#58a6ff">${ft.br?fmt(ft.br):'—'}</div>
+          </div>
+          <div style="text-align:center;padding:8px;background:#0d1117;border-radius:6px">
+            <div style="color:#8b949e;font-size:0.7em">Pending</div>
+            <div style="font-size:1.2em;font-weight:700">${ft.pending||0}</div>
+          </div>
+        </div>
+      </div>`;
+  }
+
   const s = D.stats.poly_copy_filtered;
   if (!s) { document.getElementById('pcf-cards').innerHTML='<div class="empty">Sin datos filtrados</div>'; return; }
   const resRate = s.total>0?(s.resolved/s.total*100).toFixed(0)+'%':'0%';
