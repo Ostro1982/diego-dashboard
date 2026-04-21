@@ -175,6 +175,9 @@ body::before{
 }
 .filter-btn:hover{border-color:var(--border-hover);color:var(--text-primary)}
 .filter-btn.active{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-dim)}
+.filter-btn.sub-btn.active{border-color:var(--purple);color:var(--purple);background:var(--purple-dim)}
+.filter-group{display:flex;gap:0.5rem;flex-wrap:wrap}
+.filters.sub-filters{margin-top:-0.75rem;margin-bottom:1.25rem}
 
 /* GRID */
 .projects-grid{
@@ -600,12 +603,34 @@ body::before{
     <div class="search-box">
       <input type="text" id="search" placeholder="Buscar proyecto..." oninput="filterProjects()">
     </div>
-    <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">Todos</button>
-    <button class="filter-btn" data-filter="app" onclick="setFilter('app')">Apps</button>
-    <button class="filter-btn" data-filter="bot" onclick="setFilter('bot')">Bots</button>
-    <button class="filter-btn" data-filter="tool" onclick="setFilter('tool')">Tools</button>
-    <button class="filter-btn" data-filter="service" onclick="setFilter('service')">Servicios</button>
-    <button class="filter-btn" data-filter="content" onclick="setFilter('content')">Contenido</button>
+    <div class="filter-group" data-for="developed">
+      <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">Todos</button>
+      <button class="filter-btn" data-filter="app" onclick="setFilter('app')">Apps</button>
+      <button class="filter-btn" data-filter="bot" onclick="setFilter('bot')">Bots</button>
+      <button class="filter-btn" data-filter="tool" onclick="setFilter('tool')">Tools</button>
+      <button class="filter-btn" data-filter="service" onclick="setFilter('service')">Servicios</button>
+      <button class="filter-btn" data-filter="content" onclick="setFilter('content')">Contenido</button>
+    </div>
+  </div>
+  <div class="filters sub-filters">
+    <div class="filter-group" data-for="developed">
+      <button class="filter-btn sub-btn active" data-sub="all" onclick="setSubFilter('developed','all')">Cualquier estado</button>
+      <button class="filter-btn sub-btn" data-sub="live" onclick="setSubFilter('developed','live')">Live</button>
+      <button class="filter-btn sub-btn" data-sub="paper" onclick="setSubFilter('developed','paper')">Paper</button>
+      <button class="filter-btn sub-btn" data-sub="dev" onclick="setSubFilter('developed','dev')">Dev</button>
+      <button class="filter-btn sub-btn" data-sub="paused" onclick="setSubFilter('developed','paused')">Pausado</button>
+      <button class="filter-btn sub-btn" data-sub="high" onclick="setSubFilter('developed','high')">$ Alto potencial</button>
+      <button class="filter-btn sub-btn" data-sub="personal" onclick="setSubFilter('developed','personal')">Uso personal</button>
+    </div>
+    <div class="filter-group" data-for="ideas" style="display:none">
+      <button class="filter-btn sub-btn active" data-sub="all" onclick="setSubFilter('ideas','all')">Todas</button>
+      <button class="filter-btn sub-btn" data-sub="priority" onclick="setSubFilter('ideas','priority')">Alta prioridad</button>
+      <button class="filter-btn sub-btn" data-sub="high" onclick="setSubFilter('ideas','high')">Alto potencial $</button>
+      <button class="filter-btn sub-btn" data-sub="pasivo" onclick="setSubFilter('ideas','pasivo')">Pasivo</button>
+      <button class="filter-btn sub-btn" data-sub="innovador" onclick="setSubFilter('ideas','innovador')">Innovador</button>
+      <button class="filter-btn sub-btn" data-sub="ready" onclick="setSubFilter('ideas','ready')">Listo</button>
+      <button class="filter-btn sub-btn" data-sub="blocked" onclick="setSubFilter('ideas','blocked')">Bloqueado</button>
+    </div>
   </div>
 
   <div class="tab-content active" id="tab-developed">
@@ -1757,8 +1782,10 @@ function getRevenueLabel(revenue) {
 
 function renderDevelopedProjects(filter = 'all', search = '') {
   const grid = document.getElementById('grid-developed');
+  const sub = currentSubFilter.developed;
   const filtered = PROJECTS.filter(p => {
     if (filter !== 'all' && p.type !== filter) return false;
+    if (!passesProjectSubFilter(p, sub)) return false;
     if (search && !p.name.toLowerCase().includes(search) && !p.desc.toLowerCase().includes(search)) return false;
     return true;
   });
@@ -1800,7 +1827,9 @@ function renderDevelopedProjects(filter = 'all', search = '') {
 
 function renderIdeas(search = '') {
   const grid = document.getElementById('grid-ideas');
+  const sub = currentSubFilter.ideas;
   const filtered = IDEAS.filter(i => {
+    if (!passesIdeaSubFilter(i, sub)) return false;
     if (search && !i.name.toLowerCase().includes(search) && !i.desc.toLowerCase().includes(search)) return false;
     return true;
   });
@@ -1832,24 +1861,52 @@ function renderIdeas(search = '') {
 
 let currentTab = 'developed';
 let currentFilter = 'all';
+let currentSubFilter = { developed: 'all', ideas: 'all' };
 
 function switchTab(tab) {
   currentTab = tab;
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + tab));
 
-  const filtersEl = document.querySelector('.filters');
-  filtersEl.style.display = tab === 'dashboards' ? 'none' : '';
-  const filterBtns = document.querySelectorAll('.filter-btn:not([data-filter="all"])');
-  filterBtns.forEach(btn => btn.style.display = (tab === 'ideas' || tab === 'dashboards') ? 'none' : '');
+  const filtersWrap = document.querySelectorAll('.filters');
+  filtersWrap.forEach(el => el.style.display = tab === 'dashboards' ? 'none' : '');
+  document.querySelectorAll('.filter-group').forEach(g => {
+    g.style.display = g.dataset.for === tab ? 'flex' : 'none';
+  });
 
   if (tab === 'dashboards') loadAllDashboards();
 }
 
 function setFilter(filter) {
   currentFilter = filter;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === filter));
+  document.querySelectorAll('.filter-btn[data-filter]').forEach(b => b.classList.toggle('active', b.dataset.filter === filter));
   renderDevelopedProjects(filter, document.getElementById('search').value.toLowerCase());
+}
+
+function setSubFilter(tab, sub) {
+  currentSubFilter[tab] = sub;
+  document.querySelectorAll(`.filter-group[data-for="${tab}"] .sub-btn`).forEach(b => b.classList.toggle('active', b.dataset.sub === sub));
+  const search = document.getElementById('search').value.toLowerCase();
+  if (tab === 'developed') renderDevelopedProjects(currentFilter, search);
+  else renderIdeas(search);
+}
+
+function passesProjectSubFilter(p, sub) {
+  if (sub === 'all') return true;
+  if (sub === 'high' || sub === 'personal') return p.revenue === sub;
+  return p.status === sub;
+}
+
+function passesIdeaSubFilter(i, sub) {
+  if (sub === 'all') return true;
+  if (sub === 'priority') return i.fire >= 3;
+  if (sub === 'high') return i.revenue === 'high';
+  const tags = i.tags || [];
+  if (sub === 'pasivo') return tags.some(t => /pasiv/i.test(t.label));
+  if (sub === 'innovador') return tags.some(t => /innovador/i.test(t.label));
+  if (sub === 'ready') return tags.some(t => t.class === 'ready');
+  if (sub === 'blocked') return tags.some(t => t.class === 'blocked');
+  return true;
 }
 
 function filterProjects() {
