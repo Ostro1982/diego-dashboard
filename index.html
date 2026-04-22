@@ -842,6 +842,14 @@ const DEFAULT_PROJECTS = [
         "Precios de venta estimados (activos p25) hasta aprobacion"
       ],
       tags: [{ label: "Live", class: "ready" }, { label: "Capital requerido", class: "" }]
+    },
+    deepDive: {
+      contexto: "Idea surgio cuando notaba spreads estables entre compras AR y listings eBay US. Background MTG arbitrage pro. Extendido a Pokemon, LEGO y vinyls para diversificar.",
+      propuesta: "Dashboard diario con oportunidades de arbitraje fisico + filtros spread/capital/volumen/profit. Diferenciador: cron 8am ARG, 4 verticales, costo USD 0 (Streamlit Cloud free).",
+      potencial: "Nicho: revendedores pequenos LATAM sin herramientas pro. Ceiling realista USD 500-2000/mes propio + venta suscripcion USD 20/mes. 20 suscriptores = USD 400.",
+      inversion: { capital: "USD 0 (APIs free + Streamlit Cloud)", horas: "~40hs total build, ~2hs/semana mantenimiento", recurrente: "USD 0" },
+      retorno: { conservador: "USD 200/mes (uso propio, 2-3 flips/mes)", optimista: "USD 1500/mes (propio + 10 suscriptores)", breakeven: "Inmediato (capex 0)" },
+      decisiones: "Pendiente aprobacion eBay scope marketplace.insights (1-3 dias). Decidir si abrir suscripcion publica o usar 2-3 meses internamente para validar profits reales."
     }
   },
   {
@@ -881,6 +889,14 @@ const DEFAULT_PROJECTS = [
         "Notificaciones push (eventos, pendientes, compras)"
       ],
       blockers: ["Migration Room (fallbackToDestructive)", "Package name Play Store", "Privacy policy", "Google Sign-In completo"]
+    },
+    deepDive: {
+      contexto: "Arranco como uso personal (co-parenting, hijo 10 anos). v3 en uso interno. Decision 2026-04: pivot a producto vendible AR. Onboarding + Firebase sync ya implementados, pendiente polish pre Play Store.",
+      propuesta: "App crianza compartida con 10+ modulos (tiempo, calendario, gastos, compensaciones bilaterales dinero+tiempo, compras, mensajes, recuerdos, pendientes, clima, widget custodia). Sync Firestore entre dispositivos. Unico producto en AR que maneja compensaciones en tiempo (no solo dinero).",
+      potencial: "TAM AR ~1M padres separados. Conversion realista 0.1-0.5% = 1000-5000 usuarios. Pricing ARS 2000-4000/mes (USD 2-4). Ceiling USD 2-15k/mes ano 2.",
+      inversion: { capital: "USD 25/ano Play Store (hermano US) + USD 0-20/mes Firebase", horas: "~300hs invertidas. ~40hs pendientes (polish, privacy policy, icono, Google Sign-In)", recurrente: "USD 5-20/mes infra" },
+      retorno: { conservador: "USD 300/mes (150 usuarios x USD 2)", optimista: "USD 3000/mes (1000 usuarios x USD 3)", breakeven: "Mes 2-3 post lanzamiento" },
+      decisiones: "Nombre final (Faro vs Semillapp). Package name real para Play Store. Privacy policy. Beta cerrada con 20 familias antes de lanzamiento."
     }
   },
   {
@@ -1071,6 +1087,14 @@ const DEFAULT_PROJECTS = [
         "Light/dark mode"
       ],
       blockers: ["Solo 3 materias tienen guiado completo (20 niveles)"]
+    },
+    deepDive: {
+      contexto: "App educativa Flutter creada para hijo de 10 anos. 13 materias, 20 niveles, modo Aprender guiado + quiz. Firebase sync, TTS hebreo/ingles, 10 fondos. Uso personal familiar.",
+      propuesta: "No aplica a mercado. Uso personal. Permite practicar materias con gamificacion y feedback. Sin monetizacion planificada.",
+      potencial: "No aplica como negocio. Pivot a producto requeriria contenido curado profesional, licencias editoriales, y marketing especifico. Fuera de scope actual.",
+      inversion: { capital: "USD 0", horas: "~80hs build + mantenimiento esporadico", recurrente: "USD 0 (Firebase free tier)" },
+      retorno: { conservador: "USD 0 (uso familiar)", optimista: "USD 0 (uso familiar)", breakeven: "N/A" },
+      decisiones: "Expandir guiado a 20 niveles en 10 materias restantes (opcional). Sin decision de monetizacion pendiente."
     }
   },
   {
@@ -1103,6 +1127,14 @@ const DEFAULT_PROJECTS = [
         "Target: traders, founders, forecasters, poker players"
       ],
       blockers: ["Rebranding pendiente", "i18n (ingl\u00e9s default)", "Contenido USA nuevo", "Paywall freemium", "Play Store (hermano EEUU)"]
+    },
+    deepDive: {
+      contexto: "Ex EV Coach / Calibrador. Pivot 2026-04-08: Arena (simulacion roguelike 30 meses) pasa a ser hero, tracker queda de apoyo. Pivoteo a mercado USA. ~40,600 LOC, DB v6, 86 tests.",
+      propuesta: "App para traders, founders, forecasters y poker players que piensan en probabilidades. Diferenciador: Arena packs Business (SaaS, Food Truck, E-commerce, Coffee Shop) + Fitness (Weight Loss, Marathon, Strength, Wellness) con calibracion por turno. No hay competidor con este formato.",
+      potencial: "TAM USA ~500k profesionales del target. Conversion realista 0.2% = 1000 usuarios premium. Ceiling USD 15-30k/mes ano 2 con Arena viral.",
+      inversion: { capital: "USD 25 Play Store + USD 99/ano Apple + USD 50/mes RevenueCat/analytics", horas: "~500hs invertidas. ~80hs pendientes (paywall, analytics, reducir APK, beta, contenido ES cleanup)", recurrente: "USD 50-100/mes" },
+      retorno: { conservador: "USD 500/mes (100 usuarios x USD 4.99)", optimista: "USD 5000/mes (1000 usuarios)", breakeven: "Mes 3-6 post lanzamiento" },
+      decisiones: "Activar paywall (fecha concreta). Estrategia contenido ES (borrar vs mantener ~5326 LOC duplicadas). Beta cerrada 10 usuarios. Proximo modulo: Hypothesis Tester o Fear Ranker."
     }
   },
   {
@@ -2132,8 +2164,29 @@ function openModal(id) {
     <div class="next-step" style="margin-top:1.2rem"><strong>Pr\u00f3ximo paso:</strong> ${p.next}</div>
 
     ${p.links.length ? `<div class="card-links" style="margin-top:1rem">${p.links.map(l => `<a class="card-link" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`).join('')}</div>` : ''}
+
+    ${p.deepDive ? renderDeepDive(p.deepDive) : `<div class="modal-section" style="margin-top:1.5rem;padding:1rem;border:1px dashed var(--border);border-radius:8px;text-align:center;color:var(--text-secondary);font-size:0.8rem">An\u00e1lisis profundo pendiente (cron autom\u00e1tico 23:00 completa 4/d\u00eda)</div>`}
   `;
   modal.classList.add('active');
+}
+
+function renderDeepDive(d) {
+  const block = (title, body) => body ? `<div class="modal-section"><h3>${title}</h3><p>${body}</p></div>` : '';
+  const moneyRow = (obj, keys) => {
+    if (!obj) return '';
+    return keys.map(k => obj[k] ? `<div style="margin:0.3rem 0"><strong style="color:var(--cyan);text-transform:uppercase;font-size:0.7rem">${k}:</strong> <span style="color:var(--text-secondary);font-size:0.8rem">${obj[k]}</span></div>` : '').join('');
+  };
+  return `
+    <div style="margin-top:2rem;padding-top:1rem;border-top:2px solid var(--cyan)">
+      <h3 style="font-family:var(--font-display);color:var(--cyan);font-size:1rem;letter-spacing:0.1em;margin-bottom:1rem">DEEP DIVE</h3>
+      ${block('Contexto', d.contexto)}
+      ${block('Propuesta', d.propuesta)}
+      ${block('Potencial', d.potencial)}
+      ${d.inversion ? `<div class="modal-section"><h3>Inversi\u00f3n</h3>${moneyRow(d.inversion, ['capital','horas','recurrente'])}</div>` : ''}
+      ${d.retorno ? `<div class="modal-section"><h3>Retorno</h3>${moneyRow(d.retorno, ['conservador','optimista','breakeven'])}</div>` : ''}
+      ${block('Decisiones abiertas', d.decisiones)}
+    </div>
+  `;
 }
 
 function closeModal() {
