@@ -1305,6 +1305,43 @@ const DEFAULT_PROJECTS = [
       ],
       blockers: ["Runway no permite sprint 200h sin ingreso freelance", "Google Sandbox 6 meses para dominio nuevo", "Timeline primer d\u00f3lar: mes 5-7"]
     }
+  },
+  {
+    id: "divisual-skills-kit",
+    name: "Kit Skills Divisual",
+    type: "service",
+    accent: "blue",
+    desc: "10 skills Claude Code (Adri\u00e1n S\u00e1enz \u00d7 Juanpe). 6 testeadas: SEO audit, negocio, Meta Ads, web-scrolling, prospecci\u00f3n y dashboard-facturas. Entregables HTML listos para vender a PyMEs.",
+    stack: ["Claude Code", "WebFetch", "WebSearch", "Python", "HTML"],
+    status: "live",
+    statusText: "6 skills testeadas \u2014 entregables listos",
+    metrics: [
+      { label: "Skills totales", value: "10", class: "info" },
+      { label: "Probadas", value: "6", class: "positive" },
+      { label: "SEO Score", value: "51\u219284", class: "positive" },
+      { label: "Negocio Score", value: "38/100", class: "warning" }
+    ],
+    revenue: "medium",
+    revenueText: "Servicio PyMEs: $200-3.000 por entregable",
+    next: "Usar prospecci\u00f3n para outbound estudios contables / comercios CABA. Ofrecer auditoria-negocio como lead magnet.",
+    links: [
+      { label: "Auditoria SEO Sasaciruela", url: "file:///D:/temp/auditoria-seo-sasaciruela-v3-optimizado.html" },
+      { label: "Auditoria Gorras del Para\u00edso", url: "file:///D:/temp/auditoria-negocio-gorrasdelparaiso.html" },
+      { label: "Web Gorras (demo)", url: "file:///D:/temp/web-gorrasdelparaiso.html" }
+    ],
+    details: {
+      features: [
+        "auditoria-seo: 51\u219284/100 en Sasaciruela \u2014 entregable HTML dashboard",
+        "auditoria-negocio: Gorras del Para\u00edso 38/100 CR\u00cdTICO \u2014 9 \u00e1reas analizadas",
+        "auditoria-meta-ads: 0 ads activos \u2014 pack 5 anuncios listos para Ads Manager",
+        "web-scrolling: landing con parallax, counters, WA flotante, efectos scroll",
+        "prospecci\u00f3n: 6 estudios contables CABA, fichas + mensajes contacto en fr\u00edo",
+        "dashboard-facturas: 16 PDFs, KPIs + IVA trimestral + alertas autom\u00e1ticas",
+        "Todos los entregables: HTML autocontenido, dark theme, imprimible",
+        "Carpeta: D:\\temp\\divisual_skills\\skills\\10 SKILLS ADRI Y JUANPE\\"
+      ],
+      blockers: ["Meta Ads Library bloquea WebFetch (se documenta como limitaci\u00f3n)", "dashboard-facturas falla con PDFs escaneados como imagen", "4 skills no probadas: instagram-web, automatizaciones-n8n, extension-chrome, skill-creator"]
+    }
   }
 ];
 
@@ -1675,14 +1712,6 @@ const DEFAULT_IDEAS = [
     desc: "Flutter app con peer matching 1-on-1 o apuestas monetarias StickK-style. Mercado saturado, SOLO viable con nicho muy espec\u00edfico (padres ADHD, recuperaci\u00f3n, etc). Techo $2-5k MRR a\u00f1o 2.",
     fire: 1,
     tags: [{ label: "Saturado", class: "blocked" }, { label: "Requiere nicho", class: "" }],
-    revenue: "medium"
-  },
-  {
-    id: "divisual-skills-kit",
-    name: "Kit Skills Divisual (6 probadas)",
-    desc: "10 skills Claude Code de Adri\u00e1n S\u00e1enz \u00d7 Juanpe. 6 testeadas: auditoria-seo (51\u219284/100 en Sasaciruela), auditoria-negocio, Meta Ads, web-scrolling, prospecci\u00f3n y dashboard-facturas. Entregables HTML listos para vender como servicio a PyMEs.",
-    fire: 3,
-    tags: [{ label: "Activo \u2014 toolkit listo", class: "ready" }, { label: "Servicio PyMEs", class: "hot" }],
     revenue: "medium"
   }
 ];
