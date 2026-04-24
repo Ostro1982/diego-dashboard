@@ -1000,6 +1000,14 @@ const DEFAULT_PROJECTS = [
         "307 locales con tel\u00e9fono, 237 sin"
       ],
       blockers: ["Math dif\u00edcil: necesita 150-300 pagando", "Compite con Google Maps", "WhatsApp masivo: riesgo legal + ban Meta", "Sin consentimiento expl\u00edcito de locales"]
+    },
+    deepDive: {
+      contexto: "Directorio de 544 locales mayoristas del Once, CABA. Live en elonce.pages.dev. Sin buscador funcional, solo 9 locales visibles en home, sin analytics instalado. Monetizacion pendiente de validar con datos reales de trafico.",
+      propuesta: "Plataforma digital para mayoristas del Once con paginas SEO individuales y potencial de leads calificados (comprador conectado con 3 vendedores simultaneos). Doble funcion: producto propio + canal de captacion para servicio PyMES via pitch puerta a puerta.",
+      potencial: "EV 0 sin trafico medido. Con organico validado: leads ARS 500-2000/unidad, badges premium, o canal PyMES. 5 clientes PyMES captados via elonce generan mas valor indirecto que cualquier monetizacion directa del directorio.",
+      inversion: { capital: "USD 0 (Cloudflare Pages free)", horas: "~40hs invertidas. ~15hs pendientes (analytics, buscador, blog SEO)", recurrente: "USD 0" },
+      retorno: { conservador: "USD 0-100/mes (canal captacion PyMES sin monetizacion directa)", optimista: "USD 300/mes (leads + badges premium, mes 4 post analytics)", breakeven: "N/A directo. Indirecto via clientes PyMES captados." },
+      decisiones: "Instalar analytics antes de cualquier otra inversion. Habilitar buscador + mostrar 544 locales. 3 articulos SEO. Si sin trafico organico a los 60 dias, usar solo como canal PyMES sin invertir mas. No tocar WhatsApp masivo (riesgo legal)."
     }
   },
   {
@@ -1193,6 +1201,14 @@ const DEFAULT_PROJECTS = [
         "Materiales: pitch, precios, tracker HTML"
       ],
       blockers: ["0 clientes pagando", "VPS n8n no configurado", "WhatsApp Cloud API no probado"]
+    },
+    deepDive: {
+      contexto: "Servicio B2B recurrente para PyMES CABA: web estatica + bot WhatsApp + email automation. 3 demos live (Pibot, Gorras, Milhouse). Materiales de venta listos (pitch, precios, tracker). 0 clientes pagando al 23-abr-2026. Pivot desde mercado US post Upwork.",
+      propuesta: "Pack digital para pymes sin presencia online: web en Cloudflare + bot WhatsApp FAQ via n8n + reposteo Instagram. Sin costo de entrada, minimo 3 meses. Canal principal: Once puerta a puerta con los 544 locales de elonce como ICP literal y pretexto de venta.",
+      potencial: "Meta mes 3: 6 clientes = ARS 420k/mes (~USD 420). Meta mes 12: 20-35 clientes = ~USD 1400-2500/mes. Techo ano 2: 70 clientes ~USD 3500/mes. Kill signal: menos de 4 clientes al mes 6 o churn mayor a 40% al pasar a tarifa completa.",
+      inversion: { capital: "USD 0 setup + VPS Hetzner ~USD 4.5/mes cuando haya primer cliente", horas: "~30hs invertidas (demos, materiales, pricing). ~10hs pendientes (VPS n8n, WA API, primer outbound)", recurrente: "USD 4.5-10/mes VPS" },
+      retorno: { conservador: "USD 200/mes (4 clientes mes 3, precio promo)", optimista: "USD 1000/mes (15 clientes mes 8, mix pack full)", breakeven: "Mes 1 post primer cliente pagando" },
+      decisiones: "Salir puerta a puerta al Once esta semana. VPS n8n antes de cerrar primer cliente. Elegir nombre definitivo del servicio. Decidir si arrancar con bot WA como punta de lanza o con web. Definir 3 templates web reutilizables."
     }
   },
   {
@@ -1272,6 +1288,14 @@ const DEFAULT_PROJECTS = [
         "APIs: Helius (SOL), Etherscan V2 (ETH/Base), NodeReal (BSC), DexScreener, CoinGecko"
       ],
       blockers: ["Necesita 100+ trades cerrados por chain", "ETH/Base/BSC discovery reci\u00e9n arranc\u00f3"]
+    },
+    deepDive: {
+      contexto: "Bot de copy-trade multi-chain en paper trading: Solana ($200), Ethereum ($2000), Base ($200), BSC ($200). Discovery automatico de wallets smart money, monitor cada 2 min, executor con SL/TP. Fix round-trip aplicado abril 2026 (bug que causaba perdida deterministica). 32+ tests por chain.",
+      propuesta: "4 bots independientes copian swaps de wallets rentables detectadas por discovery. Trade sizing 1% bankroll, SL -15%, TP +50%. Dashboard unificado en puerto 5001 + resumen diario Telegram 21hs AR. Sin capital real hasta validar edge con datos suficientes.",
+      potencial: "Si alguna chain muestra WR >50% y Sharpe >1 en 100+ trades cerrados, depositar capital real. Con USD 2600 real y ROI hipotetico 10-15%/mes, ceiling USD 260-400/mes. Crypto es volatil: perder el capital total es escenario real si el edge no existe.",
+      inversion: { capital: "USD 0 paper. USD 2600 si pasa a real (capital ya disponible)", horas: "~80hs invertidas (monorepo, fixes, tests). ~10hs pendientes (monitoreo, ajustes discovery)", recurrente: "USD 0 (todas las APIs en free tier)" },
+      retorno: { conservador: "USD 100/mes (USD 1000 real, ROI 10%)", optimista: "USD 400/mes (USD 2600 real, ROI 15%)", breakeven: "Mes 1 post capital real, si el edge se valida primero" },
+      decisiones: "Acumular 100+ trades cerrados por chain antes de capital real. ETH/Base/BSC discovery recien arranco, pocos datos. Solana tiene mas historia acumulada. No depositar sin WR y Sharpe validados. Verificar si fix round-trip afecto estadisticas historicas de Solana."
     }
   },
   {
@@ -1341,6 +1365,14 @@ const DEFAULT_PROJECTS = [
         "Carpeta: D:\\temp\\divisual_skills\\skills\\10 SKILLS ADRI Y JUANPE\\"
       ],
       blockers: ["Meta Ads Library bloquea WebFetch (se documenta como limitaci\u00f3n)", "dashboard-facturas falla con PDFs escaneados como imagen", "4 skills no probadas: instagram-web, automatizaciones-n8n, extension-chrome, skill-creator"]
+    },
+    deepDive: {
+      contexto: "Pack de 10 skills Claude Code creado por Adrian Saenz y Juanpe Navarro (Divisual Project). Descargado 23-abr-2026. 6 skills testeadas con entregables HTML reales en D:/temp/. 4 pendientes de probar. Origen: video YouTube + formulario email con link Drive.",
+      propuesta: "Caja de herramientas B2B para ventas a PyMES: auditoria SEO (51 a 84/100 en sasaciruela), auditoria negocio (38/100 gorrasdelparaiso), Meta Ads, web scrolling parallax, prospeccion de leads, dashboard facturas. Entregables HTML autocontenidos, dark theme, imprimibles. Cada skill = una linea de servicio diferente.",
+      potencial: "Cada entregable puede venderse por USD 200-3000 segun complejidad. Con 2 proyectos/mes promedio, USD 400-2000/mes. No escala automatico (requiere produccion con Claude por proyecto), pero el ratio hora/ingreso es alto. Sinergia directa con servicio PyMES como pipeline de ventas.",
+      inversion: { capital: "USD 0 (kit gratis)", horas: "~8hs probando 6 skills. ~4hs pendientes (4 skills restantes segun demanda de clientes)", recurrente: "USD 0 (costo variable: tokens Claude por entregable)" },
+      retorno: { conservador: "USD 200/mes (1 proyecto pequeno/mes)", optimista: "USD 1500/mes (3 proyectos variados: web + auditoria + prospeccion)", breakeven: "Inmediato (capex 0)" },
+      decisiones: "Usar skill prospeccion para outbound estudios contables y comercios CABA esta semana. Auditoria negocio como lead magnet gratuito para PyMES. Probar n8n y extension Chrome cuando haya cliente que lo requiera. Las 4 skills sin probar son opciones disponibles, no deuda tecnica."
     }
   }
 ];
