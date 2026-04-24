@@ -595,7 +595,7 @@ body::before{
       Ideas / Fase Inicial <span class="count" id="count-ideas">0</span>
     </button>
     <button class="tab" data-tab="dashboards" onclick="switchTab('dashboards')">
-      Dashboards <span class="count" id="count-dashboards">6</span>
+      Dashboards <span class="count" id="count-dashboards">7</span>
     </button>
   </div>
 
@@ -650,6 +650,7 @@ body::before{
       <button class="dash-subtab" data-dashtab="tenis" onclick="switchDashTab('tenis')"><span class="dash-status-dot offline" id="dash-dot-tenis"></span> Tenis EV</button>
       <button class="dash-subtab" data-dashtab="ema" onclick="switchDashTab('ema')">EMA Ribbon</button>
       <button class="dash-subtab" data-dashtab="predictions" onclick="switchDashTab('predictions')">Prediction Bots</button>
+      <button class="dash-subtab" data-dashtab="skills" onclick="switchDashTab('skills')">Claude Skills</button>
     </div>
     <div id="dash-content"><div class="dash-loading">Cargando dashboards...</div></div>
   </div>
@@ -2392,6 +2393,7 @@ function renderDashPanel() {
   else if (currentDashTab === 'tenis') renderTenisPanel(panel);
   else if (currentDashTab === 'ema') renderEmaRibbonPanel(panel);
   else if (currentDashTab === 'predictions') renderPredictionsPanel(panel);
+  else if (currentDashTab === 'skills') renderSkillsPanel(panel);
   else { const c = CHAINS.find(x => x.id === currentDashTab); if(c) renderChainPanel(panel, c); }
 }
 
@@ -2758,6 +2760,45 @@ function renderPredictionsPanel(panel) {
         Dashboard Detallado &rarr;
       </a>
     </div>`;
+}
+
+function renderSkillsPanel(panel) {
+  panel.innerHTML = `
+    <div class="dash-stats">
+      <div class="dash-stat"><div class="dash-stat-label">Skills instaladas</div><div class="dash-stat-value" style="color:var(--cyan)">29</div></div>
+      <div class="dash-stat"><div class="dash-stat-label">Plugins</div><div class="dash-stat-value" style="color:var(--purple)">Caveman</div></div>
+      <div class="dash-stat"><div class="dash-stat-label">Token killer</div><div class="dash-stat-value" style="color:var(--green)">RTK 0.37.2</div></div>
+      <div class="dash-stat"><div class="dash-stat-label">Dashboard</div><div class="dash-stat-value">:3337</div></div>
+    </div>
+    <div class="dash-section-title">Herramientas instaladas</div>
+    <div class="overview-chains">
+      <div class="overview-chain-card">
+        <div style="font-family:var(--font-display);font-weight:700;margin-bottom:0.5rem;color:var(--cyan)">Prompt Master</div>
+        <div style="color:var(--text-secondary);font-size:0.75rem;margin-bottom:0.5rem">Genera el prompt optimo para cualquier IA: Midjourney, Cursor, ChatGPT, etc.</div>
+        <div style="font-size:0.7rem;color:var(--text-muted)">Activar: <code style="color:var(--amber)">/prompt-master</code></div>
+      </div>
+      <div class="overview-chain-card">
+        <div style="font-family:var(--font-display);font-weight:700;margin-bottom:0.5rem;color:var(--purple)">Caveman</div>
+        <div style="color:var(--text-secondary);font-size:0.75rem;margin-bottom:0.5rem">Modo ultra-comprimido. Reduce 65-75% tokens de output sin perder precision tecnica.</div>
+        <div style="font-size:0.7rem;color:var(--text-muted)">Activar: <code style="color:var(--amber)">/caveman</code></div>
+      </div>
+      <div class="overview-chain-card">
+        <div style="font-family:var(--font-display);font-weight:700;margin-bottom:0.5rem;color:var(--green)">RTK (Rust Token Killer)</div>
+        <div style="color:var(--text-secondary);font-size:0.75rem;margin-bottom:0.5rem">Proxy CLI que filtra output de terminal antes de que llegue al contexto. 60-90% ahorro.</div>
+        <div style="font-size:0.7rem;color:var(--text-muted)">Uso: <code style="color:var(--amber)">rtk git status</code> / <code style="color:var(--amber)">rtk npm install</code></div>
+      </div>
+    </div>
+    <div style="margin-top:1.5rem;text-align:center;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <a href="http://localhost:3337" target="_blank" style="color:var(--cyan);font-size:0.85rem;text-decoration:none;border:1px solid var(--cyan);padding:0.5rem 1.5rem;border-radius:8px;display:inline-block;transition:all .2s"
+         onmouseover="this.style.background='var(--cyan-dim)'" onmouseout="this.style.background='transparent'">
+        Skills Dashboard &rarr;
+      </a>
+      <a href="https://www.aitmpl.com" target="_blank" style="color:var(--purple);font-size:0.85rem;text-decoration:none;border:1px solid var(--purple);padding:0.5rem 1.5rem;border-radius:8px;display:inline-block;transition:all .2s"
+         onmouseover="this.style.background='var(--purple-dim)'" onmouseout="this.style.background='transparent'">
+        Catalogo aitmpl.com &rarr;
+      </a>
+    </div>
+    <div style="margin-top:1rem;text-align:center;font-size:0.7rem;color:var(--text-muted)">Para abrir el dashboard: <code style="color:var(--amber)">npx claude-code-templates@latest --skills-manager</code></div>`;
 }
 
 // =====================================================
