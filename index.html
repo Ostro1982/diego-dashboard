@@ -970,6 +970,14 @@ const DEFAULT_PROJECTS = [
         "M\u00fasica lo-fi generada sin royalties"
       ],
       blockers: ["Deploy landing page", "Distribuci\u00f3n en redes", "Registro afiliados herramientas IA"]
+    },
+    deepDive: {
+      contexto: "Pipeline diario completo: 8 feeds RSS, Groq llama-3.3-70b, email turquesa, video 48s con barra progreso y musica lo-fi sin royalties. GitHub Actions cron 7:45am AR. 22/22 tests. 0 suscriptores, 0 ingresos. Landing page sin deploy.",
+      propuesta: "Newsletter diaria IA en espanol con video corto para Reels/TikTok. Diferenciador: automatizacion completa (pipeline genera email + video sin intervencion). Target: audiencia LATAM interesada en IA que no consume contenido en ingles.",
+      potencial: "Mercado newsletters IA en espanol casi vacio. Comparable: The Rundown AI (EN, 600k+ subs). Ceiling realista 1000-5000 subs en 12 meses. Monetizacion viable desde sub 500 con afiliados herramientas IA (comisiones 20-50% recurrente).",
+      inversion: { capital: "USD 0 (Groq free tier, GitHub Actions free, Brevo free hasta 300 emails/dia)", horas: "~60hs invertidas. ~15hs pendientes (deploy landing Render, primera subida video, registro afiliados)", recurrente: "USD 0 hasta 300 subs, luego USD 10-25/mes Brevo" },
+      retorno: { conservador: "USD 50/mes (afiliados con 500 subs, conversion 1%)", optimista: "USD 500/mes (3000 subs + sponsors)", breakeven: "Mes 6-8 post lanzamiento publico" },
+      decisiones: "Deploy landing en Render como paso inmediato. Subir video manual a Reels/TikTok para validar traccion. Registrar 3-5 programas afiliados IA. Decidir si migrar formato a slides (Reveal.js) o mantener email clasico."
     }
   },
   {
@@ -1329,6 +1337,14 @@ const DEFAULT_PROJECTS = [
         "Reglas anti-AI writing (INNEGOCIABLE)"
       ],
       blockers: ["Runway no permite sprint 200h sin ingreso freelance", "Google Sandbox 6 meses para dominio nuevo", "Timeline primer d\u00f3lar: mes 5-7"]
+    },
+    deepDive: {
+      contexto: "3 blogs SEO affiliate disenados para mercado US: Ship No Code (no-code/AI coding), AI Tools Found (herramientas AI por industria), Remote Picked (trabajo remoto + SaaS). HTMLs finales listos en D:/temp/blog-demos/. Plan maestro completo. PAUSADO desde abril 2026 por timeline incompatible con runway.",
+      propuesta: "Blogs nicho con comisiones SaaS recurrentes (20-50% por referido). Ship No Code tiene alpha real (experiencia directa construyendo sin codigo). Reglas anti-AI writing como diferenciador de calidad. Modelo: cada referido SaaS compone mes a mes.",
+      potencial: "Comparables: SaaS affiliate blogs generan USD 500-5000/mes post mes 12-18 con 50-100 articulos. Google Sandbox (6 meses dominio nuevo) retrasa primer dolar a mes 5-7. Ceiling realista USD 300-600/mes a 12 meses, USD 1100-2800/mes a 24 meses.",
+      inversion: { capital: "USD 12 (dominio shipnocode.com) + USD 0 hosting (Cloudflare Pages free)", horas: "~30hs invertidas (disenos, plan). ~200hs pendientes (contenido, SEO, backlinks)", recurrente: "USD 0-12/mes" },
+      retorno: { conservador: "USD 300/mes (mes 14, 40 articulos, 3 programas afiliados)", optimista: "USD 1500/mes (mes 24, 100 articulos, sponsors)", breakeven: "Mes 8-10 post lanzamiento" },
+      decisiones: "No retomar hasta ingreso freelance estable que cubra gastos. Cuando se retome: comprar dominio, 2 articulos/semana en horarios residuales, backlinks pasivos primero (Medium, Dev.to, GitHub). Las 200hs de sprint compiten directamente con freelance."
     }
   },
   {
@@ -1489,7 +1505,15 @@ const DEFAULT_IDEAS = [
     desc: "Landing bilingÃ¼e (EN/ES) con diseÃ±o pasaporte para ofrecer servicios B2B a PyMEs: automatizaciÃ³n, marketing y apps. ostrostudio.com disponible.",
     fire: 3,
     tags: [{ label: "En curso", class: "hot" }, { label: "Astro + Cloudflare", class: "ready" }],
-    revenue: "high"
+    revenue: "high",
+    deepDive: {
+      contexto: "Landing Astro 5 estatica con 4 servicios B2B (automatizaciones, marketing, datos, desarrollo). Diseno pasaporte bilingue EN/ES. Portfolio: Crianza, PaCiencia, Calibrador, Tenis-EV anonimizado. Nombre/marca pendiente (placeholder-studio). Dominio .com.ar no comprado. WhatsApp vacio.",
+      propuesta: "Web personal para centralizar oferta B2B a PyMES LATAM y sumar credibilidad en outreach local (Once, CABA) y remoto (Upwork). Bilingue para captar clientes US tambien. Sinergia directa con servicio PyMES y kit Divisual.",
+      potencial: "No genera ingreso directo. Valor indirecto: cada cliente cerrado via web vs DM/email suelto tiene mayor conversion. Comparable: freelancers con landing propia reportan 2-3x mejor tasa de cierre vs perfil Upwork solo.",
+      inversion: { capital: "USD 10/ano dominio .com.ar (NIC AR). USD 0 hosting (Cloudflare Pages)", horas: "~15hs invertidas. ~5hs pendientes (nombre, WhatsApp, deploy, dominio)", recurrente: "USD 0" },
+      retorno: { conservador: "USD 0 directo (canal de conversion, no producto)", optimista: "USD 0 directo (valor indirecto via clientes cerrados)", breakeven: "N/A (infraestructura de ventas)" },
+      decisiones: "Elegir nombre definitivo y dominio. Completar WhatsApp en contacto. Deploy en Cloudflare Pages conectando repo GitHub. Agregar casos reales con resultados cuando existan."
+    }
   },
   {
     id: "etsy-templates",
@@ -1641,7 +1665,15 @@ const DEFAULT_IDEAS = [
     desc: "Calculadora hipoteca UVA + simulador escenarios inflaci\u00f3n + comparador plazo fijo UVA vs tradicional + alertas tasas. Timing macro 2026-2027. Diego construye todo, inv $800-1.2k. SEO first mover. Monetiza productor bancario + afiliados inmobiliarias + afiliados bancos plazo fijo. Techo $5-20k/mes a\u00f1o 2.",
     fire: 3,
     tags: [{ label: "Timing macro", class: "hot" }, { label: "Inv baja $1k", class: "ready" }, { label: "Hub multi-herramienta", class: "" }],
-    revenue: "high"
+    revenue: "high",
+    deepDive: {
+      contexto: "Idea surgida del contexto macro AR 2026-2027: creditos hipotecarios UVA creciendo, plazo fijo UVA como alternativa de ahorro. No hay herramienta publica que simule escenarios de inflacion sobre cuota UVA ni compare plazo fijo UVA vs tradicional con datos actualizados.",
+      propuesta: "Hub multi-herramienta: calculadora hipoteca UVA con escenarios inflacion, comparador plazo fijo UVA vs tradicional, alertas de tasas. SEO first mover en keywords con volumen creciente (hipoteca UVA, plazo fijo UVA, simulador UVA). Diego construye todo.",
+      potencial: "Keywords UVA tienen volumen creciente en AR (contexto macro). Comparable: calculadoras financieras AR con trafico SEO monetizan USD 1-5k/mes via afiliados bancos + leads productor hipotecario. Ceiling realista USD 500-2000/mes ano 1, USD 5-20k/mes ano 2 si el timing macro se confirma.",
+      inversion: { capital: "USD 800-1200 (dominio, hosting, datos BCRA/inflacion)", horas: "0hs invertidas. ~80-120hs estimadas para MVP con 3 herramientas + SEO base", recurrente: "USD 10-30/mes (hosting + API datos financieros)" },
+      retorno: { conservador: "USD 500/mes (SEO organico + afiliado 1 banco, mes 8-12)", optimista: "USD 5000/mes (hub referencia + multiples afiliados bancarios, ano 2)", breakeven: "Mes 6-10 post lanzamiento" },
+      decisiones: "Timing macro es la variable clave: si creditos UVA se frenan, el proyecto pierde sentido. Validar volumen de busqueda actual antes de invertir. Competencia potencial de bancos que armen sus propias calculadoras. Inversion de USD 800-1200 compite con runway limitado."
+    }
   },
   {
     id: "comparador-expensas-caba",
