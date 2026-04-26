@@ -1401,7 +1401,15 @@ const DEFAULT_IDEAS = [
     desc: "Tipo Pinduoduo para Argentina. Compradores se agrupan \u2192 precio mayorista. Vac\u00edo total en LATAM.",
     fire: 3,
     tags: [{ label: "Alta prioridad", class: "hot" }, { label: "Sin equivalente AR", class: "ready" }],
-    revenue: "high"
+    revenue: "high",
+    deepDive: {
+      contexto: "Idea surgida en brainstorming marzo 2026. Diego la marco como top interes (fire 3). Modelo Pinduoduo (China, $30B+ GMV) donde compradores se agrupan para desbloquear precio mayorista. No existe equivalente en LATAM. Sin desarrollo iniciado.",
+      propuesta: "App donde usuarios arman grupos de compra en tiempo real para productos especificos. Al llegar al minimo de compradores, se desbloquea precio mayorista y se ejecuta la compra. Target inicial: productos de consumo masivo en AR (electronica, indumentaria, alimentos no perecederos).",
+      potencial: "Pinduoduo factura $30B+/ano, pero opera en ecosistema chino con infraestructura logistica que no existe en AR. Comparable LATAM: no hay. Ceiling realista ano 1: USD 500-2000/mes si se logra masa critica en 1-2 categorias. Problema central: marketplace two-sided con cold start dificil.",
+      inversion: { capital: "USD 500-2000 (MVP Flutter + backend + marketing inicial)", horas: "0hs invertidas. ~200-300hs estimadas para MVP funcional con pagos y logistica basica", recurrente: "USD 20-50/mes (servidor, pasarela pagos)" },
+      retorno: { conservador: "USD 200/mes (comision 5-10% sobre GMV, 50 compras grupales/mes)", optimista: "USD 2000/mes (500 compras grupales/mes, ano 2)", breakeven: "Mes 8-12 post lanzamiento" },
+      decisiones: "Cold start es el problema principal: necesitas compradores Y vendedores simultaneamente. Opcion 1: arrancar con 1 categoria vertical (ej: electronica) y negociar directo con mayoristas del Once. Opcion 2: modelo mas simple tipo grupo de WhatsApp coordinado antes de construir app. Inversion compite con runway limitado y otros proyectos mas cercanos a generar ingreso."
+    }
   },
   {
     id: "arcade-skill",
@@ -1409,7 +1417,15 @@ const DEFAULT_IDEAS = [
     desc: "Trivia, puzzles, l\u00f3gica. Mercado $3.5B en India, vac\u00edo en LATAM. Habilidad \u2260 azar (legal). Background poker = ventaja.",
     fire: 3,
     tags: [{ label: "Alta prioridad", class: "hot" }, { label: "Legal: habilidad", class: "ready" }],
-    revenue: "high"
+    revenue: "high",
+    deepDive: {
+      contexto: "Idea brainstorming marzo 2026, fire 3. Diego la marco como top interes. Mercado skill gaming en India vale USD 3.5B (MPL, WinZO, Zupee). En LATAM no existe equivalente serio. Habilidad (no azar) permite operar sin licencia de juego en la mayoria de jurisdicciones. Background poker/MTG pro de Diego es ventaja directa para disenar juegos de EV.",
+      propuesta: "Plataforma de juegos de habilidad (trivia, puzzles, logica, estrategia) donde usuarios compiten por premios reales. Diferenciador vs apps de trivia casuales: skill rating (Elo), torneos estructurados, y formatos disenados por un ex-pro del poker. Ruta legal segura: arrancar con torneos gratis + premios sponsoreados, luego entry fees.",
+      potencial: "India: USD 3.5B mercado, 100M+ jugadores activos. LATAM: vacio. Ceiling realista depende de regulacion por pais. En AR sin legislacion especifica anti-skill-gaming. Si se logra 10k usuarios activos con entry fee promedio USD 1, rake 15% = USD 1500/mes. Riesgo: regulacion puede cambiar, churn alto en gaming casual.",
+      inversion: { capital: "USD 1000-3000 (MVP Flutter + backend + sistema de pagos/wallet)", horas: "0hs invertidas. ~300-400hs estimadas para MVP con 3-5 juegos + wallet + matchmaking", recurrente: "USD 30-80/mes (servidor, pagos, CDN)" },
+      retorno: { conservador: "USD 300/mes (1000 usuarios activos, rake 15%, ano 1)", optimista: "USD 3000/mes (10k usuarios, entry fees + sponsors, ano 2)", breakeven: "Mes 6-10 post lanzamiento" },
+      decisiones: "Complejidad alta: necesita wallet, matchmaking, anti-fraude, y 3-5 juegos pulidos. Ruta gradual: arrancar con 1 juego de trivia + torneos gratis sponsoreados para validar traccion sin infraestructura de pagos. Consultar regulacion AR sobre skill gaming antes de invertir. Inversion alta compite con runway limitado."
+    }
   },
   {
     id: "pokerdesk",
@@ -1537,7 +1553,15 @@ const DEFAULT_IDEAS = [
     desc: "50-200 journals/planners/puzzle books nichos espec\u00edficos (ADHD, caregiver, parenting ES). Publicar 3-5/semana. Techo $3-8k/mes pasivo. Usar cuenta KDP hermano existente.",
     fire: 3,
     tags: [{ label: "Pasivo escalable", class: "ready" }, { label: "Cuenta hermano", class: "" }],
-    revenue: "medium"
+    revenue: "medium",
+    deepDive: {
+      contexto: "KDP (Kindle Direct Publishing) permite publicar journals, planners y puzzle books sin inventario. Hermano en EEUU ya tiene cuenta KDP activa (mismo que publico Ship It). Modelo: producir 50-200 titulos low-content en nichos especificos (ADHD, caregiver, parenting ES, poker bankroll). Diego genera contenido con Claude, diseno con Canva/templates.",
+      propuesta: "Serie de libros low-content en nichos donde Diego tiene expertise o ventaja de idioma: parenting ES (sin competencia quality), ADHD planners (mercado creciente), poker/trading journals (nicho propio), caregiver logs. Publicar 3-5/semana con workflow sistematizado. Cada titulo tiene costo marginal cercano a cero post-template.",
+      potencial: "Top KDP publishers low-content reportan USD 3-8k/mes con 200+ titulos y 6-12 meses de catalogo. Realista para Diego: USD 200-800/mes con 50-100 titulos a 6 meses. Royalty 60% en paperback (precio USD 6-12 = USD 3.6-7.2 por venta). Nicho ES tiene menos competencia pero menos volumen.",
+      inversion: { capital: "USD 0 (cuenta hermano existente, Canva free tier)", horas: "0hs invertidas. ~2-4hs por titulo (contenido + diseno + upload). 50 titulos = ~100-200hs", recurrente: "USD 0 (KDP no cobra)" },
+      retorno: { conservador: "USD 200/mes (50 titulos, 1-2 ventas/dia promedio, mes 6)", optimista: "USD 1500/mes (150 titulos, 5-8 ventas/dia, mes 12)", breakeven: "Mes 3-4 (capex 0, solo horas)" },
+      decisiones: "Elegir 3-5 nichos iniciales y publicar 10 titulos para testear demanda antes de escalar. Riesgo: Amazon puede cambiar politicas sobre contenido AI-generated (ya hubo restricciones en 2023-2024). Verificar reglas actuales KDP sobre contenido asistido por IA. Competencia con runway: las horas de KDP compiten con freelance y otros proyectos mas cercanos a ingreso."
+    }
   },
   {
     id: "notion-templates",
@@ -1657,7 +1681,15 @@ const DEFAULT_IDEAS = [
     desc: "Co-producido con Festi (influencer poker, misma historia, cara/mic). Largo formato 60-90min + entrevistas. CERO competencia ES. Split 50/50. Revenue: ads + Patreon + sponsors + upsell cohort. Techo $5-12k/mes a\u00f1o 2-3.",
     fire: 3,
     tags: [{ label: "Co-host Festi confirmado", class: "hot" }, { label: "Moat \u00fanico", class: "ready" }],
-    revenue: "medium"
+    revenue: "medium",
+    deepDive: {
+      contexto: "Idea con co-host confirmado: Festi, influencer poker AR con audiencia propia, comodo frente a camara/mic (Diego prefiere evitar exposicion). Mismo background profesional (ex poker/MTG pro). Split 50/50. Formato largo 60-90min + entrevistas. En espanol no existe podcast serio sobre toma de decisiones con framework probabilistico.",
+      propuesta: "Podcast largo formato sobre decision-making, probabilidad, sesgos y EV thinking aplicado a vida real. Festi pone cara/mic/audiencia, Diego pone estructura/contenido/produccion. Target: traders, founders, jugadores de poker, profesionales que piensan en numeros. Entrevistas a personas que toman decisiones high-stakes.",
+      potencial: "Competencia ES en decision/probabilidad: cero. EN: Rationally Speaking, Making Sense tienen audiencias de 100k+. Comparable ES realista: 5-15k oyentes/episodio a 12-18 meses. Monetizacion: ads (CPM USD 20-40, 10k oyentes = USD 200-400/episodio), Patreon (200 patrons x USD 5 = USD 1000/mes), upsell a curso EV Thinking.",
+      inversion: { capital: "USD 200-500 (mic, hosting podcast, edicion inicial)", horas: "0hs invertidas. ~10-15hs/episodio (prep + grabacion + edicion + distribucion). ~20hs setup inicial", recurrente: "USD 20-50/mes (hosting, edicion si se terceriza)" },
+      retorno: { conservador: "USD 200/mes (ads + Patreon, 5k oyentes, mes 12)", optimista: "USD 3000/mes (sponsors + Patreon + upsell curso, 15k oyentes, ano 2)", breakeven: "Mes 8-12 (si se mantiene cadencia semanal)" },
+      decisiones: "Coordinar con Festi fecha de arranque y cadencia (semanal vs quincenal). Definir primeros 10 temas para tener pipeline. Decidir plataforma principal (YouTube video + audio everywhere vs solo audio). Grabacion remota (Riverside.fm) o presencial CABA. El 50/50 split es justo solo si Festi aporta audiencia real desde dia 1."
+    }
   },
   {
     id: "calculadora-hipoteca-uva",
