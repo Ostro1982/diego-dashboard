@@ -1433,7 +1433,15 @@ const DEFAULT_IDEAS = [
     desc: "Agregador de torneos poker + staking integrado. Scoring autom\u00e1tico, one-click launch, calculadora EV/MU. Suscripci\u00f3n $20-40/mes.",
     fire: 2,
     tags: [{ label: "Despu\u00e9s de ingresos", class: "" }, { label: "Mercado nicho", class: "ready" }],
-    revenue: "high"
+    revenue: "high",
+    deepDive: {
+      contexto: "Idea de producto para jugadores de poker semi-pro y pro. Competidor de Lobbyze con 3 diferenciadores: scoring automatico con pesos personalizados, staking agregado multi-plataforma, y one-click launch multi-sala. Diego ex poker/MTG pro con conocimiento directo del pain point.",
+      propuesta: "App que agrega torneos de 12+ salas (GGPoker, PokerStars, 888, partypoker) con scoring personalizado por pesos (hora fin, campo, buy-in, formato). Staking integrado (GGPoker + PokerStake + StakeKings). Calculadora EV/MU para evaluar compra/venta de accion.",
+      potencial: "Mercado global de grinders online: ~50-100k jugadores semi-pro que pagarian USD 20-40/mes. Lobbyze cobra similar pero no tiene scoring ni staking. Ceiling realista: 200-500 suscriptores = USD 4-20k/mes. Nicho con willingness to pay alta (jugadores acostumbrados a invertir en herramientas).",
+      inversion: { capital: "USD 0-500 (hosting + APIs)", horas: "0hs invertidas. ~150-200hs estimadas para MVP (grid + scoring). Staking en v2", recurrente: "USD 20-50/mes infra" },
+      retorno: { conservador: "USD 500/mes (25 suscriptores x USD 20, mes 6)", optimista: "USD 5000/mes (200 suscriptores x USD 25, ano 2)", breakeven: "Mes 4-6 post lanzamiento" },
+      decisiones: "GGPoker no tiene API publica (staking solo dentro del cliente). Scraping autenticado viola ToS. Ruta viable: scraping publico + partnerships oficiales. MVP: grid + scoring primero, staking en v2. No priorizar hasta tener ingresos estables de otros proyectos."
+    }
   },
   {
     id: "curso-ia",
@@ -1441,7 +1449,15 @@ const DEFAULT_IDEAS = [
     desc: "Margen 90%+. Historia personal como marketing. Target: profesionales sin c\u00f3digo que quieren automatizar.",
     fire: 2,
     tags: [{ label: "EV alta", class: "hot" }, { label: "Historia personal", class: "ready" }],
-    revenue: "high"
+    revenue: "high",
+    deepDive: {
+      contexto: "Idea brainstorming marzo 2026. Diego construyo 14+ proyectos funcionales sin saber programar usando Claude/IA. Track record demostrable: apps Flutter, bots Python, dashboards, EAs MQL4. Historia personal como marketing (ex poker pro AR que buildea con IA).",
+      propuesta: "Curso online para profesionales que quieren construir herramientas propias sin codigo. Modulos: prompting efectivo, arquitectura de proyecto, deploy gratis, automatizacion. Diego muestra su propio portfolio como proof. Target: freelancers, founders early stage, profesionales que automatizan su trabajo.",
+      potencial: "Mercado cursos no-code/AI en espanol: creciendo rapido, pocos con track record real. Comparable: cursos similares EN venden USD 200-500 one-time o USD 30-50/mes. Con 50-100 alumnos, USD 2500-5000 por cohorte. Margen 90%+ (solo plataforma video + comunidad).",
+      inversion: { capital: "USD 0-200 (plataforma curso: Teachable/Gumroad free tier, mic basico)", horas: "0hs invertidas. ~80-120hs estimadas (grabar 8-12hs video + materiales + comunidad)", recurrente: "USD 0-30/mes plataforma" },
+      retorno: { conservador: "USD 500/mes (20 alumnos/mes x USD 25 suscripcion)", optimista: "USD 3000/mes (cohortes trimestrales USD 300 x 30 alumnos)", breakeven: "Mes 2-3 post lanzamiento (capex minimo)" },
+      decisiones: "Requiere posicionamiento previo en redes (2-3 meses contenido LinkedIn/X antes de vender). Formato: cohorte live vs self-paced vs hibrido. Idioma: ES puro (menos competencia) vs bilingue (mas mercado). Evolucion natural de mentoria-founders si esa arranca primero. No grabar sin audiencia previa."
+    }
   },
   {
     id: "casapibot",
@@ -1545,7 +1561,15 @@ const DEFAULT_IDEAS = [
     desc: "Adquirir sitio con tr\u00e1fico e ingresos v\u00eda Motion Invest/Empire Flippers. $15k \u2192 sitio $400-600/mes Adsense/afiliados. Ingreso pasivo inmediato al cerrar.",
     fire: 3,
     tags: [{ label: "Pasivo inmediato", class: "ready" }, { label: "$15k capital", class: "hot" }],
-    revenue: "high"
+    revenue: "high",
+    deepDive: {
+      contexto: "Idea evaluada en brainstorming abril 2026. Modelo: comprar sitio web con trafico e ingresos existentes via marketplaces (Motion Invest, Empire Flippers, Flippa). Ingreso pasivo desde dia 1 post-compra. No requiere construir nada, solo mantener y optimizar.",
+      propuesta: "Adquirir 1 sitio nicho con USD 400-600/mes en Adsense o afiliados por ~USD 15k (multiplo 24-30x). Hermano EEUU opera la compra y cobros. Diego mantiene contenido y SEO. Diferenciador vs construir desde cero: skip Google Sandbox, skip cold start, ingreso inmediato.",
+      potencial: "ROI tipico sitios establecidos: 30-40% anual (vs S&P 10%). Con USD 15k bien invertido, USD 400-600/mes pasivo real. Riesgo: Google updates pueden destruir trafico overnight. Mitigacion: comprar sitio diversificado en fuentes de trafico.",
+      inversion: { capital: "USD 15,000 (compra sitio). Diego tiene USD 5k disponible, faltan USD 10k", horas: "~5-10hs due diligence pre-compra. ~5hs/mes mantenimiento post-compra", recurrente: "USD 10-30/mes hosting" },
+      retorno: { conservador: "USD 400/mes (sitio Adsense estable, sin optimizar)", optimista: "USD 800/mes (optimizacion SEO + nuevos articulos post-compra)", breakeven: "Mes 25-30 (multiplo compra standard)" },
+      decisiones: "Capital insuficiente hoy (USD 5k de 15k necesarios). Opciones: esperar a acumular capital, buscar sitio mas chico (USD 5k = ~USD 150-200/mes), o asociarse con hermano para cubrir diferencia. Due diligence critica: verificar trafico en Ahrefs/SEMrush, historial Google updates, diversificacion keywords."
+    }
   },
   {
     id: "kdp-serie",
@@ -1633,7 +1657,15 @@ const DEFAULT_IDEAS = [
     desc: "Coaching estrat\u00e9gico high-ticket a founders LATAM (solopreneurs, bootstrapped). Packages trimestrales $2.5-4.5k. Tu edge: EV thinking + ex poker pro + ES nativo. Techo $6-10k/mes con 6-8 clientes.",
     fire: 2,
     tags: [{ label: "Ingreso r\u00e1pido", class: "hot" }, { label: "Historia propia", class: "ready" }],
-    revenue: "high"
+    revenue: "high",
+    deepDive: {
+      contexto: "Idea brainstormeada abril 2026. Coaching 1-on-1 para founders LATAM tempranos (bootstrapped, solopreneurs). 4 sesiones 60min/mes + async bounded. Packages trimestrales USD 2500-4500. Edge: ex poker/MTG pro + construyendo con IA sin codigo + ES nativo + timezone LATAM.",
+      propuesta: "Mentoria estrategica high-ticket usando framework EV thinking aplicado a decisiones de negocio. Precio 1/5 de coaches US equivalentes. Adquisicion: contenido LinkedIn/X en espanol + podcast invitado + DM outbound 30-50/semana + webinar gratis mensual como funnel.",
+      potencial: "Con 6-8 clientes: USD 6-10k/mes. Tope capacidad ~8 clientes (28-40hs/mes delivery). Timeline primer peso: 2-3 meses post posicionamiento. No escala (vos sos el producto). Evolucion natural: convertir clientes en primera cohorte de curso EV Thinking para escalar.",
+      inversion: { capital: "USD 0-100 (Stripe via hermano, Calendly free, Zoom/Meet free)", horas: "0hs invertidas. ~40-60hs setup (contenido posicionamiento 2-3 meses, materiales, funnel)", recurrente: "USD 0-20/mes herramientas" },
+      retorno: { conservador: "USD 2500/mes (3 clientes x USD 800/mes, mes 4-5)", optimista: "USD 8000/mes (6 clientes x USD 1300/mes, mes 9-12)", breakeven: "Mes 3-4 post primer cliente (capex 0)" },
+      decisiones: "No hacer sin posicionamiento previo (LinkedIn/X 2-3 meses contenido antes de ofrecer). Riesgos: quema emocional (6-7 founders ansiosos en paralelo), churn alto (1 cliente = 12-15% revenue), accountability outcomes difusos. Necesita KPIs claros al kickoff de cada cliente. Hermano US opera Stripe USD."
+    }
   },
   {
     id: "board-game-ev",
