@@ -1737,7 +1737,15 @@ const DEFAULT_IDEAS = [
     desc: "Serie KDP ilustrada 6-12 a\u00f1os sobre EV, trade-offs, base rates. Hijos como testers, ES primario + EN escalado. Serie 5 libros = inv $3-5k. Techo $500-1.5k/mes pasivo, moat por author brand.",
     fire: 2,
     tags: [{ label: "Pasivo real", class: "ready" }, { label: "Cuenta KDP hermano", class: "" }],
-    revenue: "medium"
+    revenue: "medium",
+    deepDive: {
+      contexto: "Idea brainstormeada abril 2026, fire 2. Serie de 5 libros ilustrados KDP para ninos 6-12 anos sobre mental models (EV, trade-offs, delayed gratification, base rates, planificacion). Hijos de Diego (10 y 4) como testers in-house. Cuenta KDP hermano US ya activa (publico Ship It). Narrativa unica: padre AR ex poker pro ensenando pensamiento probabilistico a ninos.",
+      propuesta: "5 libros ilustrados 32-48 paginas, PVP USD 12-17. Guion Diego+Claude, ilustracion Fiverr USD 400-900/libro (NO AI art por politica Amazon 2024-2026). Espanol como mercado primario, ingles escalado. Diferenciador: contenido real vs low-content KDP commodity, author brand compone con cada titulo nuevo.",
+      potencial: "Libro promedio KDP ilustrado: 15-40 copias/mes x USD 3-5 net = USD 45-160/mes/libro. Serie 5 libros ano 1: USD 300-1500/mes. Portfolio 15 libros ano 2-3: USD 1000-4000/mes pasivo. Canal B2B extra: colegios privados CABA (Lincoln, ORT, Northlands) kits USD 500-2000.",
+      inversion: { capital: "USD 700-1100 por libro (ilustracion + cover). Serie 5: USD 3500-5500 total", horas: "0hs invertidas. ~40-60hs por libro (guion + coordinacion ilustrador + layout)", recurrente: "USD 0 (KDP no cobra)" },
+      retorno: { conservador: "USD 300/mes (5 libros, 20 copias/mes c/u, mes 8-12)", optimista: "USD 1500/mes (5 libros + 1-2 winners, mes 18)", breakeven: "Mes 10-14 post primer libro publicado" },
+      decisiones: "Inversion USD 3500-5500 compite directamente con capital disponible USD 5000 y runway 7 meses. AI art tiene riesgo rechazo Amazon: usar ilustrador humano Fiverr (min USD 500/libro). Publicar 1 libro primero para validar demanda antes de comprometer serie completa. Instagram/TikTok parental ES poco saturado como canal de distribucion."
+    }
   },
   {
     id: "afip-monotributo-saas",
@@ -1761,7 +1769,15 @@ const DEFAULT_IDEAS = [
     desc: "App Flutter con men\u00fa semanal + lista compra + precios batch nocturno Carrefour/Coto/ML. Freemium + paid $10-15/mes. Hueco: Cookpad/Yummly no tienen precios AR. Techo $3-10k/mes.",
     fire: 2,
     tags: [{ label: "Pain real AR", class: "ready" }, { label: "Scraping gris", class: "" }],
-    revenue: "medium"
+    revenue: "medium",
+    deepDive: {
+      contexto: "Idea brainstormeada abril 2026, fire 2. App Flutter con menu semanal, lista de compras y precios reales de supermercados AR (Carrefour, Coto, MercadoLibre). Batch nocturno scraping precios. Hueco real: Cookpad, Yummly y apps de recetas no muestran precios locales AR. Nadie lo hace.",
+      propuesta: "App que genera menu semanal ajustado a presupuesto real con precios batch de 3+ supermercados AR. Lista de compras con precio estimado total por tienda. Freemium (recetas basicas gratis) + paid USD 10-15/mes (menu personalizado, comparador precios, historial). Stack: Flutter + FastAPI + scraper Python nocturno.",
+      potencial: "Mercado AR de apps cocina: sin competidor con precios reales. 2M+ hogares AR buscan recetas online. Conversion 0.5% = 10k usuarios, 5% paid = 500 suscriptores = USD 5-7.5k/mes. Riesgo: scraping precios es zona gris legal (ToS supermercados). Precios cambian diario, mantenimiento constante.",
+      inversion: { capital: "USD 200-500 (VPS scraper + hosting API)", horas: "0hs invertidas. ~200-250hs estimadas (scraper + API + app Flutter + base recetas)", recurrente: "USD 10-30/mes VPS + API" },
+      retorno: { conservador: "USD 500/mes (200 suscriptores x USD 2.5 promedio, mes 8-12)", optimista: "USD 3000/mes (1000 suscriptores, mes 18)", breakeven: "Mes 6-8 post lanzamiento" },
+      decisiones: "Scraping precios supermercados AR viola ToS en mayoria de casos: evaluar riesgo legal antes de invertir. Alternativa: APIs oficiales si existen (MercadoLibre tiene API publica). Base de recetas requiere curado manual o licencia. Timeline 200+ horas compite con runway 7 meses y proyectos mas cercanos a generar ingreso."
+    }
   },
   {
     id: "optimizador-listings-ml",
@@ -1769,7 +1785,15 @@ const DEFAULT_IDEAS = [
     desc: "SaaS que genera t\u00edtulos + bullets + keywords optimizados con IA para sellers FBA US + ML LATAM. Edge vs Helium10: precio bajo + ES/PT calidad. Sub $39-299/mes. Techo $6-18k MRR.",
     fire: 2,
     tags: [{ label: "Diferencial LATAM", class: "ready" }, { label: "Ventana 12-18m", class: "" }],
-    revenue: "high"
+    revenue: "high",
+    deepDive: {
+      contexto: "Idea brainstormeada abril 2026, fire 2. SaaS que genera titulos, bullets y keywords optimizados con IA para sellers Amazon FBA US y MercadoLibre LATAM. Competidores principales: Helium 10 (USD 39-229/mes), Jungle Scout (USD 49-129/mes). Ambos enfocados en ingles, soporte ES/PT debil.",
+      propuesta: "Herramienta web que recibe ASIN o URL de producto y genera listing optimizado: titulo SEO, 5 bullets, descripcion, backend keywords. Modelo LLM con fine-tuning por marketplace. Edge vs Helium 10: precio 50-70% menor (USD 39-99/mes), calidad nativa ES/PT para LATAM, soporte MercadoLibre (Helium 10 no lo cubre).",
+      potencial: "Amazon FBA sellers US: ~1M activos. ML sellers LATAM: ~500k. Conversion realista 0.1% = 1500 suscriptores. Con ARPU USD 60/mes = USD 90k MRR techo. Realista ano 1: 100-300 subs = USD 6-18k MRR. Ventana 12-18 meses antes de que Helium 10 mejore soporte ES.",
+      inversion: { capital: "USD 500-1500 (hosting + API LLM + datos catalogo)", horas: "0hs invertidas. ~200-300hs estimadas (scraper catalogo + modelo + web app + onboarding)", recurrente: "USD 50-200/mes (APIs LLM + hosting + data feeds)" },
+      retorno: { conservador: "USD 1000/mes (100 subs x USD 10 tier basico, mes 6-9)", optimista: "USD 5000/mes (300 subs mix tiers, mes 12-18)", breakeven: "Mes 4-6 post lanzamiento" },
+      decisiones: "Costo API LLM por request puede erosionar margen si no se cachea bien. Amazon cambia algoritmo ranking sin aviso: modelo requiere actualizacion constante. MercadoLibre no tiene API de keywords publica. Timeline 200-300hs compite con runway 7 meses. Evaluar si arrancar solo con ML LATAM (menos competencia) o solo Amazon US (mas volumen)."
+    }
   },
   {
     id: "podcast-decision-probabilidad",
@@ -1921,7 +1945,15 @@ const DEFAULT_IDEAS = [
     desc: "Interfaz web que agrega feeds de Twitter/Reddit/blogs filtrando solo contenido escrito por humanos. En un mundo de AI slop, encuentra la se\u00f1al real. Nitter + RSS + scorer propio. Freemium o sub $5/mes.",
     fire: 2,
     tags: [{ label: "\u00c1ngulo \u00fanico", class: "hot" }, { label: "Sin competencia clara", class: "ready" }],
-    revenue: "medium"
+    revenue: "medium",
+    deepDive: {
+      contexto: "Idea brainstormeada abril 2026, fire 2. Diego ya construyo extension Chrome Human Feed (detecta/oculta posts AI en X, LinkedIn, IG, FB, Reddit). Esta idea es evolucion: interfaz web standalone que agrega feeds filtrando solo contenido humano. Contexto: AI slop crece exponencialmente en redes, sin herramienta que filtre la senal real.",
+      propuesta: "Web app que agrega feeds de Twitter/Reddit/blogs via RSS/Nitter y aplica scorer heuristico (ya desarrollado en extension Chrome) para mostrar solo contenido escrito por humanos. Freemium: 3 feeds gratis, USD 5/mes feeds ilimitados + filtros avanzados. Diferenciador: scorer propio ya calibrado con 8+ ajustes en extension.",
+      potencial: "Nicho creciente: usuarios hartos de AI slop. Sin competidor directo que ofrezca feed curado anti-AI. Comparable lejano: Nuzzel (murio, adquirido por Twitter). Ceiling realista: 500-2000 suscriptores paid a 12 meses = USD 2.5-10k/mes. Riesgo: APIs de redes sociales cada vez mas restrictivas (Twitter/X cerro API gratuita 2023).",
+      inversion: { capital: "USD 100-300 (hosting + proxy RSS)", horas: "~20hs invertidas (extension Chrome con scorer funcional). ~80-120hs pendientes (web app, agregador RSS, auth, pagos)", recurrente: "USD 10-30/mes hosting + proxies" },
+      retorno: { conservador: "USD 200/mes (500 usuarios free, 40 paid x USD 5, mes 8)", optimista: "USD 2000/mes (2000 paid, mes 18)", breakeven: "Mes 5-7 post lanzamiento" },
+      decisiones: "APIs redes sociales son el bloqueador principal: Twitter/X cerro API free, Reddit limito en 2023, Nitter inestable. Evaluar si RSS publico + scraping liviano alcanza. La extension Chrome ya tiene scorer calibrado: reusar como backend. Competencia con otros proyectos por horas de desarrollo."
+    }
   }
 ];
 
