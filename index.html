@@ -1481,7 +1481,15 @@ const DEFAULT_IDEAS = [
     desc: "Gamificaci\u00f3n de cosas que nadie te ense\u00f1a: AFIP, c\u00f3mo hacer un CV, leer un recibo de sueldo, etc.",
     fire: 2,
     tags: [{ label: "EV alta", class: "hot" }, { label: "Sin equivalente AR", class: "ready" }],
-    revenue: "medium"
+    revenue: "medium",
+    deepDive: {
+      contexto: "Idea brainstormeada marzo 2026, fire 2. Gamificacion de habilidades practicas que nadie ensena formalmente en AR: tramites AFIP, armar CV, leer recibo de sueldo, entender expensas, abrir monotributo. Sin equivalente AR ni LATAM.",
+      propuesta: "App mobile (Flutter) con formato Duolingo aplicado a skills adultos reales. Lecciones cortas de 3-5 min con quizzes, simulaciones y certificados por modulo. Target: jovenes 18-30 AR primer trabajo/monotributo/alquiler. Diferenciador: contenido hiper-local AR (AFIP, ANSES, monotributo) que apps globales no cubren.",
+      potencial: "TAM AR: ~3M jovenes 18-30 con estas necesidades. Sin competencia directa. Comparable lejano: Platzi/Crehana (cursos) pero no gamificado ni mobile-first. Ceiling realista 500-2000 usuarios paid a 12 meses = USD 1-4k/mes. Riesgo: contenido requiere actualizacion constante (AFIP cambia reglas cada 6 meses).",
+      inversion: { capital: "USD 0-200 (hosting + infra basica)", horas: "0hs invertidas. ~150-200hs estimadas (app Flutter + contenido 10+ modulos + quizzes)", recurrente: "USD 10-20/mes hosting" },
+      retorno: { conservador: "USD 300/mes (300 usuarios x USD 1/mes, mes 8)", optimista: "USD 2000/mes (1000 usuarios x USD 2/mes, mes 14)", breakeven: "Mes 6-8 post lanzamiento" },
+      decisiones: "Contenido AR requiere curado manual (AFIP, ANSES cambian seguido). Formato quiz gamificado es el diferenciador pero implica mucho contenido upfront. MVP: 3 modulos (monotributo, CV, recibo sueldo) para validar traccion. Timeline 150-200hs compite con runway 7 meses y proyectos mas cercanos a ingreso."
+    }
   },
   {
     id: "nutricionista-ia",
@@ -1849,7 +1857,15 @@ const DEFAULT_IDEAS = [
     desc: "Pag\u00e1s $20-50 a alguien calificado para que te desmotive cuando est\u00e1s por hacer algo impulsivo (comprar, renunciar, invertir). Opuesto al motivator industry saturado. Hueco real: amigos dicen \"dale\", coaches son cheerleaders, esto es devil's advocate pagado. Monetiza comisi\u00f3n 20%.",
     fire: 2,
     tags: [{ label: "Hueco industry", class: "hot" }, { label: "Two-sided", class: "" }],
-    revenue: "medium"
+    revenue: "medium",
+    deepDive: {
+      contexto: "Idea brainstormeada abril 2026, fire 2. Marketplace two-sided: pagas USD 20-50 a alguien calificado para que te frene cuando estas por tomar una decision impulsiva (comprar algo caro, renunciar, invertir, cambiar de carrera). Opuesto directo al motivator industry saturado.",
+      propuesta: "Plataforma donde 'anti-coaches' verificados (psicologos, contadores, mentores retirados) ofrecen sesiones de 15-30 min para cuestionar decisiones impulsivas. Diferenciador: tus amigos dicen 'dale', los coaches son cheerleaders, esto es devil's advocate pagado y estructurado. Comision 20% por sesion.",
+      potencial: "Sin competidor directo. Comparable lejano: BetterHelp (terapia on-demand) pero esto no es terapia, es confrontacion constructiva puntual. Ceiling realista depende de volumen: 100 sesiones/dia x USD 30 x 20% comision = USD 600/dia = USD 18k/mes. Ano 1 realista: 10-20 sesiones/dia = USD 1.8-3.6k/mes. Cold start two-sided es el riesgo principal.",
+      inversion: { capital: "USD 500-1500 (plataforma web + pagos + matching)", horas: "0hs invertidas. ~150-200hs estimadas (web app + onboarding anti-coaches + matching + pagos)", recurrente: "USD 20-50/mes hosting + pagos" },
+      retorno: { conservador: "USD 300/mes (10 sesiones/dia, comision 20%, mes 6-8)", optimista: "USD 3000/mes (50 sesiones/dia, mes 12-18)", breakeven: "Mes 6-8 post lanzamiento" },
+      decisiones: "Cold start two-sided: necesitas anti-coaches Y clientes. Opcion MVP: Diego como unico anti-coach primero para validar demanda sin plataforma. Riesgo legal: si alguien sigue consejo y pierde plata, disclaimer es critico. Target inicial: comunidades de finanzas personales (Reddit, Twitter) donde decisiones impulsivas son tema recurrente."
+    }
   },
   {
     id: "servicio-decisiones-grandes",
@@ -1857,7 +1873,15 @@ const DEFAULT_IDEAS = [
     desc: "Servicio unificado para decisiones high-stakes: pre-mortem facilitado + counter-opinion on-demand + \"ser\u00e1 importante en 10 a\u00f1os?\" + pre-commit p\u00fablico con skin-in-the-game. Ticket $200-500/decisi\u00f3n. Tu EV thinking como moat. Target: founders, inversores, profesionales en transici\u00f3n.",
     fire: 2,
     tags: [{ label: "4 protocolos integrados", class: "hot" }, { label: "Moat EV thinking", class: "ready" }],
-    revenue: "medium"
+    revenue: "medium",
+    deepDive: {
+      contexto: "Idea brainstormeada abril 2026, fire 2. Servicio unificado con 4 protocolos para decisiones high-stakes: pre-mortem facilitado, counter-opinion on-demand, test '10 anos', y pre-commit publico con skin-in-the-game. Diego tiene EV thinking como moat directo.",
+      propuesta: "Servicio productizado: cliente paga USD 200-500 por decision importante y recibe 4 protocolos estructurados aplicados por facilitador (Diego). Target: founders evaluando pivot, inversores pre-deal, profesionales en transicion de carrera. Formato: 1-2 sesiones de 90min + documento resumen con analisis EV.",
+      potencial: "Comparable lejano: servicios de executive coaching cobran USD 300-1000/sesion. Nicho decision facilitation no existe como categoria formal. Ceiling realista: 4-8 clientes/mes x USD 300 promedio = USD 1200-2400/mes. No escala (Diego es el producto). Puede evolucionar a formato digital/app.",
+      inversion: { capital: "USD 0 (Calendly free, Zoom/Meet free, Stripe via hermano)", horas: "0hs invertidas. ~20-30hs setup (materiales protocolo, landing, outreach inicial)", recurrente: "USD 0-20/mes herramientas" },
+      retorno: { conservador: "USD 600/mes (2 clientes/mes x USD 300, mes 3-4)", optimista: "USD 2400/mes (8 clientes/mes x USD 300, mes 8-12)", breakeven: "Mes 1 post primer cliente (capex 0)" },
+      decisiones: "Requiere posicionamiento previo (LinkedIn/X contenido sobre decision-making 2-3 meses). Los 4 protocolos necesitan documentacion estructurada antes de vender. Capacidad maxima ~8 clientes/mes sin quemarse. Sinergia directa con mentoria founders y podcast con Festi como pipeline."
+    }
   },
   {
     id: "heredar-proyectos-abandonados",
@@ -1921,7 +1945,15 @@ const DEFAULT_IDEAS = [
     desc: "Quer\u00e9s empezar algo (curso, dieta, side project, negocio), sistema te FUERZA a esperar 30 d\u00edas con micro-tareas diarias para validar inter\u00e9s real vs impulso. Si aguant\u00e1s, proceeds con plan. Si no, ahorraste meses y plata. Anti-impulsivo, contrarian a industry \"empeza ya\". Sub $5-10/mes.",
     fire: 2,
     tags: [{ label: "Contrarian", class: "hot" }, { label: "EV thinking puro", class: "ready" }],
-    revenue: "medium"
+    revenue: "medium",
+    deepDive: {
+      contexto: "Idea brainstormeada abril 2026, fire 2. Concepto contrarian al mantra 'empeza ya': sistema que fuerza espera de 30 dias con micro-tareas diarias antes de comprometerse con algo nuevo (curso, dieta, negocio, side project). Anti-impulsivo por diseno. Alineado con EV thinking de Diego.",
+      propuesta: "App o web donde usuario registra intencion (ej: arrancar negocio X) y recibe 30 micro-tareas diarias para validar si el interes es real o impulso temporal. Si completa 30 dias, recibe plan de accion. Si abandona, la app le muestra cuanto tiempo/plata ahorro. Modelo: sub USD 5-10/mes o one-time USD 15-30.",
+      potencial: "Nicho contrarian con atractivo viral (posts tipo 'esta app me convencio de NO empezar mi startup'). Sin competidor directo. Comparable lejano: StickK (compromiso monetario) pero StickK no valida, solo castiga. Ceiling realista: 500-1500 usuarios paid = USD 2.5-15k/mes. Riesgo: retention baja (usuarios 'se curan' y dejan de pagar).",
+      inversion: { capital: "USD 0-100 (hosting basico)", horas: "0hs invertidas. ~60-80hs estimadas (app basica + contenido micro-tareas + onboarding)", recurrente: "USD 5-15/mes hosting" },
+      retorno: { conservador: "USD 200/mes (200 usuarios x USD 1/mes promedio, mes 6)", optimista: "USD 1500/mes (500 usuarios x USD 3/mes, mes 12)", breakeven: "Mes 3-4 post lanzamiento (capex minimo)" },
+      decisiones: "Formato web-first vs app nativa. Las micro-tareas por categoria (negocio, dieta, mudanza, curso) requieren curado. Retention es el problema central: usuario exitoso deja de necesitar la app. Modelo one-time por 'programa 30 dias' puede funcionar mejor que suscripcion. MVP: 1 categoria (side project) para validar."
+    }
   },
   {
     id: "habit-tracker-accountability",
