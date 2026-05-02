@@ -1497,7 +1497,15 @@ const DEFAULT_IDEAS = [
     desc: "Plan nutricional con precios reales de supermercado argentino. \u00danico en el mundo.",
     fire: 1,
     tags: [{ label: "EV media-alta", class: "hot" }, { label: "\u00danico", class: "ready" }],
-    revenue: "medium"
+    revenue: "medium",
+    deepDive: {
+      contexto: "Idea brainstormeada marzo 2026, fire 1. App de plan nutricional con precios reales de supermercados argentinos. Unico en el mundo: las apps de nutricion (MyFitnessPal, Yazio, Noom) no tienen precios locales de ningun pais, mucho menos AR con inflacion mensual.",
+      propuesta: "App mobile (Flutter) que genera plan nutricional semanal ajustado a presupuesto real con precios de Carrefour/Coto/MercadoLibre AR. Lista de compras con costo total estimado por tienda. Modelo freemium: recetas basicas gratis, USD 3-8/mes plan personalizado + comparador precios + ajuste inflacion.",
+      potencial: "Mercado AR: ~5M hogares buscan recetas online, interes creciente en comer sano con presupuesto ajustado (inflacion). Sin competidor con precios reales AR. Ceiling realista: 500-1500 usuarios paid a 12 meses = USD 1.5-12k/mes. Riesgo: scraping precios supermercados es zona gris legal, precios cambian diario.",
+      inversion: { capital: "USD 200-500 (VPS scraper + hosting API)", horas: "0hs invertidas. ~200-300hs estimadas (scraper precios + modelo nutricional + app Flutter + base recetas)", recurrente: "USD 15-30/mes VPS + API" },
+      retorno: { conservador: "USD 300/mes (200 usuarios x USD 1.5 promedio, mes 8)", optimista: "USD 2000/mes (1000 usuarios, mes 14-18)", breakeven: "Mes 6-8 post lanzamiento" },
+      decisiones: "Scraping precios viola ToS de supermercados en mayoria de casos. MercadoLibre tiene API publica (ruta legal). Modelo nutricional requiere validacion profesional (nutricionista socio o disclaimer). Timeline 200-300hs compite directamente con runway 7 meses y proyectos mas cercanos a ingreso. Considerar alianza con nutricionista AR para credibilidad y contenido."
+    }
   },
   {
     id: "prediction-markets",
@@ -1529,7 +1537,15 @@ const DEFAULT_IDEAS = [
     desc: "Chef en tu casa, m\u00fasico en tu cumplea\u00f1os, ex futbolista juega con tus amigos. Subasta presencial (\u2260 Cameo).",
     fire: 2,
     tags: [{ label: "Innovador", class: "hot" }, { label: "Presencial", class: "" }],
-    revenue: "high"
+    revenue: "high",
+    deepDive: {
+      contexto: "Idea brainstormeada marzo 2026, fire 2. Marketplace de experiencias presenciales unicas subastadas: chef en tu casa, musico en tu cumpleanos, ex futbolista juega con tus amigos. Diferente a Cameo (que es video/digital). No existe plataforma de subastas de experiencias presenciales en LATAM ni en US.",
+      propuesta: "Plataforma donde proveedores de experiencias unicas (chefs, musicos, deportistas retirados, artistas) publican slots y usuarios pujan. Formato subasta genera urgencia y precio de mercado real. Comision 15-20% por transaccion. Target inicial: CABA (densidad de proveedores + poder adquisitivo).",
+      potencial: "Comparable lejano: Cameo (USD 300M+ revenue, pero digital/video). Experiencias presenciales tienen ticket mas alto (USD 100-500+) pero volumen mas bajo. Ceiling realista: 50-100 transacciones/mes x USD 200 promedio x 15% comision = USD 1500-3000/mes. Cold start two-sided es el riesgo central.",
+      inversion: { capital: "USD 500-1500 (plataforma web + pagos + onboarding proveedores)", horas: "0hs invertidas. ~200-250hs estimadas (marketplace + subasta + pagos + onboarding)", recurrente: "USD 20-50/mes hosting + pasarela pagos" },
+      retorno: { conservador: "USD 300/mes (20 transacciones/mes, comision 15%, mes 6-8)", optimista: "USD 3000/mes (100 transacciones/mes, ano 2)", breakeven: "Mes 8-12 post lanzamiento" },
+      decisiones: "Cold start two-sided dificil: necesitas proveedores atractivos Y compradores. Opcion MVP: curar 10-15 experiencias manualmente en CABA y vender via Instagram/WhatsApp sin plataforma. Si hay traccion, construir. Riesgo: logistica presencial, cancelaciones, seguridad. Inversion 200-250hs compite con runway 7 meses."
+    }
   },
   {
     id: "dilemas-eticos",
@@ -1889,7 +1905,15 @@ const DEFAULT_IDEAS = [
     desc: "Founders venden MVPs/side-projects muertos por $100-2k a otro constructor que los contin\u00fae. Demasiado chico para MicroAcquire ($30k floor). Comisi\u00f3n 10-15%. Hueco enorme: miles de proyectos mueren mensualmente. Inv $3-5k plataforma.",
     fire: 2,
     tags: [{ label: "Mercado subatendido", class: "hot" }, { label: "Two-sided", class: "" }],
-    revenue: "medium"
+    revenue: "medium",
+    deepDive: {
+      contexto: "Idea brainstormeada abril 2026, fire 2. Marketplace para MVPs y side-projects abandonados que son demasiado chicos para MicroAcquire (floor USD 30k). Miles de proyectos mueren mensualmente sin que nadie los continue. No hay plataforma para transacciones de USD 100-2000.",
+      propuesta: "Marketplace donde founders listan proyectos abandonados (con codigo, usuarios, dominio, data) y compradores los adquieren por USD 100-2000 para continuarlos. Comision 10-15% por transaccion. Diferenciador vs MicroAcquire/Flippa: rango de precio bajo, foco en proyectos 'muertos pero con potencial', proceso simple sin due diligence pesada.",
+      potencial: "Estimacion conservadora: 1000+ side-projects mueren por mes en comunidades como IndieHackers, ProductHunt, HackerNews. Si 5% lista y 20% vende: 100 transacciones/mes x USD 500 promedio x 12% comision = USD 6000/mes. Realista ano 1: 10-20 transacciones/mes = USD 600-1200/mes. Cold start two-sided es el riesgo.",
+      inversion: { capital: "USD 300-800 (plataforma web + escrow basico + listing system)", horas: "0hs invertidas. ~120-160hs estimadas (marketplace + escrow + verificacion basica)", recurrente: "USD 15-30/mes hosting + escrow fees" },
+      retorno: { conservador: "USD 300/mes (10 transacciones/mes, comision 12%, mes 6)", optimista: "USD 2000/mes (50 transacciones/mes, ano 2)", breakeven: "Mes 4-6 post lanzamiento" },
+      decisiones: "Supply side mas facil que demand: founders quieren deshacerse de proyectos muertos. Demand side es el reto: convencer compradores de que un proyecto 'muerto' vale algo. MVP: Google Form + Notion database + Stripe Links manual para validar antes de construir plataforma. Escrow es critico (riesgo fraude alto en transacciones de codigo). Competencia indirecta: GitHub trending, ProductHunt graveyard."
+    }
   },
   {
     id: "banco-tiempo-profesional-ai",
@@ -1921,7 +1945,15 @@ const DEFAULT_IDEAS = [
     desc: "Parejas pagan servicio que FUERZA conversaciones dif\u00edciles antes de casarse: dinero, hijos, mudanzas, expectativas sexuales, carrera, familia pol\u00edtica. 4-6 sesiones facilitadas. Ticket $300-800. Preventive vs therapy post-conflicto. Mercado USD alto poder adquisitivo.",
     fire: 2,
     tags: [{ label: "Ticket alto", class: "hot" }, { label: "Preventivo", class: "ready" }],
-    revenue: "high"
+    revenue: "high",
+    deepDive: {
+      contexto: "Idea brainstormeada abril 2026, fire 2. Servicio que fuerza conversaciones dificiles antes de casarse: dinero, hijos, mudanzas, expectativas, familia politica. 4-6 sesiones facilitadas. Preventivo vs terapia post-conflicto. Mercado US alto poder adquisitivo. No existe servicio productizado de este tipo.",
+      propuesta: "Pack de 4-6 sesiones facilitadas (60-90 min) donde parejas pre-matrimonio confrontan temas que evitan: finanzas compartidas, division tareas, carrera vs familia, expectativas sexuales. Facilitador (Diego o subcontratado) usa protocolos estructurados tipo pre-mortem aplicados a la relacion. Ticket USD 300-800 por pack.",
+      potencial: "Mercado bodas US: USD 70B+/ano, parejas gastan USD 30-50k promedio. Servicio de USD 300-800 es <2% del costo total. Comparable: terapia de pareja pre-nupcial cobra USD 150-300/sesion pero no es productizada. Ceiling realista: 4-8 parejas/mes x USD 500 = USD 2000-4000/mes. No escala sin facilitadores subcontratados.",
+      inversion: { capital: "USD 0-200 (Calendly + Zoom + Stripe via hermano)", horas: "0hs invertidas. ~30-40hs setup (protocolos, landing, outreach wedding planners + pastores/rabinos)", recurrente: "USD 0-20/mes herramientas" },
+      retorno: { conservador: "USD 500/mes (2 parejas/mes x USD 250 neto, mes 4-5)", optimista: "USD 3000/mes (6 parejas/mes x USD 500, mes 9-12)", breakeven: "Mes 1 post primer cliente (capex 0)" },
+      decisiones: "Requiere credibilidad en relaciones (Diego no tiene certificacion en terapia). Ruta viable: asociarse con psicologo/terapeuta para protocolos y usar EV thinking como framework, no como terapia. Outreach via wedding planners y comunidades religiosas (preparan parejas, no tienen herramienta estructurada). Mercado US via hermano, mercado AR mas chico pero sin competencia."
+    }
   },
   {
     id: "red-me-paso-lo-mismo",
