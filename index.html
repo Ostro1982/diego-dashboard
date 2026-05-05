@@ -1513,7 +1513,15 @@ const DEFAULT_IDEAS = [
     desc: "Trading bot en mercados de predicci\u00f3n. Background poker = ventaja. Bloqueado por geo-restriction desde Argentina.",
     fire: 1,
     tags: [{ label: "Bloqueado geo", class: "blocked" }, { label: "Post $2k/mes", class: "" }],
-    revenue: "high"
+    revenue: "high",
+    deepDive: {
+      contexto: "Idea separada del monorepo prediction-bots (que ya tiene Manifold live + Kalshi/Poly paper). Esta idea es el paso a capital real en Polymarket/Kalshi. Bloqueado geo desde AR: hermano EEUU opera. prediction-bots ya acumula data para validar edge por categoria.",
+      propuesta: "Apostar capital real en mercados de prediccion (Polymarket, Kalshi) usando evaluadores data-driven ya construidos (crypto, weather, sports, politics). Background poker pro como ventaja en sizing y disciplina. Diferenciador vs apostadores casuales: modelo calibrado + Kelly fraccionado + tracking riguroso.",
+      potencial: "Polymarket mueve USD 1B+/mes en volumen. Con bankroll USD 2-5k y ROI validado 5-15% por categoria, ceiling USD 100-750/mes. Liquidez limitada en mercados nicho reduce escalabilidad. Riesgo: edge puede no existir post-validacion.",
+      inversion: { capital: "USD 2000-5000 bankroll real (post validacion paper)", horas: "0hs adicionales (infra ya existe en prediction-bots). ~5hs fondeo cuenta hermano", recurrente: "USD 0 (APIs free tier)" },
+      retorno: { conservador: "USD 100/mes (USD 2000 bankroll, ROI 5%)", optimista: "USD 500/mes (USD 5000 bankroll, ROI 10-12%)", breakeven: "Mes 1 post capital real (capex 0)" },
+      decisiones: "BLOQUEADO hasta prediction-bots acumule 100+ apuestas resueltas por categoria con edge positivo. Fondeo Polymarket requiere crypto (USDC en Polygon). Kalshi requiere cuenta US (hermano). No depositar sin WR y Brier score validados. Prioridad baja vs otros proyectos con runway limitado."
+    }
   },
   {
     id: "secretos-ciudad",
@@ -1745,7 +1753,15 @@ const DEFAULT_IDEAS = [
     desc: "Comparador + arb finder + CLV tracker para UN nicho (WTA tennis, MMA undercard). Afiliados sportsbook + pro tier $25/mes. SEO largo plazo. Techo $2-7k/mes.",
     fire: 1,
     tags: [{ label: "SEO 6 meses", class: "" }, { label: "Afiliados US", class: "" }],
-    revenue: "medium"
+    revenue: "medium",
+    deepDive: {
+      contexto: "Idea derivada de tenis-ev. Herramienta web de comparacion de cuotas + arb finder + CLV tracker para un nicho especifico (WTA tenis o MMA undercard). Diego ya tiene modelo Elo+H2H para tenis y acceso a The Odds API. SEO longtail como canal principal.",
+      propuesta: "Web tool nicho: comparador de cuotas entre 10+ casas, detector de arbitraje, CLV tracker historico. Diferenciador vs OddsPortal/OddsBoom: foco ultra-nicho (solo WTA o solo MMA undercard) con data mas profunda (H2H, fatiga, superficie). Monetizacion: afiliados sportsbook (CPA USD 50-200) + tier pro USD 25/mes con alertas arb.",
+      potencial: "Mercado odds comparison tools mueve USD 50-100M/ano en afiliados. Nichos especificos (WTA, MMA undercard) no tienen tool dedicado. SEO longtail tarda 6+ meses. Ceiling realista: USD 200-700/mes afiliados + 50-100 subs pro = USD 1.5-3.5k/mes total. Ano 2 con SEO maduro: USD 2-7k/mes.",
+      inversion: { capital: "USD 0-100 (hosting, dominio)", horas: "0hs invertidas. ~100-150hs estimadas (scraper odds multi-casa, web, arb detector, CLV tracking, SEO)", recurrente: "USD 20-50/mes (The Odds API plan, hosting)" },
+      retorno: { conservador: "USD 200/mes (afiliados solo, 5k visitas/mes, mes 8-12)", optimista: "USD 3000/mes (afiliados + 100 subs pro, mes 18-24)", breakeven: "Mes 8-12 post lanzamiento (SEO delay)" },
+      decisiones: "The Odds API cobra por request (free tier 500/mes, plan USD 20-80/mes para volumen). SEO 6+ meses antes de primer dolar. Elegir nicho: WTA tiene sinergia con tenis-ev, MMA tiene menos competencia. Horas compiten con proyectos de mayor EV inmediata. No priorizar hasta tener ingreso estable."
+    }
   },
   {
     id: "picks-service",
@@ -1753,7 +1769,15 @@ const DEFAULT_IDEAS = [
     desc: "Discord/Telegram pago con picks + edge explicado. Requiere 3-6 meses track p\u00fablico auditable. Story ex-poker pro vendible. Techo $3-15k MRR.",
     fire: 1,
     tags: [{ label: "Track 6 meses", class: "blocked" }, { label: "Expertise directa", class: "ready" }],
-    revenue: "high"
+    revenue: "high",
+    deepDive: {
+      contexto: "Idea derivada de tenis-ev (backtest +19.1% ROI, paper trading activo). Modelo: vender picks de tenis via Discord/Telegram pago con track record publico auditable. Requiere 3-6 meses de resultados verificables antes de cobrar. Story ex-poker pro AR como marketing.",
+      propuesta: "Canal pago (Discord/Telegram) con alertas EV+ de tenis generadas por modelo propio (Elo+H2H+momentum+fatiga). Diferenciador vs tipsters genericos: edge explicado con probabilidad modelo vs cuota mercado, CLV tracking, Brier score publico. Precio USD 50-100/mes suscripcion.",
+      potencial: "Mercado tipsters tenis: fragmentado, pocos con track auditable. Comparable: servicios premium cobran USD 50-200/mes con 200-500 suscriptores. Ceiling realista: 100-300 subs x USD 75 = USD 7.5-22.5k/mes. Riesgo: track record puede ser negativo en real, y 6 meses sin ingresos mientras se construye.",
+      inversion: { capital: "USD 0 (modelo ya existe en tenis-ev)", horas: "~120hs ya invertidas en modelo. ~20hs setup canal + tracker publico", recurrente: "USD 10-20/mes Discord Nitro/bot hosting" },
+      retorno: { conservador: "USD 500/mes (50 subs x USD 10 tier basico, mes 8-10)", optimista: "USD 5000/mes (200 subs x USD 25 promedio, mes 12-18)", breakeven: "Mes 7-9 post inicio track publico" },
+      decisiones: "BLOQUEADO por 300 paper bets pendientes en tenis-ev (~2-3 meses mas). Sin track publico positivo, no hay producto. Si ROI real es la mitad del backtest (+9-13%), los picks siguen siendo vendibles. Riesgo reputacional si modelo falla en publico. Decidir formato: solo alertas vs alertas + educacion EV."
+    }
   },
   {
     id: "p2p-usdt-arbitrage",
@@ -1761,7 +1785,15 @@ const DEFAULT_IDEAS = [
     desc: "Arbitraje entre Binance P2P, Lemon, Ripio y MEP con spreads 0.5-3%. Capital $10k rotando, 1-3 hrs/d\u00eda. Techo $800-1500/mes. Riesgo bancario/AFIP alto, no pasivo.",
     fire: 1,
     tags: [{ label: "Capital trabajando", class: "ready" }, { label: "Riesgo AFIP/banco", class: "blocked" }],
-    revenue: "medium"
+    revenue: "medium",
+    deepDive: {
+      contexto: "Arbitraje P2P crypto en AR: comprar USDT barato en una plataforma (Binance P2P, Lemon, Ripio) y vender caro en otra, o triangular con dolar MEP. Spreads historicos 0.5-3%. Diego ya opera crypto (copy-trade bots multi-chain en paper). Capital requerido USD 10k para volumen relevante.",
+      propuesta: "Rotar capital entre exchanges P2P y MEP capturando spreads. No requiere modelo ni prediccion: es arbitraje puro de precio. Background poker (bankroll management, disciplina) aplica directo. Operacion manual 1-3 hs/dia o semi-automatizada con scripts.",
+      potencial: "Con USD 10k rotando y spread promedio 1-2%, ceiling USD 800-1500/mes. Spread comprime con mas operadores (ya hay competencia creciente). Capital disponible de Diego es USD 5k (insuficiente para operar con margen significativo). Riesgo AFIP/banco: cuentas bloqueadas por movimientos frecuentes P2P.",
+      inversion: { capital: "USD 10,000 rotativo (Diego tiene 5k, faltan 5k)", horas: "0hs invertidas. ~10hs setup (cuentas, verificacion KYC). 1-3hs/dia operando", recurrente: "USD 0 (fees incluidos en spread)" },
+      retorno: { conservador: "USD 300/mes (USD 5k capital, spread 1%, 6 rotaciones/mes)", optimista: "USD 1500/mes (USD 10k capital, spread 2%, 8 rotaciones/mes)", breakeven: "Inmediato (primer rotacion genera ganancia)" },
+      decisiones: "Capital insuficiente (USD 5k de 10k necesarios). Riesgo AFIP: transferencias P2P frecuentes pueden generar alerta fiscal y bloqueo de cuenta bancaria. Riesgo banco: CBU bloqueado por actividad sospechosa sin vuelta atras facil. No pasivo: requiere 1-3 hs/dia de operacion activa. Spreads comprimiendo con mas competencia. No priorizar sin capital completo y sin consulta con contador sobre implicancias fiscales."
+    }
   },
   {
     id: "mentoria-founders-latam",
