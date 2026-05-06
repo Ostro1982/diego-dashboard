@@ -1817,7 +1817,15 @@ const DEFAULT_IDEAS = [
     desc: "Card game nicho decision theory v\u00eda Kickstarter \u2192 Amazon FBA US. Tu expertise MTG/poker como story. Timeline 14 meses. Inv $5-6k pre-launch, KS fondea manufactura. Techo $500-2k/mes post-KS.",
     fire: 1,
     tags: [{ label: "Timeline largo", class: "" }, { label: "Hermano US imprescindible", class: "blocked" }],
-    revenue: "medium"
+    revenue: "medium",
+    deepDive: {
+      contexto: "Idea brainstormeada abril 2026, fire 1. Card game fisico sobre decision theory y probabilidad. Produccion via Kickstarter, venta en Amazon FBA US via hermano. Timeline largo (~14 meses). Diego tiene expertise directa en MTG/poker como base del diseno.",
+      propuesta: "Juego de cartas donde jugadores toman decisiones bajo incertidumbre: EV, trade-offs, base rates, sunk cost. Target: familias con ninos 10+ y adultos que juegan juegos de mesa modernos. Kickstarter fondea manufactura, Amazon FBA distribuye. Hermano EEUU imprescindible para logistica US.",
+      potencial: "Mercado juegos de mesa US: USD 3B+. Kickstarter tabletop exitosos recaudan USD 10-50k en promedio. Post-KS, Amazon FBA genera USD 500-2k/mes con inventario rotando. Riesgo: manufactura China requiere MOQ 1000-3000 unidades, timeline 14 meses, y capital upfront USD 5-6k antes de recibir fondos KS.",
+      inversion: { capital: "USD 5000-6000 pre-launch (arte, prototipo, video KS, ads). KS fondea manufactura", horas: "0hs invertidas. ~200-300hs estimadas (diseno juego, arte, prototipo, campana KS, fulfillment)", recurrente: "USD 50-100/mes Amazon FBA fees post-launch" },
+      retorno: { conservador: "USD 500/mes (Amazon FBA post-KS, 50 unidades/mes)", optimista: "USD 2000/mes (KS exitoso + Amazon steady, ano 2)", breakeven: "Mes 16-20 (incluye timeline pre-produccion)" },
+      decisiones: "Inversion USD 5-6k consume capital disponible completo. Timeline 14 meses incompatible con runway 7 meses. No iniciar sin otro ingreso estable cubriendo gastos. Hermano EEUU es dependencia critica para toda la logistica. Prioridad baja vs proyectos digitales sin capex."
+    }
   },
   {
     id: "libros-infantiles-ev",
@@ -1921,7 +1929,15 @@ const DEFAULT_IDEAS = [
     desc: "Plataforma agregando expensas por edificio/barrio CABA. Data p\u00fablica + crowdsourced. Alertas de abusos, rankings por m\u00b2. Monetiza leads inmobiliarias + ads administradores. Inv baja $1-2k, SEO longtail.",
     fire: 1,
     tags: [{ label: "Nicho AR", class: "" }, { label: "Data crowdsourced", class: "" }],
-    revenue: "medium"
+    revenue: "medium",
+    deepDive: {
+      contexto: "Idea brainstormeada abril 2026, fire 1. Plataforma que agrega datos de expensas por edificio y barrio en CABA. Data publica (GCBA, consorcios) + crowdsourced por usuarios. Sin desarrollo iniciado. Sin equivalente en AR.",
+      propuesta: "Web app donde usuarios consultan y comparan expensas por edificio, barrio y m2. Rankings de administradores, alertas de aumentos abusivos, historico de expensas. Crowdsourcing como fuente principal. Monetizacion: leads a inmobiliarias (comprador evalua expensas antes de comprar), ads de administradores de consorcios.",
+      potencial: "CABA tiene ~150k edificios con consorcios. Pain real: nadie sabe si sus expensas son razonables vs edificios similares. SEO longtail natural ('expensas promedio Belgrano', 'administrador barato Palermo'). Ceiling realista: USD 200-500/mes afiliados inmobiliarios + USD 100-300/mes ads administradores. Total USD 300-800/mes a 12 meses.",
+      inversion: { capital: "USD 100-200 (dominio + hosting)", horas: "0hs invertidas. ~100-120hs estimadas (web + scraper data publica + sistema crowdsource + SEO)", recurrente: "USD 5-15/mes hosting" },
+      retorno: { conservador: "USD 100/mes (leads inmobiliarias, 3k visitas/mes, mes 10)", optimista: "USD 500/mes (leads + ads administradores, 10k visitas, mes 18)", breakeven: "Mes 10-14 post lanzamiento (SEO delay)" },
+      decisiones: "Data publica de expensas CABA es limitada y fragmentada. Crowdsourcing requiere masa critica antes de ser util (cold start). SEO tarda 6+ meses. Competencia indirecta: grupos Facebook/WhatsApp de consorcios. Horas compiten con proyectos de mayor EV inmediata. No priorizar sin ingreso estable."
+    }
   },
   {
     id: "marketplace-garages-caba",
@@ -1929,7 +1945,15 @@ const DEFAULT_IDEAS = [
     desc: "Conecta propietarios con garage/cochera ocioso con usuarios que necesitan. Barrios densos (Belgrano, Palermo, Recoleta). Comisi\u00f3n 10-15%. Inv $2-3k. Techo $1-4k/mes con 100+ matches activos.",
     fire: 1,
     tags: [{ label: "Hyperlocal CABA", class: "" }, { label: "Two-sided dif\u00edcil", class: "" }],
-    revenue: "medium"
+    revenue: "medium",
+    deepDive: {
+      contexto: "Idea brainstormeada abril 2026, fire 1. Marketplace hyperlocal CABA conectando propietarios con garage/cochera ociosa con conductores que necesitan estacionar. Barrios densos (Belgrano, Palermo, Recoleta) donde estacionar es problema real. Sin desarrollo iniciado.",
+      propuesta: "Plataforma donde propietarios listan garages/cocheras vacias por hora, dia o mes. Usuarios reservan y pagan online. Comision 10-15% por transaccion. Target inicial: barrios densos CABA donde estacionamiento publico es escaso y caro. Diferenciador vs apps de parking (Parkimovil): garages privados, precios mas bajos, zonas residenciales.",
+      potencial: "CABA tiene ~1.8M vehiculos y deficit cronico de estacionamiento en barrios densos. Cocheras privadas ociosas son inventario invisible. Ceiling realista con 100+ matches activos: USD 1-4k/mes en comisiones. Problema: two-sided marketplace con cold start dificil, inventario hyperlocal no escala fuera de CABA facilmente.",
+      inversion: { capital: "USD 200-500 (web app + pasarela pagos)", horas: "0hs invertidas. ~120-150hs estimadas (marketplace + geolocalizacion + pagos + onboarding propietarios)", recurrente: "USD 10-20/mes hosting + pasarela" },
+      retorno: { conservador: "USD 200/mes (30 matches activos x USD 80/mes promedio x 10% comision, mes 8)", optimista: "USD 1500/mes (150 matches, mes 18)", breakeven: "Mes 8-12 post lanzamiento" },
+      decisiones: "Cold start two-sided es el riesgo central: necesitas propietarios listando Y conductores buscando en el mismo barrio. Supply side primero: reclutar 50 garages en Belgrano/Palermo con carteleria fisica. Competencia indirecta: grupos Facebook de cocheras, Mercado Libre (listados dispersos). Inversion 120+ horas compite con proyectos de mayor EV. No priorizar sin ingreso estable."
+    }
   },
   {
     id: "anti-coach-on-demand",
@@ -1985,7 +2009,15 @@ const DEFAULT_IDEAS = [
     desc: "Intercambio horas skills entre profesionales (1h coaching = 1h dise\u00f1o = 1h dev) con IA matching por complementariedad. Sin dinero. Diferencial: Timerepublik muri\u00f3, oportunidad con IA matching serio. Monetiza via tier pro $10/mes.",
     fire: 1,
     tags: [{ label: "Tal vez", class: "" }, { label: "Two-sided lento", class: "" }],
-    revenue: "medium"
+    revenue: "medium",
+    deepDive: {
+      contexto: "Idea brainstormeada abril 2026, fire 1. Marketplace de intercambio de horas profesionales sin dinero: 1h coaching = 1h diseno = 1h dev. Matching por IA segun complementariedad de skills. Timerepublik (competidor mas cercano) murio. Sin desarrollo iniciado.",
+      propuesta: "Plataforma donde profesionales intercambian horas de trabajo por skills complementarias. IA matchea por compatibilidad de necesidades y disponibilidad. Sin transaccion monetaria: pura economia de trueque profesional. Monetizacion: tier pro USD 10/mes (matching prioritario, perfil destacado, historial extendido).",
+      potencial: "Timerepublik tenia ~100k usuarios antes de morir. Nicho real pero dificil de monetizar (usuarios que no quieren pagar dinero, por definicion). Ceiling realista con 1000 usuarios activos y 10% paid: USD 1000/mes. Riesgo: two-sided lento (necesitas match de skills reciprocos en misma zona horaria), retencion baja post primer intercambio.",
+      inversion: { capital: "USD 200-500 (web app + matching engine + auth)", horas: "0hs invertidas. ~150-200hs estimadas (marketplace + matching IA + sistema creditos tiempo + perfiles)", recurrente: "USD 15-30/mes hosting + API LLM matching" },
+      retorno: { conservador: "USD 100/mes (1000 usuarios, 10% paid x USD 10, mes 12)", optimista: "USD 500/mes (5000 usuarios, 10% paid, mes 24)", breakeven: "Mes 12-18 post lanzamiento" },
+      decisiones: "Timerepublik murio por no poder monetizar: usuarios que evitan pagar dinero son dificiles de convertir a paid. Cold start two-sided agravado: necesitas match reciproco de skills, no solo oferta/demanda generica. Timeline 150-200hs compite con runway 7 meses. EV baja comparada con otros proyectos. No priorizar."
+    }
   },
   {
     id: "archivo-what-i-wish-i-knew",
