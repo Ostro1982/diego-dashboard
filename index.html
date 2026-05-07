@@ -2121,7 +2121,15 @@ const DEFAULT_IDEAS = [
     desc: "Flutter app con peer matching 1-on-1 o apuestas monetarias StickK-style. Mercado saturado, SOLO viable con nicho muy espec\u00edfico (padres ADHD, recuperaci\u00f3n, etc). Techo $2-5k MRR a\u00f1o 2.",
     fire: 1,
     tags: [{ label: "Saturado", class: "blocked" }, { label: "Requiere nicho", class: "" }],
-    revenue: "medium"
+    revenue: "medium",
+    deepDive: {
+      contexto: "Idea brainstormeada marzo 2026, fire 1. Mercado habit trackers saturado (Habitica, Streaks, Strides, etc). Solo viable con nicho muy especifico. Sin desarrollo iniciado.",
+      propuesta: "App Flutter con peer matching 1-on-1 o apuestas monetarias estilo StickK. Diferenciador posible: nicho ultra-especifico (padres ADHD, recuperacion, freelancers solos). Sin nicho definido, compite contra apps con millones de usuarios y anos de ventaja.",
+      potencial: "Mercado habit tracking vale USD 5B+ pero dominado por incumbentes con network effects. Nicho ADHD parenting tiene menos competencia pero volumen bajo. Ceiling realista con nicho definido: 200-500 usuarios paid = USD 2-5k MRR ano 2. Sin nicho, EV cercana a cero.",
+      inversion: { capital: "USD 0-200 (hosting, auth)", horas: "0hs invertidas. ~120-160hs estimadas (app Flutter + matching + sistema apuestas/accountability)", recurrente: "USD 5-15/mes hosting" },
+      retorno: { conservador: "USD 100/mes (200 usuarios x USD 0.50 promedio, mes 8)", optimista: "USD 1000/mes (500 usuarios nicho ADHD x USD 2, mes 14)", breakeven: "Mes 8-12 post lanzamiento" },
+      decisiones: "No iniciar sin nicho definido y validado. Mercado saturado castiga productos genericos. Horas compiten con proyectos de mayor EV. Evaluar si el nicho elegido tiene willingness to pay real antes de invertir una sola hora. Prioridad baja vs otros proyectos en pipeline."
+    }
   },
   {
     id: "filtro-anti-ai-slop",
@@ -2129,7 +2137,15 @@ const DEFAULT_IDEAS = [
     desc: "Extension Chrome/Firefox que detecta y oculta contenido generado por IA en Twitter, Instagram y web. Clasificador local + heur\u00edsticas. Freemium v\u00eda Chrome Web Store. Side project.",
     fire: 1,
     tags: [{ label: "Side project", class: "" }, { label: "Chrome Web Store", class: "ready" }],
-    revenue: "low"
+    revenue: "low",
+    deepDive: {
+      contexto: "Idea brainstormeada marzo 2026, fire 1. Extension Chrome/Firefox que detecta y oculta contenido generado por IA en redes sociales y web. Diego ya construyo extension Human Feed con scorer heuristico funcional (8+ ajustes). Esta idea es version simplificada: solo detectar y ocultar, sin feed curado.",
+      propuesta: "Extension browser con clasificador local + heuristicas para detectar AI slop en Twitter/X, Instagram, LinkedIn, Reddit. Freemium via Chrome Web Store: deteccion basica gratis, filtros avanzados + stats USD 3-5/mes. Diferenciador: scorer ya calibrado en Human Feed, ejecuta local (sin enviar datos a servidor).",
+      potencial: "Mercado extensiones anti-AI no existe formalmente todavia. AI slop crece exponencialmente. Chrome Web Store tiene distribucion gratuita. Ceiling realista: 5-10k instalaciones, 2-5% paid = 100-500 suscriptores = USD 300-2500/mes. Riesgo: APIs redes sociales cambian DOM frecuentemente, mantenimiento constante. Side project, no vehiculo principal de ingreso.",
+      inversion: { capital: "USD 0 (Chrome Web Store gratis, codigo ya parcialmente existente en Human Feed)", horas: "~20hs invertidas (scorer en Human Feed). ~30-40hs pendientes (extension standalone, Chrome Store publish, Firefox port)", recurrente: "USD 0-5/mes (Chrome Web Store developer fee one-time USD 5)" },
+      retorno: { conservador: "USD 50/mes (2000 instalaciones, 50 paid x USD 1, mes 6)", optimista: "USD 500/mes (10k instalaciones, 200 paid x USD 2.5, mes 12)", breakeven: "Mes 3-4 post publicacion (capex ~USD 5)" },
+      decisiones: "Reusar scorer de Human Feed como base. Publicar primero en Chrome Web Store, Firefox despues. Mantener como side project: no invertir mas de 40hs. Si traccion organica supera 5k instalaciones, evaluar monetizacion seria. DOM de redes cambia seguido: presupuestar 2-4hs/mes mantenimiento."
+    }
   },
   {
     id: "human-feed-curator",
