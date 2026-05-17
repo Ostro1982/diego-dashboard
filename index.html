@@ -2162,6 +2162,22 @@ const DEFAULT_IDEAS = [
       retorno: { conservador: "USD 200/mes (500 usuarios free, 40 paid x USD 5, mes 8)", optimista: "USD 2000/mes (2000 paid, mes 18)", breakeven: "Mes 5-7 post lanzamiento" },
       decisiones: "APIs redes sociales son el bloqueador principal: Twitter/X cerro API free, Reddit limito en 2023, Nitter inestable. Evaluar si RSS publico + scraping liviano alcanza. La extension Chrome ya tiene scorer calibrado: reusar como backend. Competencia con otros proyectos por horas de desarrollo."
     }
+  },
+  {
+    id: "poker-notes-saas",
+    name: "Poker Notes SaaS (via screenshots)",
+    desc: "Bloc notas inteligente de villains para sites sin HUD (WPT, GG, Coin Poker). AI vision extrae acciones + cartas de screenshots, mantiene DB persistente de leaks + exploits por jugador.",
+    fire: 3,
+    tags: [{ label: "Alta prioridad", class: "hot" }, { label: "Pipeline ya funcional", class: "ready" }],
+    revenue: "high",
+    deepDive: {
+      contexto: "Idea surgida 2026-05-17 jugando WPT PLO cash. Diego construyo sistema funcional para uso propio (crop mesa+panel, OCR pot filter, Claude Vision para extraccion, markdown DB). Detecto pain real: sites como WPT CN, GG (parcial), Coin Poker, plataformas asiaticas no permiten HUD/tracker tradicional. Jugadores cash/MTT necesitan tracking pero solo tienen screenshots.",
+      propuesta: "SaaS donde player sube screenshots de manos (drag-drop o sync carpeta cliente). AI vision extrae posiciones, acciones, sizings, showdown cards. Sistema mantiene base de datos persistente por jugador con tendencias + leaks + exploits accionables. Antes de cada mesa, player consulta nicks visibles y recibe summary listo. Diferenciador vs PT4/HM3: funciona donde tracker tradicional no llega, foco en reads psicologicos no stats VPIP/PFR genericos.",
+      potencial: "WPT Global, Coin Poker, GGNetwork sin HUD = milliones de jugadores activos. Pool conservador: 1000 paying users x USD 15/mes = USD 15K MRR. Diego es target ideal (ex-poker pro AR, juega WPT actualmente, conoce dolor). Pricing tentativo: Free 50 manos/mes, Pro USD 15 ilimitado + sync, Pro+ USD 30 con analisis propio.",
+      inversion: { capital: "USD 200-500 (Claude/GPT-4 Vision API + hosting Streamlit/Flask + Stripe)", horas: "~15hs invertidas (pipeline propio funciona). ~150-200hs estimadas para SaaS publico con UI, auth, pagos, sync cloud", recurrente: "USD 50-150/mes (Vision API por usuario es el costo principal, ~USD 1 por sesion chica)" },
+      retorno: { conservador: "USD 500/mes (50 paid x USD 10, mes 6 post lanzamiento high-touch a friends regs)", optimista: "USD 15000/mes (1000 paid x USD 15, ano 2)", breakeven: "Mes 3-6 si arranca con servicio manual a 5-10 regs antes de SaaS" },
+      decisiones: "Riesgo TOS: sites pueden considerarlo HUD-like y banear. Mitigacion: analisis post-hand offline, no real-time. Validacion antes de construir SaaS: ofrecer servicio manual high-touch a 5-10 reg friends a USD 50-100/mes por procesarles las manos. Medir willingness to pay y reads mas usados. Solo entonces UI publico. Postear en r/poker, 2+2, discord regs WPT/Coin para reclutar primeros clientes. Competencia: si PT4/HM3 lanzan vision module estoy fuera (riesgo medio-alto)."
+    }
   }
 ];
 
