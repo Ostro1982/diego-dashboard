@@ -2178,6 +2178,22 @@ const DEFAULT_IDEAS = [
       retorno: { conservador: "USD 500/mes (50 paid x USD 10, mes 6 post lanzamiento high-touch a friends regs)", optimista: "USD 15000/mes (1000 paid x USD 15, ano 2)", breakeven: "Mes 3-6 si arranca con servicio manual a 5-10 regs antes de SaaS" },
       decisiones: "Riesgo TOS: sites pueden considerarlo HUD-like y banear. Mitigacion: analisis post-hand offline, no real-time. Validacion antes de construir SaaS: ofrecer servicio manual high-touch a 5-10 reg friends a USD 50-100/mes por procesarles las manos. Medir willingness to pay y reads mas usados. Solo entonces UI publico. Postear en r/poker, 2+2, discord regs WPT/Coin para reclutar primeros clientes. Competencia: si PT4/HM3 lanzan vision module estoy fuera (riesgo medio-alto)."
     }
+  },
+  {
+    id: "arbitraje-dominios",
+    name: "Arbitraje de Dominios Expirados con IA",
+    desc: "Comprar dominios expirados con trafico/backlinks valiosos (ExpiredDomains, NameJet, GoDaddy Auctions) y revenderlos o monetizarlos con landings minimas. Claude automatiza scraping de metricas DA/DR y generacion de paginas destino.",
+    fire: 2,
+    tags: [{ label: "EV thinking puro", class: "hot" }, { label: "Capital bajo", class: "ready" }],
+    revenue: "medium",
+    deepDive: {
+      contexto: "Idea brainstormeada 2026-06-04, fire 2. Arbitraje digital clasico: valuar un activo (dominio con DA/DR alto, trafico organico residual o backlinks de calidad) y comprarlo bajo su precio de mercado para reventa o monetizacion. EV thinking puro, transferible directo del background poker/MTG de Diego. Hermano US ya disponible para registrar dominios en Namecheap con billing USD, lo que facilita reventa a compradores americanos en Afternic/Sedo/Flippa.",
+      propuesta: "Pipeline semi-automatizado con Claude Code: (1) scraper diario en ExpiredDomains.net + NameJet + GoDaddy Auctions filtrando por DA>20, DR>15, edad >5 anos, trafico organico Ahrefs/SEMrush. (2) Scorer que clasifica oportunidades por nicho (finance, health, tech tienen mayor reventa). (3) Compra inicial 5-15 dominios USD 10-50 cada uno. (4) Para los mejores, generar landing minima con backlinks reciclados + monetizacion Adsense/afiliados. (5) Listar reventa en Afternic/Sedo con precio 5-20x. Horario acotado compatible con runway dev (1-2hs/dia).",
+      potencial: "Mercado dominios secundarios: USD 2-3B/ano global (GoDaddy, Sedo, Flippa). Margen tipico arbitrajista exitoso 3-10x por dominio vendido, pero solo 10-20% del inventario vende rapido. Ceiling realista ano 1: USD 300-1200/mes muy variable, depende del ojo para identificar activos subvaluados. Curva de aprendizaje real: primeros 6 meses son entrenamiento del ojo. Tope superior: arbitrajistas serios pueden hacer USD 5-10k/mes pero requieren 2+ anos de experiencia y capital USD 5k+ rotando.",
+      inversion: { capital: "USD 500-1500 (inventario inicial 5-15 dominios + suscripcion ExpiredDomains premium USD 25/mes opcional + herramientas Ahrefs/SEMrush trial)", horas: "0hs invertidas. ~40-60hs para armar pipeline Claude Code + criterios filtrado + plantilla landing. Despues 1-2hs/dia operativo (revisar oportunidades, listar reventa)", recurrente: "USD 30-80/mes (renovacion dominios sin vender + hosting landings + herramientas SEO)" },
+      retorno: { conservador: "USD 300/mes (1-2 dominios vendidos a USD 200-400 cada uno, mes 4-6)", optimista: "USD 1200/mes (4-6 dominios vendidos USD 200-500 cada uno + ingresos Adsense residuales, mes 9-12)", breakeven: "Mes 3-5 si pega 1-2 ventas tempranas. Mes 8+ si curva aprendizaje lenta" },
+      decisiones: "Riesgo principal: mercado iliquido. Podes comprar dominios buenos y nadie querer pagar tu precio. Mitigacion: no enamorarse de ningun dominio, listar reventa rapido a 3-5x costo. Segundo riesgo: curva aprendizaje 6+ meses, capital puede consumirse sin venta. Mitigacion: empezar con USD 500 (no USD 1500) y subir si valida. Hermano US registra y maneja billing en Namecheap. Primer paso hoy: crear cuenta gratis en ExpiredDomains.net, filtrar dominios expirados esta semana con DA>20 y revisar precios reventa en Afternic/Sedo para 10 candidatos antes de comprar nada."
+    }
   }
 ];
 
